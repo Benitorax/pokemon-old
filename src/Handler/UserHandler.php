@@ -27,7 +27,7 @@ class UserHandler
     
     public function handle($data) 
     {
-        $user = $this->createUser($data);
+        $user = $this->createUserWithFirstPokemon($data);
         
         $this->manager->persist($user);
         $this->manager->flush();
@@ -35,7 +35,7 @@ class UserHandler
         return $user;
     }
 
-    public function createUser($data) 
+    public function createUserWithFirstPokemon($data) 
     {
         $pokemon = $this->pokeApiManager->getNewPokemon($data['pokemon']);
 

@@ -22,7 +22,7 @@ class Battle
     private $type;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Habitat", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Habitat")
      * @ORM\JoinColumn(nullable=false)
      */
     private $arena;

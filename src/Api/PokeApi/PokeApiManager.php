@@ -22,7 +22,6 @@ class PokeApiManager
     }
 
     public function getNewPokemon($pokemonId) {
-        $habitat = $this->habitatApi->getHabitatFromPokemonId($pokemonId);
         return $this->pokemonApi->getNewPokemon($pokemonId);
     }
 
