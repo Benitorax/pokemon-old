@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adventure{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-sm-5">
+        <div class="row">
+            <div class="col-sm-12 p-3 mb-2 border border-secondary rounded-lg text-white bg-dark">
+                {% for message in messages %}
+                    <div class="text-center">{{ message|raw }}</div>
+                {% else %}
+                    <div class="text-center">Let's go for adventure !<br/>You might run into some awesome pokemons !</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div style="min-height: 300px;" class="col-sm-12 mb-2 border border-secondary rounded-lg">
+                <div>
+                    {% if opponent %}
+                        <div class="text-right"><strong>{{ opponent.currentFighter.name|capitalize }}</strong></div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ opponent.currentFighter.healthPoint }}%" aria-valuenow="{{ opponent.currentFighter.healthPoint }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mr-4"><img class="float-right" src="{{ opponent.currentFighter.spriteFrontUrl }}"></div>
+                    {% endif %}
+                </div><br><br><br><br>
+                <div>
+                    {% if player and player.currentFighter %}
+                        <div class="ml-4"><img src="{{ player.currentFighter.spriteBackUrl }}"></div>
+                        <div class="text-left"><strong>{{ player.currentFighter.name|capitalize }}</strong></div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ player.currentFighter.healthPoint }}%" aria-valuenow="{{ player.currentFighter.healthPoint }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {{ form_start(form, {attr: {class: 'adventure-form'} }) }}
+        <div class="row justify-content-center">
+            <div>       
+                <div class="btn-group" role="group" aria-label="Basic example">
+                {% if player and player.currentFighter  %}
+                    {{ form_widget(form.travel, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.attack) }}
+                    {{ form_widget(form.throwPokeball) }}
+                    {{ form_widget(form.selectPokemon, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.submitPokemon, {'attr': {'style':'display:none;'}}) }}
+                {% elseif opponent %}
+                    {{ form_widget(form.travel, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.attack, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.throwPokeball, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.selectPokemon) }}
+                    {{ form_widget(form.submitPokemon) }}
+                {% else %}
+                    {{ form_widget(form.travel) }}
+                    {{ form_widget(form.attack, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.throwPokeball, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.selectPokemon, {'attr': {'style':'display:none;'}}) }}
+                    {{ form_widget(form.submitPokemon, {'attr': {'style':'display:none;'}}) }}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

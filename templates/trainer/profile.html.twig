@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+  <h1 class="text-secondary">Profile</h1>
+  <h2>{{ user.username }}</h2>
+
+  <table class="mt-5 table">
+    <thead>
+      <tr class="table-primary">
+        <th scope="col">Infos</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="amountPokedollars">
+        <th scope="row">Pokedollars</th>
+        <td>500</td>
+      </tr>
+      <tr class="countPokemons">
+        <th scope="row">Pokemons count</th>
+        <td>{{ user.pokemons|length }}</td>
+      </tr>
+      <tr class="countPokeballs">
+        <th scope="row">Pokeballs count</th>
+        <td>{{ user.pokeballs }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <a href="{{ path('trainer_pokemons', {id: user.id}) }}">List of your pokemons</a>
+  </p>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pokemon!{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="jumbotron">
+            <h1 class="display-4 text-success"><strong>Pokemon Island!</strong></h1>
+            <p class="lead">
+                This website fetch data from <a href="https://pokeapi.co/">PokeApi</a> each time it need to instantiate a new pokemon.<br/>
+                If you capture a pokemon, then it will be saved in our database.<br/>
+                <br/>
+                Try it now !
+            </p>
+            <hr class="my-4">
+            <p class="lead">
+                {% if is_granted('ROLE_USER') %}
+                    <p>Hello, try one of this functionalities. But remember, you will need 3 pokemons to enter in the tournament.</p>
+                    <p><a class="btn btn-success btn-lg" href="{{ path('adventure_index', {id: app.user.id}) }}">Let's go for adventure!</a></p>
+                    <p><a class="btn btn-secondary btn-lg disabled" href="#">Ready for tournament? [Under construction]</a></p>
+                {% else %}
+                    <p><a class="btn btn-success btn-lg" href="{{ path('app_login') }}">Log in!</a></p>
+                    <p><a class="btn btn-info btn-lg" href="{{ path('app_register') }}">Not subscribed yet?</a></p>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

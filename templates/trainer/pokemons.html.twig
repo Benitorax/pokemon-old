@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your pokemons{% endblock %}
+
+{% block body %}
+  <h1 class="text-secondary">Your pokemons</h1>
+
+  <table class="mt-5 table table-hover">
+    <thead>
+      <tr class="table-primary">
+        <th class="text-center" scope="col">#</th>
+        <th class="text-center" scope="col">Pokemon</th>
+        <th class="text-center" scope="col">Picture</th>
+        <th class="text-center" scope="col">Level</th>
+        <th class="text-center" scope="col">Habitat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr >
+        {% for pokemon in pokemons %}
+          <td class="text-center align-middle"><strong>{{ loop.index }}</strong></td>
+          <td class="text-center align-middle">
+            <p class="text-primary">
+              <strong>{{ pokemon.name|capitalize }}</strong>
+              <a href="{{ path('pokemon_evolve', {id: pokemon.id}) }}" class="badge badge-secondary">Evolve</a>
+            </p>
+          </td>
+          <td class="text-center align-middle"><img class="mw-10" src="{{ pokemon.spriteFrontUrl }}"></td>
+          <td class="text-center align-middle text-primary"><strong>{{ pokemon.level }}</strong></td>
+          <td class="text-center align-middle"><strong>{{ pokemon.habitat.name|capitalize }}</strong></td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}
