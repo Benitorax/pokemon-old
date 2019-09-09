@@ -17,10 +17,6 @@ class PokeApiManager
         $this->habitatApi = $habitatApi;
     }
 
-    public function getNextEvolution(Pokemon $pokemon) {
-        return $this->pokemonApi->getNextEvolution($pokemon);
-    }
-
     public function checkNextEvolution(Pokemon $pokemon) {
         return $this->pokemonApi->checkNextEvolution($pokemon);
     }

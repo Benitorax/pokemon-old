@@ -6,15 +6,12 @@ use App\Entity\Battle;
 use App\Entity\Habitat;
 use App\Entity\Pokemon;
 use App\Entity\BattleTeam;
-use App\Manager\PokemonManager;
 use App\Api\PokeApi\PokeApiManager;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\Common\Persistence\ObjectManager;
 
 abstract class AbstractBattleManager
 {
-    protected $pokemonManager;
-
     protected $manager;
 
     protected $pokeApiManager;
@@ -22,13 +19,11 @@ abstract class AbstractBattleManager
     protected $user;
 
     public function __construct(
-        PokemonManager $pokemonManager, 
         ObjectManager $manager, 
         PokeApiManager $pokeApiManager,
         Security $security
     )
     {
-        $this->pokemonManager = $pokemonManager;
         $this->manager = $manager;
         $this->pokeApiManager = $pokeApiManager;
         $this->user = $security->getUser();

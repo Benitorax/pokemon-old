@@ -42,58 +42,11 @@ class PokemonApi extends PokeApi
         return $pokemon;
     }
 
-    public function getNextEvolution(Pokemon $pokemon)
-    {
-        $data = $this->fetch('evolution-chain/'.$pokemon->getEvolutionChainId());
-        $data = $data['chain'];
-        $data = $this->lookForEvolution($pokemon, $data);
-
-        if($data)
-        {
-            return $pokemon = $this->hydrateEvolvedPokemon($pokemon, $data['idNext'], $data['level']);
-        }
-
-        return;
-    }
-
-    public function lookForEvolution(Pokemon $pokemon, $data)
-    {
-        if($data['evolves_to'])
-        {
-            $data = $data['evolves_to'][rand(
-                0, count($data['evolves_to'])-1
-            )];
-            $level = $data['evolution_details'][0]['min_level'];
-            $idNext = $this->getIdFromUrl($data['species']['url']);
-
-            if($idNext > 151) {
-                return false;
-            }
-
-            if(
-                (intval($idNext) < $pokemon->getApiId()
-                || intval($idNext) == $pokemon->getApiId())
-            )
-            {
-                $data = $this->lookForEvolution($pokemon, $data);
-
-                return $data;
-            }
-
-            return [
-                'level' => $level,
-                'idNext' => $idNext,
-            ];
-        }
-
-        return false;
-    }
-
     public function checkNextEvolution(Pokemon $pokemon)
     {
         $data = $this->fetch('evolution-chain/'.$pokemon->getEvolutionChainId());
         $data = $data['chain'];
-        $data = $this->lookForStrictEvolution($pokemon, $data);
+        $data = $this->lookForEvolution($pokemon, $data);
 
         if($data && $data['level'] <= $pokemon->getLevel())
         {
@@ -104,7 +57,7 @@ class PokemonApi extends PokeApi
         return;
     }
 
-    public function lookForStrictEvolution(Pokemon $pokemon, $data)
+    public function lookForEvolution(Pokemon $pokemon, $data)
     {
         if($data['evolves_to'])
         {
