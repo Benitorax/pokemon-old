@@ -94,7 +94,7 @@ class Pokemon
 
     public function setName(string $name): self
     {
-        $this->name = $name;
+        $this->name = ucfirst($name);
 
         return $this;
     }
@@ -107,6 +107,14 @@ class Pokemon
     public function setLevel(int $level): self
     {
         $this->level = $level;
+
+        return $this;
+    }
+
+    public function increaseLevel(int $level): self
+    {
+        $this->level += $level;
+        if($this->level > 100) { $this->level = 100; }
 
         return $this;
     }
@@ -231,6 +239,16 @@ class Pokemon
         return $this;
     }
 
+    public function decreaseHealthPoint(int $healthPoint): self
+    {
+        $this->healthPoint -= $healthPoint;
+        if($this->healthPoint <= 0) {
+            $this->healthPoint = 0;
+            $this->setIsSleep(true); 
+        }
+
+        return $this;
+    }
     public function getBattleTeam(): ?BattleTeam
     {
         return $this->battleTeam;

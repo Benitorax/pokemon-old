@@ -2,105 +2,44 @@
 
 namespace App\Manager;
 
-use App\Entity\User;
-use App\Entity\Battle;
-use App\Entity\Pokemon;
 use App\Entity\BattleTeam;
-use App\Manager\PokemonManager;
-use App\Api\PokeApi\PokeApiManager;
-use Symfony\Component\Security\Core\Security;
-use Doctrine\Common\Persistence\ObjectManager;
+use App\Manager\AbstractBattleManager;
 
-
-class BattleManager
+class BattleManager extends AbstractBattleManager
 {
-    private $pokemonManager;
-
-    private $manager;
-
-    private $pokeApiManager;
-
-    private $user;
-
-    public function __construct(
-        PokemonManager $pokemonManager, 
-        ObjectManager $manager, 
-        PokeApiManager $pokeApiManager,
-        Security $security
-    )
-    {
-        $this->pokemonManager = $pokemonManager;
-        $this->manager = $manager;
-        $this->pokeApiManager = $pokeApiManager;
-        $this->user = $security->getUser();
-    }
-
-    public function getCurrentBattle()
-    {
-        $playerTeam = $this->getPlayerTeam();
-
-        return $this->manager->getRepository(Battle::class)->findOneBy(['playerTeam' => $playerTeam]);
-    }
-
     public function createAdventureBattle()
     {
         $playerTeam = $this->getPlayerTeam();
         $playerTeam->setTrainer($this->user);
+
         $habitat = $this->pokeApiManager->getRandomHabitat();
+        $this->persistAndFlush($habitat);
+
         $opponentTeam = $this->createAdventureOpponentTeam($habitat);
-
-        $battle = new Battle();
-        $battle
-            ->setPlayerTeam($playerTeam)
-            ->setOpponentTeam($opponentTeam)
-            ->setArena($habitat)
-            ->setType('adventure');
-
-        $this->manager->persist($battle);
-        $this->manager->flush();
+        $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'adventure');
+        $this->persistAndFlush($battle);
 
         return $battle;
     }
 
     public function clearLastBattle()
     {
-        $playerTeam = $this->getPlayerTeam();
-        
-        if($battle = $this->manager->getRepository(Battle::class)
-                                   ->findOneBy(['playerTeam' => $playerTeam])
-        )
+        if($battle = $this->getCurrentBattle())
         {
-            $playerPokemons = $playerTeam->getPokemons();
+            $playerPokemons = $this->getPlayerTeam()->getPokemons();
             foreach($playerPokemons as $pokemon) {
                 $pokemon->setBattleTeam(null);
             }
 
-            $opponentTeam = $battle->getOpponentTeam();
-            $opponent = $opponentTeam->getTrainer();
-            $opponentPokemons = $opponentTeam->getPokemons()->toArray();        
+            $opponent = $this->getOpponentTeam()->getTrainer();
+            $opponentPokemons = $this->getOpponentTeam()->getPokemons()->toArray();        
             foreach($opponentPokemons as $oPokemon) {
                 $oPokemon->setBattleTeam(null);
             }
 
-            $this->manager->remove($battle);
-            $this->manager->flush();
-            
-            $this->manager->remove($opponent);
-            $this->manager->flush();
+            $this->removeAndFlush($battle);
+            $this->removeAndFlush($opponent);
         }
-    }
-
-    public function getPlayerTeam()
-    {
-        $playerTeam = $this->manager->getRepository(BattleTeam::class)->findOneBy(['trainer' => $this->user]);
-
-        if($playerTeam) {
-            return $playerTeam;
-        }
-
-        $team = new BattleTeam();
-
-        return $team->setTrainer($this->user);
     }
 
     public function createAdventureOpponentTeam($habitat)
@@ -117,21 +56,105 @@ class BattleManager
         return $team;
     }
 
+    /**
+     * Have to refactor when create battle for tournament
+     */
     public function addFighterSelected($idPokemon)
     {
-        $pokemon = $this->manager->getRepository(Pokemon::class)->find($idPokemon);
-        $this->getPlayerTeam()->setCurrentFighter($pokemon);
-        $this->getPlayerTeam()->addPokemon($pokemon);
-        $this->manager->persist($pokemon);   
-        $this->manager->flush();
+        $pokemon = $this->getDBPokemonFromId($idPokemon);     
+        $this->getPlayerTeam()->setCurrentFighter($pokemon)->addPokemon($pokemon);
+        $this->persistAndFlush($pokemon);
     }
 
-    public function createOpponent() {
-        $user = new User();
-        $user->setUsername('noname')
-             ->setPassword('unknown')
-             ->setEmail('unknown');
+    public function manageThrowPokeball() 
+    {
+        $result = 'impossible';
+        $user = $this->user;
 
-        return $user;
+        if($user->getPokeballs() > 0) {
+            $this->user->usePokeball();
+            $captureRate = $this->getOpponentFighter()->getCaptureRate();   
+            $hp = $this->getOpponentFighter()->getHealthPoint();
+            $result = 'failed';
+
+            if(rand(1,100) <= $captureRate * (115-$hp) / 100 ) {
+                $result = 'success';
+                $this->user->addPokemon($this->getOpponentFighter());
+            } 
+            
+            $this->manager->flush();
+
+            return $result;
+        }
+
+        return $result;
+    }
+
+    public function manageAttackOpponent() {
+        $opponentFighter = $this->getOpponentFighter();
+        $playerLevel = $this->getPlayerFighter()->getLevel();
+        $damage = round(rand(5,20) * (100 + $playerLevel) / 100);
+        $opponentFighter->decreaseHealthPoint($damage);
+
+        $this->manager->flush();
+
+        return $damage;
+    }
+
+    public function manageOpponentAttack() {
+        $playerFighter = $this->getPlayerFighter();
+        $opponentLevel = $this->getOpponentFighter()->getLevel();
+        $damage = intval(round(rand(5,20) * (100 + $opponentLevel) / 100));
+        $playerFighter->decreaseHealthPoint($damage);
+
+        $this->manager->flush();
+
+        return $damage;
+    }
+
+    public function manageLeave() {
+        $isSleep = $this->getOpponentFighter()->getIsSleep();
+        if($isSleep) { return true; }
+
+        $hp = $this->getOpponentFighter()->getHealthPoint();
+        
+        if($hp > 70) {
+            return rand(1,100) < 30;
+        } 
+        elseif($hp >= 30) {
+            return rand(1,100) < 50;
+        } 
+        else {
+            return rand(1,100) < 70;
+        }
+    }
+
+    public function manageLevelUpForTournament() {
+    }
+
+    public function manageLevelUpForAdventure() {
+        $pokemon = $this->getPlayerFighter();
+        $level = $pokemon->getLevel();
+        $name = $pokemon->getName();
+        $pokemon->increaseLevel($increasedLevel = rand(10,22));
+        $newPokemon = $this->pokeApiManager->checkNextEvolution($pokemon);
+
+        if($newPokemon) {
+            $this->manager->flush();
+
+            return [
+                'hasEvolved' => true,
+                'name' => $name,
+                'newName' => $newPokemon->getName(),
+                'increasedLevel' => $newPokemon->getLevel() - $level
+            ];
+        }
+        $this->manager->flush();
+
+        return [
+            'hasEvolved' => false,
+            'name' => $name,
+            'increasedLevel' => $increasedLevel
+        ];
     }
 }

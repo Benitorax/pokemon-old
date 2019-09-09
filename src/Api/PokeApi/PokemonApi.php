@@ -42,14 +42,15 @@ class PokemonApi extends PokeApi
         return $pokemon;
     }
 
-    public function getNextEvolution(Pokemon $pokemon)
+    public function checkNextEvolution(Pokemon $pokemon)
     {
         $data = $this->fetch('evolution-chain/'.$pokemon->getEvolutionChainId());
         $data = $data['chain'];
         $data = $this->lookForEvolution($pokemon, $data);
 
-        if($data)
+        if($data && $data['level'] <= $pokemon->getLevel())
         {
+            if(!$data['level']) { $data['level'] = $pokemon->getLevel(); }
             return $pokemon = $this->hydrateEvolvedPokemon($pokemon, $data['idNext'], $data['level']);
         }
 
@@ -66,9 +67,13 @@ class PokemonApi extends PokeApi
             $level = $data['evolution_details'][0]['min_level'];
             $idNext = $this->getIdFromUrl($data['species']['url']);
 
+            if($idNext > 151) {
+                return false;
+            }
+
             if(
-                intval($idNext) < $pokemon->getApiId()
-                || intval($idNext) == $pokemon->getApiId()
+                (intval($idNext) < $pokemon->getApiId()
+                || intval($idNext) == $pokemon->getApiId())
             )
             {
                 $data = $this->lookForEvolution($pokemon, $data);

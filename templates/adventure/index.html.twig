@@ -16,7 +16,7 @@
         </div>
         <div class="row">
             <div style="min-height: 300px;" class="col-sm-12 mb-2 border border-secondary rounded-lg">
-                <div>
+                <div class="mt-2">
                     {% if opponent %}
                         <div class="text-right"><strong>{{ opponent.currentFighter.name|capitalize }}</strong></div>
                         <div class="progress">
@@ -25,7 +25,12 @@
                         <div class="mr-4"><img class="float-right" src="{{ opponent.currentFighter.spriteFrontUrl }}"></div>
                     {% endif %}
                 </div><br><br><br><br>
-                <div>
+                {% if centerImageUrl is defined %}
+                    <div class="row">
+                        <img class="mx-auto" src="{{ centerImageUrl }}">
+                    </div>
+                {% endif %}
+                <div class="mb-3">
                     {% if player and player.currentFighter %}
                         <div class="ml-4"><img src="{{ player.currentFighter.spriteBackUrl }}"></div>
                         <div class="text-left"><strong>{{ player.currentFighter.name|capitalize }}</strong></div>
@@ -36,32 +41,8 @@
                 </div>
             </div>
         </div>
-        {{ form_start(form, {attr: {class: 'adventure-form'} }) }}
-        <div class="row justify-content-center">
-            <div>       
-                <div class="btn-group" role="group" aria-label="Basic example">
-                {% if player and player.currentFighter  %}
-                    {{ form_widget(form.travel, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.attack) }}
-                    {{ form_widget(form.throwPokeball) }}
-                    {{ form_widget(form.selectPokemon, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.submitPokemon, {'attr': {'style':'display:none;'}}) }}
-                {% elseif opponent %}
-                    {{ form_widget(form.travel, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.attack, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.throwPokeball, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.selectPokemon) }}
-                    {{ form_widget(form.submitPokemon) }}
-                {% else %}
-                    {{ form_widget(form.travel) }}
-                    {{ form_widget(form.attack, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.throwPokeball, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.selectPokemon, {'attr': {'style':'display:none;'}}) }}
-                    {{ form_widget(form.submitPokemon, {'attr': {'style':'display:none;'}}) }}
-                {% endif %}
-                </div>
-            </div>
-        </div>
+        {{ form_start(form, {attr: {class: 'adventure-form form-inline justify-content-center'} }) }}
+        {{ form_widget(form, {attr: {class: 'row'} }) }}
         {{ form_end(form) }}
     </div>
 </div>

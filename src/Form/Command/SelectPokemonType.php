@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Command;
 
 use App\Repository\PokemonRepository;
 use Symfony\Component\Form\AbstractType;
@@ -8,10 +8,9 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class AdventureCommandType extends AbstractType
+class SelectPokemonType extends AbstractType
 {
     private $user;
 
@@ -26,37 +25,20 @@ class AdventureCommandType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('travel', SubmitType::class, [
-                'label' => 'Travel around the world',
-                'attr' => [
-                    'class' => "btn btn-secondary"
-                ]
-            ])
-            ->add('attack', SubmitType::class, [
-                'label' => 'Attack',
-                'attr' => [
-                    'class' => "btn btn-success"
-                ]
-            ])
-            ->add('throwPokeball', SubmitType::class, [
-                'label' => 'Throw pokeball',
-                'attr' => [
-                    'class' => "btn btn-info"
-                ]
-            ])
             ->add('selectPokemon', ChoiceType::class, [
-                'label' => 'Select your pokemon',
+                'label' => false,
                 'attr' => [
-                    'class' => "btn btn-info"
+                    'class' => "btn btn-outline-info"
                 ],
                 'choices'  => $this->getPokemonsChoice(),
             ])
             ->add('submitPokemon', SubmitType::class, [
                 'label' => 'SELECT',
                 'attr' => [
-                    'class' => "btn btn-success"
+                    'class' => "btn btn-outline-success"
                 ]
-            ]);
+            ])
+        ;
     }
 
     public function getPokemonsChoice() 

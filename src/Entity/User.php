@@ -162,9 +162,16 @@ class User implements UserInterface
         return $this->pokeballs;
     }
 
-    public function setPokeballs(int $pokeballs): self
+    public function addPokeballs(int $pokeballs): self
     {
-        $this->pokeballs = $pokeballs;
+        $this->pokeballs += $pokeballs;
+
+        return $this;
+    }
+    
+    public function usePokeball(): self
+    {
+        $this->pokeballs--;
 
         return $this;
     }
