@@ -30,8 +30,10 @@ class PokemonApi extends PokeApi
             ->setEvolutionChainId($this->getEvolutionChainId($id));
     }
 
-    public function hydrateEvolvedPokemon(Pokemon $pokemon, int $id, int $level)
+    public function hydrateEvolvedPokemon(Pokemon $pokemon, int $id, ?int $level)
     {
+        $level = $level ?? 30;
+
         $pokemon->setApiId($id)
             ->setName($this->getName($id))
             ->setLevel($level)
@@ -66,9 +68,13 @@ class PokemonApi extends PokeApi
             $level = $data['evolution_details'][0]['min_level'];
             $idNext = $this->getIdFromUrl($data['species']['url']);
 
+            if($idNext > 151) {
+                return false;
+            }
+
             if(
-                intval($idNext) < $pokemon->getApiId()
-                || intval($idNext) == $pokemon->getApiId()
+                (intval($idNext) < $pokemon->getApiId()
+                || intval($idNext) == $pokemon->getApiId())
             )
             {
                 $data = $this->lookForEvolution($pokemon, $data);

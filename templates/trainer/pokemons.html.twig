@@ -16,8 +16,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr >
-        {% for pokemon in pokemons %}
+      {% for pokemon in pokemons %}
+        <tr >
           <td class="text-center align-middle"><strong>{{ loop.index }}</strong></td>
           <td class="text-center align-middle">
             <p class="text-primary">
@@ -28,8 +28,8 @@
           <td class="text-center align-middle"><img class="mw-10" src="{{ pokemon.spriteFrontUrl }}"></td>
           <td class="text-center align-middle text-primary"><strong>{{ pokemon.level }}</strong></td>
           <td class="text-center align-middle"><strong>{{ pokemon.habitat.name|capitalize }}</strong></td>
-        {% endfor %}
-      </tr>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
 {% endblock %}

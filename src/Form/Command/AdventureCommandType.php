@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Command;
 
 use App\Repository\PokemonRepository;
 use Symfony\Component\Form\AbstractType;
@@ -8,7 +8,6 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class AdventureCommandType extends AbstractType

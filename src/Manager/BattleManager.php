@@ -11,7 +11,7 @@ class BattleManager extends AbstractBattleManager
     {
         $playerTeam = $this->getPlayerTeam();
         $playerTeam->setTrainer($this->user);
-        
+
         $habitat = $this->pokeApiManager->getRandomHabitat();
         $this->persistAndFlush($habitat);
 
@@ -66,8 +66,26 @@ class BattleManager extends AbstractBattleManager
         $this->persistAndFlush($pokemon);
     }
 
-    public function manageThrowPokeball() {
-        $this->user->usePokeball();
+    public function manageThrowPokeball() 
+    {
+        $result = 'impossible';
+        $user = $this->user;
 
+        if($user->getPokeballs() > 0) {
+            $this->user->usePokeball();
+            $captureRate = $this->getOpponentFighter()->getCaptureRate();    
+            $result = 'failed';
+
+            if(rand(1,100) <= $captureRate) {
+                $result = 'success';
+                $this->user->addPokemon($this->getOpponentFighter());
+            } 
+            
+            $this->manager->flush();
+
+            return $result;
+        }
+
+        return $result;
     }
 }

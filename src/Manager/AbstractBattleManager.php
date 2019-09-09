@@ -98,4 +98,12 @@ abstract class AbstractBattleManager
              ->setPassword('unknown')
              ->setEmail('unknown');
     }
+
+    public function getPlayerFighter() {
+        return $this->getPlayerTeam()->getCurrentFighter();
+    }
+
+    public function getOpponentFighter() {
+        return $this->getOpponentTeam()->getCurrentFighter();
+    }
 }
