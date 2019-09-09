@@ -21,6 +21,10 @@ class PokeApiManager
         return $this->pokemonApi->getNextEvolution($pokemon);
     }
 
+    public function checkNextEvolution(Pokemon $pokemon) {
+        return $this->pokemonApi->checkNextEvolution($pokemon);
+    }
+
     public function getNewPokemon($pokemonId) {
         return $this->pokemonApi->getNewPokemon($pokemonId);
     }

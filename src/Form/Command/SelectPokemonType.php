@@ -37,7 +37,8 @@ class SelectPokemonType extends AbstractType
                 'attr' => [
                     'class' => "btn btn-outline-success"
                 ]
-            ]);
+            ])
+        ;
     }
 
     public function getPokemonsChoice() 

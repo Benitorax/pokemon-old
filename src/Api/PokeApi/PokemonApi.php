@@ -30,10 +30,8 @@ class PokemonApi extends PokeApi
             ->setEvolutionChainId($this->getEvolutionChainId($id));
     }
 
-    public function hydrateEvolvedPokemon(Pokemon $pokemon, int $id, ?int $level)
+    public function hydrateEvolvedPokemon(Pokemon $pokemon, int $id, int $level)
     {
-        $level = $level ?? 30;
-
         $pokemon->setApiId($id)
             ->setName($this->getName($id))
             ->setLevel($level)
@@ -59,6 +57,54 @@ class PokemonApi extends PokeApi
     }
 
     public function lookForEvolution(Pokemon $pokemon, $data)
+    {
+        if($data['evolves_to'])
+        {
+            $data = $data['evolves_to'][rand(
+                0, count($data['evolves_to'])-1
+            )];
+            $level = $data['evolution_details'][0]['min_level'];
+            $idNext = $this->getIdFromUrl($data['species']['url']);
+
+            if($idNext > 151) {
+                return false;
+            }
+
+            if(
+                (intval($idNext) < $pokemon->getApiId()
+                || intval($idNext) == $pokemon->getApiId())
+            )
+            {
+                $data = $this->lookForEvolution($pokemon, $data);
+
+                return $data;
+            }
+
+            return [
+                'level' => $level,
+                'idNext' => $idNext,
+            ];
+        }
+
+        return false;
+    }
+
+    public function checkNextEvolution(Pokemon $pokemon)
+    {
+        $data = $this->fetch('evolution-chain/'.$pokemon->getEvolutionChainId());
+        $data = $data['chain'];
+        $data = $this->lookForStrictEvolution($pokemon, $data);
+
+        if($data && $data['level'] <= $pokemon->getLevel())
+        {
+            if(!$data['level']) { $data['level'] = $pokemon->getLevel(); }
+            return $pokemon = $this->hydrateEvolvedPokemon($pokemon, $data['idNext'], $data['level']);
+        }
+
+        return;
+    }
+
+    public function lookForStrictEvolution(Pokemon $pokemon, $data)
     {
         if($data['evolves_to'])
         {

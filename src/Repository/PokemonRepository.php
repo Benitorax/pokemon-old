@@ -52,8 +52,9 @@ class PokemonRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.trainer = :val')
+            ->andWhere('p.isSleep = false')
             ->setParameter('val', $user)
-            ->orderBy('p.apiId', 'ASC')
+            ->orderBy('p.name', 'ASC')
             ->getQuery()
             ->getResult()
         ;

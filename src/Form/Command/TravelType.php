@@ -13,7 +13,7 @@ class TravelType extends AbstractType
     {
         $builder
             ->add('travel', SubmitType::class, [
-                'label' => 'Travel around the world',
+                'label' => 'Travel around',
                 'attr' => [
                     'class' => "btn btn-outline-secondary"
                 ]
