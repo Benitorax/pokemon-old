@@ -71,7 +71,7 @@ class BattleManager extends AbstractBattleManager
         $result = 'impossible';
         $user = $this->user;
 
-        if($user->getPokeballs() > 0) {
+        if($user->getPokeball() > 0) {
             $this->user->usePokeball();
             $captureRate = $this->getOpponentFighter()->getCaptureRate();   
             $hp = $this->getOpponentFighter()->getHealthPoint();

@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class InfirmaryType extends AbstractType
+class DonateType extends AbstractType
 {
     private $user;
 
@@ -25,16 +25,9 @@ class InfirmaryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('restorePokemon', SubmitType::class, [
-                'label' => 'Restore your pokemons',
-                'attr' => [
-                    'class' => "btn btn-success"
-                ]
-            ])
             ->add('selectPokemon', ChoiceType::class, [
                 'label' => false,
                 'placeholder' => 'Choose a pokemon',
-                'required' => false,
                 'attr' => [
                     'class' => "select-custom form-control"
                 ],
