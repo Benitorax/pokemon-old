@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdventureController extends AbstractController
 {
     /**
-     * @Route("/adventure/", name="adventure_index")
+     * @Route("/adventure/", name="adventure")
      */
     public function index(Request $request, AdventureHandler $adventureHandler)
     {

@@ -52,7 +52,30 @@ class PokemonRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.trainer = :val')
+            ->setParameter('val', $user)
+            ->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findReadyPokemonsByTrainer($user)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.trainer = :val')
             ->andWhere('p.isSleep = false')
+            ->setParameter('val', $user)
+            ->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findSleepingPokemonsByTrainer($user)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.trainer = :val')
+            ->andWhere('p.isSleep = true')
             ->setParameter('val', $user)
             ->orderBy('p.name', 'ASC')
             ->getQuery()

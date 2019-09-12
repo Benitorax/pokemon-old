@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Command;
+namespace App\Form;
 
 use App\Repository\PokemonRepository;
 use Symfony\Component\Form\AbstractType;
@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class SelectPokemonType extends AbstractType
+class InfirmaryType extends AbstractType
 {
     private $user;
 
@@ -25,17 +25,23 @@ class SelectPokemonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('restorePokemon', SubmitType::class, [
+                'label' => 'Restore your pokemons',
+                'attr' => [
+                    'class' => "btn btn-success"
+                ]
+            ])
             ->add('selectPokemon', ChoiceType::class, [
                 'label' => false,
                 'attr' => [
-                    'class' => "btn btn-outline-info"
+                    'class' => "select-custom form-control"
                 ],
                 'choices'  => $this->getPokemonsChoice(),
             ])
-            ->add('submitPokemon', SubmitType::class, [
-                'label' => 'SELECT',
+            ->add('donatePokemon', SubmitType::class, [
+                'label' => 'Donate',
                 'attr' => [
-                    'class' => "btn btn-outline-success"
+                    'class' => "btn btn-warning"
                 ]
             ])
         ;
@@ -43,7 +49,7 @@ class SelectPokemonType extends AbstractType
 
     public function getPokemonsChoice() 
     {
-        $pokemons = $this->pokemonRepository->findReadyPokemonsByTrainer($this->user);
+        $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
         $pokemonsList = [];
         foreach($pokemons as $pokemon)
         {
