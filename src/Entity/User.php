@@ -48,7 +48,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $pokeballs = 5;
+    private $pokeball = 5;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pokemon", mappedBy="trainer", cascade={"persist"}, orphanRemoval=true)
@@ -176,21 +176,21 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPokeballs(): ?int
+    public function getPokeball(): ?int
     {
-        return $this->pokeballs;
+        return $this->pokeball;
     }
 
-    public function addPokeball(int $pokeballs): self
+    public function addPokeball(int $pokeball): self
     {
-        $this->pokeballs += $pokeballs;
+        $this->pokeball += $pokeball;
 
         return $this;
     }
     
     public function usePokeball(): self
     {
-        $this->pokeballs--;
+        $this->pokeball--;
 
         return $this;
     }

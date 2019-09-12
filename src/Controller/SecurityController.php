@@ -52,6 +52,11 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHandler->handle($form->getData());
 
+            $this->addFlash(
+                'success',
+                'You have registered with success!'
+            );
+
             return $this->redirectToRoute('app_index', [
                 
             ]);
