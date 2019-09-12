@@ -21,13 +21,16 @@
                     </li>
                     {% if is_granted('ROLE_USER') %}
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_profile' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('trainer_profile', {id: app.user.id}) }}">Profile</a>
+                            <a class="nav-link" href="{{ path('trainer_profile') }}">Profile</a>
                         </li>
-                        <li class="nav-item{% if app.request.get('_route') == 'adventure_index' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('adventure_index', {id: app.user.id}) }}">Adventure</a>
+                        <li class="nav-item{% if app.request.get('_route') == 'adventure' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('adventure') }}">Adventure</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Tournament</a>
+                        <li class="nav-item{% if app.request.get('_route') == 'tournament' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('tournament') }}">Tournament</a>
+                        </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'city' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('city') }}">City</a>
                         </li>
                     {% endif %}
                     <li class="nav-item dropdown">
@@ -48,6 +51,16 @@
                 </div>
             </nav>
         </header>
+        
+        <div>
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
 
         <div class="container my-xl-5">
             {% block body %}{% endblock %}

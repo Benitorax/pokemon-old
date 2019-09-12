@@ -43,7 +43,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $pokedollars = 500;
+    private $pokedollar = 500;
 
     /**
      * @ORM\Column(type="integer")
@@ -54,6 +54,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Pokemon", mappedBy="trainer", cascade={"persist"}, orphanRemoval=true)
      */
     private $pokemons;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $healthPotion = 2;
 
     public function __construct()
     {
@@ -145,14 +150,28 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getPokedollars(): ?int
+    public function getPokedollar(): ?int
     {
-        return $this->pokedollars;
+        return $this->pokedollar;
     }
 
-    public function setPokedollars(int $pokedollars): self
+    public function setPokedollar(int $pokedollar): self
     {
-        $this->pokedollars = $pokedollars;
+        $this->pokedollar = $pokedollar;
+
+        return $this;
+    }
+
+    public function increasePokedollar(int $pokedollar): self
+    {
+        $this->pokedollar += $pokedollar;
+
+        return $this;
+    }
+
+    public function decreasePokedollar(int $pokedollar): self
+    {
+        $this->pokedollar -= $pokedollar;
 
         return $this;
     }
@@ -162,7 +181,7 @@ class User implements UserInterface
         return $this->pokeballs;
     }
 
-    public function addPokeballs(int $pokeballs): self
+    public function addPokeball(int $pokeballs): self
     {
         $this->pokeballs += $pokeballs;
 
@@ -203,6 +222,25 @@ class User implements UserInterface
                 $pokemon->setTrainer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getHealthPotion(): ?int
+    {
+        return $this->healthPotion;
+    }
+
+    public function setHealthPotion(int $healthPotion): self
+    {
+        $this->healthPotion = $healthPotion;
+
+        return $this;
+    }
+
+    public function addHealthPotion(int $healthPotion): self
+    {
+        $this->healthPotion += $healthPotion;
 
         return $this;
     }
