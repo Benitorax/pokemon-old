@@ -39,7 +39,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         {% if is_granted('ROLE_USER') %}
-                            <a class="dropdown-item disabled" href="#">Account</a>
+                            <a class="dropdown-item" href="{{ path('app_account') }}">Account</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
                         {% else %}
                             <a class="dropdown-item" href="{{ path('app_login') }}">Log in</a>
