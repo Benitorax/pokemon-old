@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete your account{% endblock %}
+
+{% set user = app.user %}
+
+{% form_theme deleteAccountForm 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+    <div class="card border-dark">
+        <div class="card-header bg-warning">
+            <h2>Are you sure to delete your account?</h2>
+        </div>
+        <div class="card-body bg-light">
+            {{ form_start(deleteAccountForm) }}
+            <div class="row justify-content-center">
+                <div class="mr-5">{{ form_widget(deleteAccountForm) }}</div>
+                <div class="ml-5">
+                    <a href="{{ path('app_account') }}"><button type="button" class="btn btn-secondary btn-lg">No, go back</button>
+                </div>
+            {{ form_end(deleteAccountForm) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Form\DeleteAccountType;
 use App\Form\ModifyPasswordFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AppController extends AbstractController
 {
@@ -37,7 +39,7 @@ class AppController extends AbstractController
         ]);
     }
 
-        /**
+    /**
      * @Route("/account/password", name="app_modify_password")
      */
     public function modifyPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, ObjectManager $manager)
@@ -67,6 +69,29 @@ class AppController extends AbstractController
 
         return $this->render('app/modify_password.html.twig', [
             'passwordForm' => $passwordForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/account/delete", name="app_account_delete")
+     */
+    public function deleteAccount(Request $request, ObjectManager $manager, TokenStorageInterface $tokenStorage)
+    {
+        $deleteAccountForm = $this->createForm(DeleteAccountType::class);
+        $deleteAccountForm->handleRequest($request);
+
+        if($deleteAccountForm->isSubmitted() && $deleteAccountForm->isValid()) {
+            $manager->remove($this->getUser());
+            $manager->flush();
+            $tokenStorage->setToken(null);
+            $request->getSession()->invalidate();
+            $this->addFlash('success', 'Your account has been deleted.');
+
+            return $this->redirectToRoute('app_index');
+        }
+
+        return $this->render('app/deleteAccount.html.twig', [
+            'deleteAccountForm' => $deleteAccountForm->createView()
         ]);
     }
 }

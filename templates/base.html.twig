@@ -53,13 +53,15 @@
         </header>
         
         <div>
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="container rounded w-100 text-center py-3 my-3 border border-{{ label }} text-{{ label }} bg-light font-weight-bold">
-                        {{ message }}
-                    </div>
+            {% if app.request.hasPreviousSession %}
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="container rounded w-100 text-center py-3 my-3 border border-{{ label }} text-{{ label }} bg-light font-weight-bold">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
+            {% endif %}
         </div>
 
         <div class="container my-xl-5">

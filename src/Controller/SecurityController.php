@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\RegisterType;
 use App\Handler\UserHandler;
+use App\Mailer\CustomMailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,10 +41,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(
-        Request $request, 
-        UserHandler $userHandler
-    )
+    public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer)
     {
         $form = $this->createForm(RegisterType::class);
 
@@ -51,15 +49,10 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHandler->handle($form->getData());
+            $mailer->sendMailAfterRegistration($user);
+            $this->addFlash('success','Congrats, you have registered with success!');
 
-            $this->addFlash(
-                'success',
-                'You have registered with success!'
-            );
-
-            return $this->redirectToRoute('app_index', [
-                
-            ]);
+            return $this->redirectToRoute('app_index');
         }
 
         return $this->render('security/register.html.twig', [
