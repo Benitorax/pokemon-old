@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer)
+    public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer, \Swift_Mailer $smailer)
     {
         $form = $this->createForm(RegisterType::class);
 
@@ -50,6 +50,18 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHandler->handle($form->getData());
             $mailer->sendMailAfterRegistration($user);
+            /*$message = (new \Swift_Message('Confirm your registration'))
+                ->setFrom('send@example.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        // templates/hello/email.txt.twig
+                        'email/after_registration.html.twig',
+                        ['username' => $user->getUsername()]
+                    )
+                )
+            ;
+            $smailer->send($message);*/
             $this->addFlash('success','Congrats, you have registered with success!');
 
             return $this->redirectToRoute('app_index');

@@ -2,7 +2,7 @@
 namespace App\Mailer;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Twig\Environment;
+use \Twig\Environment;
 
 class CustomMailer
 {
@@ -23,7 +23,8 @@ class CustomMailer
                 $this->twig->render(
                     // templates/hello/email.txt.twig
                     'email/after_registration.html.twig',
-                    ['username' => $user->getUsername()]
+                    ['username' => $user->getUsername()],
+                    'text/html'
                 )
             )
         ;
