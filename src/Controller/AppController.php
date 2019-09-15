@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Form\DeleteAccountType;
-use App\Form\ModifyPasswordFormType;
+use App\Form\ModifyPasswordType;
+use App\Entity\ModifyPasswordDTO;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,26 +45,24 @@ class AppController extends AbstractController
      */
     public function modifyPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, ObjectManager $manager)
     {
-        $passwordForm = $this->createForm(ModifyPasswordFormType::class);
+        $passwordForm = $this->createForm(ModifyPasswordType::class);
         $passwordForm->handleRequest($request);
 
-        if($passwordForm->isSubmitted()) {
-            if($passwordForm->isValid()) {
-                $data = $passwordForm->getData();
-                $user = $this->getUser();
-    
-                if($passwordEncoder->isPasswordValid($user, $data['password'])) {
-                    $encodedPassword = $passwordEncoder->encodePassword($user, $data['newPassword']);
+        if($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+            /** @var ModifyPasswordDTO $data */
+            $data = $passwordForm->getData();
+            $user = $this->getUser();
+
+            if($passwordEncoder->isPasswordValid($user, $data->getPassword())) {
+                if($data->getPassword() === $data->getNewPassword()) {
+                    $this->addFlash('danger', 'Your new password has to be different from your actual password.');
+                } else {
+                    $encodedPassword = $passwordEncoder->encodePassword($user, $data->getNewPassword());
                     $user->setPassword($encodedPassword);
                     $manager->flush();
                     $this->addFlash('success', 'Your password has been modified.');
-                    return $this->redirectToRoute('app_account');
-                } else {
-                    $this->addFlash('danger', 'Password invalid.');
+                    return $this->redirectToRoute('app_account');    
                 }
-    
-            } else {
-                $this->addFlash('danger', 'The new password doesn\'t match in both fields.');
             }
         }
 

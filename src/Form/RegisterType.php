@@ -2,14 +2,15 @@
 
 namespace App\Form;
 
+use App\Entity\RegisterUserDTO;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class RegisterType extends AbstractType
 {
@@ -18,11 +19,11 @@ class RegisterType extends AbstractType
         $builder
             ->add('username', TextType::class, [
                 //'attr' => ['class' => 'Username'],
-                'required' => true,
+                'required' => true
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                //'error_bubbling' => 'The password fields must match.',
+                'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => true,
                 'first_options'  => ['label' => 'Password'],
@@ -32,7 +33,7 @@ class RegisterType extends AbstractType
                 'attr' => ['class' => 'Username'],
                 'required' => true,
             ])
-            ->add('pokemon', ChoiceType::class, [
+            ->add('pokemonApiId', ChoiceType::class, [
                 'choices'  => [
                     'Bulbasaur' => 1,
                     'Charmander' => 4,
@@ -52,6 +53,7 @@ class RegisterType extends AbstractType
     {
         $resolver->setDefaults([
             // Configure your form options here
+            'data_class' => RegisterUserDTO::class
         ]);
     }
 }

@@ -62,6 +62,21 @@ class User implements UserInterface
      */
     private $healthPotion = 2;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActivated = false;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="uuid", nullable=true)
+     */
+    private $token;
+
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
@@ -243,6 +258,42 @@ class User implements UserInterface
     public function addHealthPotion(int $healthPotion): self
     {
         $this->healthPotion += $healthPotion;
+
+        return $this;
+    }
+
+    public function getIsActivated(): ?bool
+    {
+        return $this->isActivated;
+    }
+
+    public function setIsActivated(bool $isActivated): self
+    {
+        $this->isActivated = $isActivated;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    public function setToken($token): self
+    {
+        $this->token = $token;
 
         return $this;
     }

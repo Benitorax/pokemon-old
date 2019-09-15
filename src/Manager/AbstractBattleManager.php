@@ -91,7 +91,8 @@ abstract class AbstractBattleManager
         
         return $user->setUsername($name)
              ->setPassword('unknown')
-             ->setEmail('unknown');
+             ->setEmail('unknown')
+             ->setCreatedAt(new \DateTime('now'));
     }
 
     public function getPlayerFighter() {
