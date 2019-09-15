@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Account{% endblock %}
+
+{% set user = app.user %}
+
+{% block body %}
+    <div class="row">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="row">Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">E-mail</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Password</th>
+                    <td><a href="{{ path('app_modify_password') }}">Modify</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="w-100 font-weight-light text-right"><a class="text-danger" href="{{ path('app_account_delete') }}">Delete your account</a></p>
+    </div>
+{% endblock %}

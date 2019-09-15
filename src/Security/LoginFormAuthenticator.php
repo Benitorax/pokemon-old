@@ -76,6 +76,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         if (!$user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Email could not be found.');
+        } elseif(!$user->getIsActivated()) {
+            // fail authentication with a custom error
+            throw new CustomUserMessageAuthenticationException('You need to confirm your email address. Check your mailbox.');
         }
 
         return $user;

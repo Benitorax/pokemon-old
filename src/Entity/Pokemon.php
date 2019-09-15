@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PokemonRepository")
@@ -11,8 +13,9 @@ class Pokemon
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
     private $id;
 
@@ -82,7 +85,7 @@ class Pokemon
      */
     private $battleTeam;
 
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -208,7 +211,7 @@ class Pokemon
         return $this->trainer;
     }
 
-    public function setTrainer(?User $trainer): self
+    public function setTrainer(?UserInterface $trainer): self
     {
         $this->trainer = $trainer;
 

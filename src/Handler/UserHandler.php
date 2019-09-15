@@ -3,6 +3,7 @@
 namespace App\Handler;
 
 use App\Entity\User;
+use App\Entity\RegisterUserDTO;
 use App\Api\PokeApi\PokeApiManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -37,18 +38,28 @@ class UserHandler
 
     public function createUserWithFirstPokemon($data) 
     {
-        $pokemon = $this->pokeApiManager->getNewPokemon($data['pokemon']);
+        /** @var RegisterUserDTO $data */
+        $pokemon = $this->pokeApiManager->getNewPokemon($data->getPokemonApiId());
 
         $user = new User();
-        $user->setUsername($data['username'])
+        $user->setUsername($data->getUsername())
             ->setPassword($this->encoder->encodePassword(
                 $user,
-                $data['password']
+                $data->getPassword()
             ))
-            ->setEmail($data['email'])
+            ->setEmail($data->getEmail())
             ->addPokemon($pokemon)
+            ->setCreatedAt(new \DateTime('now'))
         ;
 
         return $user;
+    }
+
+    public function modifyPassword($user, $newPassword) {
+        $user->setPassword($this->encoder->encodePassword(
+            $user,
+            $newPassword
+        ));
+        $this->manager->flush();
     }
 }
