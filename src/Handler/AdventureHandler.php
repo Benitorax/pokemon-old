@@ -30,14 +30,18 @@ class AdventureHandler
         $command = $request->request->keys()[0];
         $form = $this->commandManager->createFormByCommand($command);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            if($battle = $this->battleManager->getCurrentBattle()) {
+                if($battle->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
+                {
+                    return $this->handleNext();
+                }
+            }
             return $this->handle($form);
         }
 
         return $this->handleTravel();
     }
-
 
     public function handle($form) 
     {
@@ -218,9 +222,8 @@ class AdventureHandler
             $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
             $this->clear();
         } else {
-            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". 
-                          $playerFighter->getName() ."</strong>"; 
-            $messages[] = "which has been injured (-".$damage." HP).";
+            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
+            $messages[] = "It inflicts ".$damage." points of damage.";
         }
 
         return [

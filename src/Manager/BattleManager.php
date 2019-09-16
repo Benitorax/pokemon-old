@@ -91,6 +91,7 @@ class BattleManager extends AbstractBattleManager
     }
 
     public function manageAttackOpponent() {
+        $this->getCurrentBattle()->setTurn('opponent');
         $opponentFighter = $this->getOpponentFighter();
         $playerLevel = $this->getPlayerFighter()->getLevel();
         $damage = round(rand(5,20) * (100 + $playerLevel) / 100);
@@ -163,6 +164,7 @@ class BattleManager extends AbstractBattleManager
 
     public function manageDamagePlayerFighter()
     {
+        $this->getCurrentBattle()->setTurn('player');
         $playerFighter = $this->getPlayerFighter();
         $opponentLevel = $this->getOpponentFighter()->getLevel();
         $hp = $playerFighter->getHealthPoint();

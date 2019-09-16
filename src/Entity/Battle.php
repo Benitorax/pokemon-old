@@ -41,6 +41,11 @@ class Battle
      */
     private $opponentTeam;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $turn = 'player';
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -91,6 +96,20 @@ class Battle
     {
         $this->opponentTeam = $opponentTeam;
 
+        return $this;
+    }
+
+    public function getTurn(): ?string
+    {
+        return $this->turn;
+    }
+
+    public function setTurn(string $turn): self
+    {
+        if(in_array($turn, ['player', 'opponent'])) {
+            $this->turn = $turn;
+        }
+        
         return $this;
     }
 }
