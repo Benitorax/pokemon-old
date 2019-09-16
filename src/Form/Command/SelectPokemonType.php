@@ -25,14 +25,14 @@ class SelectPokemonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('selectPokemon', ChoiceType::class, [
+            ->add('choicePokemon', ChoiceType::class, [
                 'label' => false,
                 'attr' => [
                     'class' => "btn btn-outline-info"
                 ],
                 'choices'  => $this->getPokemonsChoice(),
             ])
-            ->add('submitPokemon', SubmitType::class, [
+            ->add('selectPokemon', SubmitType::class, [
                 'label' => 'SELECT',
                 'attr' => [
                     'class' => "btn btn-outline-success"

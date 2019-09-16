@@ -60,7 +60,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $healthPotion = 2;
+    private $healthPotion = 5;
 
     /**
      * @ORM\Column(type="boolean")
@@ -251,6 +251,15 @@ class User implements UserInterface
     public function setHealthPotion(int $healthPotion): self
     {
         $this->healthPotion = $healthPotion;
+
+        return $this;
+    }
+
+    public function useHealthPotion(): self
+    {
+        if($this->healthPotion >= 1) {
+            $this->healthPotion -= 1;
+        }
 
         return $this;
     }

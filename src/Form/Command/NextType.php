@@ -7,21 +7,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class ThrowPokeballType extends AbstractType
+class NextType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('throwPokeball', SubmitType::class, [
-                'label' => 'Throw pokeball',
+            ->add('next', SubmitType::class, [
+                'label' => 'Next',
                 'attr' => [
-                    'class' => "btn btn-outline-info"
-                ]
-            ])
-            ->add('leave', SubmitType::class, [
-                'label' => 'Leave',
-                'attr' => [
-                    'class' => "btn btn-outline-danger"
+                    'class' => "btn btn-secondary"
                 ]
             ])
         ;

@@ -20,10 +20,10 @@ To launch the server<br>
   <li>reset your password if you don't remember it</li>
   <li>log in</li>
   <li>modify your password</li>
-  <li>to capture pokemons</li>
-  <li>to buy items (pokeballs, health potions)</li>
-  <li>to participate in tournament</li>
-  <li>to delete your account</li>
+  <li>capture pokemons</li>
+  <li>buy items (pokeballs, health potions)</li>
+  <li>participate in tournament</li>
+  <li>delete your account</li>
 </ul>
 <br>
 <p>It send an email:</p>
@@ -31,4 +31,15 @@ To launch the server<br>
   <li>to activate your account/to confirm your email address</li>
   <li>to reset your password if forgotten</li>
   <li>to confirm that your password has been changed</li>
+</ul>
+<br>
+<p>A pokemon can:</p>
+<ul>
+  <li>be captured</li>
+  <li>fight another pokemon</li>
+  <li>be healed</li>
+  <li>faint when lose all health points</li>
+  <li>be restored</li>
+  <li>level up after a victory</li>
+  <li>evolve</li>
 </ul>

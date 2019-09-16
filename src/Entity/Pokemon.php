@@ -252,6 +252,17 @@ class Pokemon
 
         return $this;
     }
+
+    public function increaseHealthPoint(int $healthPoint): self
+    {
+        $this->healthPoint += $healthPoint;
+        if($this->healthPoint > 100) {
+            $this->healthPoint = 100;
+        }
+
+        return $this;
+    }
+
     public function getBattleTeam(): ?BattleTeam
     {
         return $this->battleTeam;

@@ -95,18 +95,6 @@ class BattleManager extends AbstractBattleManager
         $playerLevel = $this->getPlayerFighter()->getLevel();
         $damage = round(rand(5,20) * (100 + $playerLevel) / 100);
         $opponentFighter->decreaseHealthPoint($damage);
-
-        $this->manager->flush();
-
-        return $damage;
-    }
-
-    public function manageOpponentAttack() {
-        $playerFighter = $this->getPlayerFighter();
-        $opponentLevel = $this->getOpponentFighter()->getLevel();
-        $damage = intval(round(rand(5,20) * (100 + $opponentLevel) / 100));
-        $playerFighter->decreaseHealthPoint($damage);
-
         $this->manager->flush();
 
         return $damage;
@@ -156,5 +144,33 @@ class BattleManager extends AbstractBattleManager
             'name' => $name,
             'increasedLevel' => $increasedLevel
         ];
+    }
+
+    public function manageHealPlayerFighter()
+    {
+        if($this->getPlayerFighter()->getTrainer()->getHealthPotion() == 0) {
+            return false;
+        }
+        $pokemon = $this->getPlayerFighter();
+        $healthPoint = $pokemon->getHealthPoint();
+        $pokemon->increaseHealthPoint(rand(40,60));
+        $healthPointRange = $pokemon->getHealthPoint() - $healthPoint;
+        $pokemon->getTrainer()->useHealthPotion();
+        $this->manager->flush();
+
+        return $healthPointRange;
+    }
+
+    public function manageDamagePlayerFighter()
+    {
+        $playerFighter = $this->getPlayerFighter();
+        $opponentLevel = $this->getOpponentFighter()->getLevel();
+        $hp = $playerFighter->getHealthPoint();
+        $damage = intval(round(rand(5,20) * (150 - $opponentLevel) / 100));
+        $playerFighter->decreaseHealthPoint($damage);
+        $newHp = $playerFighter->getHealthPoint();
+        $this->manager->flush();
+
+        return $hpLost = $hp - $newHp;
     }
 }
