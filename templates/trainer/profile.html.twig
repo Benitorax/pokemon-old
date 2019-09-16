@@ -3,8 +3,7 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-  <h1 class="text-secondary">Profile</h1>
-  <h2>{{ user.username }}</h2>
+  <h1 class="text-secondary">Profile: {{ user.username }}</h1>
 
   <table class="mt-5 table">
     <thead>
@@ -16,7 +15,7 @@
     <tbody>
       <tr class="amountPokedollars">
         <th scope="row">Pokedollars</th>
-        <td>500</td>
+        <td>{{ user.pokedollar }}</td>
       </tr>
       <tr class="countPokemons">
         <th scope="row">Pokemons count</th>

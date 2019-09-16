@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\PokemonRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,6 +31,27 @@ class TrainerController extends AbstractController
 
         return $this->render('trainer/pokemons.html.twig', [
             'pokemons' => $pokemons,
+        ]);
+    }
+
+    /**
+     * @Route("/trainer/list", name="trainer_list")
+     */
+    public function showTrainers(UserRepository $userRepository)
+    {
+        $users = $userRepository->findAllActivated();
+        return $this->render('trainer/show_trainers.html.twig', [
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * @Route("/trainer/{id}", name="trainer_show")
+     */
+    public function showTrainer(User $user)
+    {
+        return $this->render('trainer/show_trainer.html.twig', [
+            'user' => $user,
         ]);
     }
 }

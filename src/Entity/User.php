@@ -54,6 +54,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pokemon", mappedBy="trainer", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OrderBy({"name" = "ASC", "level" = "DESC"})
      */
     private $pokemons;
 

@@ -54,6 +54,7 @@ class PokemonRepository extends ServiceEntityRepository
             ->andWhere('p.trainer = :val')
             ->setParameter('val', $user)
             ->orderBy('p.name', 'ASC')
+            ->orderBy('p.level', 'DESC')
             ->getQuery()
             ->getResult()
         ;
@@ -66,6 +67,7 @@ class PokemonRepository extends ServiceEntityRepository
             ->andWhere('p.isSleep = false')
             ->setParameter('val', $user)
             ->orderBy('p.name', 'ASC')
+            ->orderBy('p.level', 'DESC')
             ->getQuery()
             ->getResult()
         ;

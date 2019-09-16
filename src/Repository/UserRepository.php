@@ -57,6 +57,15 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findAllActivated()
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isActivated = true')
+            ->orderBy('u.username', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllEmails()
     {
         $arrayResult =  $this->createQueryBuilder('u')
