@@ -1,6 +1,7 @@
 <?php
 namespace App\Mailer;
 
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -59,6 +60,7 @@ class CustomMailer
     public function setToken($user)
     {
         $user->setToken(Uuid::uuid4());
+        $user->setTokenCreatedAt(new \DateTime('now'));
         $this->manager->flush();
     }
 }
