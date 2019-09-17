@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>{{title}} sent by users:</h1>
+        {% if app.request.get('_route') == 'admin_messages_new' %}
+            <p><a href="{{ path('admin_messages_archive') }}">Archive messages</a></p>
+        {% else %}
+            <p><a href="{{ path('admin_messages_new') }}">New messages</a></p>
+        {% endif %}
+        <hr>
+        {% for message in messages %}
+            <div class="card mb-3" style="">
+                <div class="card-header">
+                    From {{message.author.username}}, the {{message.createdAt|date('m/d/Y')}}
+                    {% if app.request.get('_route') == 'admin_messages_new' %}
+                        <a class="ml-5"href='{{ path('admin_messages_read', {id: message.id}) }}'>
+                            <button type="button" class="btn btn-sm btn-secondary">Archive</button>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{message.object}}</h5>
+                    <p class="card-text">{{message.body|nl2br}}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -66,6 +66,16 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllAdmin()
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_ADMIN%')
+            ->orderBy('u.username', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllEmails()
     {
         $arrayResult =  $this->createQueryBuilder('u')

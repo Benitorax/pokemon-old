@@ -32,6 +32,11 @@
                         <li class="nav-item{% if app.request.get('_route') == 'city' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('city') }}">City</a>
                         </li>
+                        {% if is_granted('ROLE_USER') %}
+                            <li class="nav-item{% if app.request.get('_route') == 'admin_messages_new' %} active{% endif %}">
+                                <a class="nav-link" href="{{ path('admin_messages_new') }}">Messages</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,6 +45,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         {% if is_granted('ROLE_USER') %}
                             <a class="dropdown-item" href="{{ path('app_account') }}">Account</a>
+                            <a class="dropdown-item" href="{{ path('app_contact') }}">Contact</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
                         {% else %}
                             <a class="dropdown-item" href="{{ path('app_login') }}">Log in</a>
