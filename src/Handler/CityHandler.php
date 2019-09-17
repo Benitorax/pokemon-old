@@ -86,14 +86,16 @@ class CityHandler
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
         $donatedPokemon = $this->pokemonRepository->find($pokemonId);
 
+        if($pokemons->count() <= 1) {
+            $this->session->add('danger', "You can't donate your only pokemon.");
+        }
+
         if(in_array($donatedPokemon, $pokemons)) {
             $this->user->removePokemon($donatedPokemon);
             $this->manager->remove($donatedPokemon);
             $this->manager->flush();
+            $this->session->add('success', sprintf("%s has been donated", $donatedPokemon->getName()));
         }
-
-        $message = sprintf("%s has been donated", $donatedPokemon->getName());
-        $this->session->add('success', $message);
     }
 
     public function validatePurchaseMoney($data) {

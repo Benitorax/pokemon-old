@@ -130,7 +130,6 @@ class User implements UserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-        $roles[] = 'ROLE_ADMIN';
 
         return array_unique($roles);
     }
@@ -239,6 +238,10 @@ class User implements UserInterface
 
     public function removePokemon(Pokemon $pokemon): self
     {
+        if($this->pokemons->count() == 1) {
+            return false;
+        }
+
         if ($this->pokemons->contains($pokemon)) {
             $this->pokemons->removeElement($pokemon);
             // set the owning side to null (unless already changed)
