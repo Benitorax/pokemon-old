@@ -103,13 +103,15 @@ class AdventureHandler
     {
         $damage = $this->battleManager->manageAttackOpponent();
         $battle = $this->battleManager->getCurrentBattle();
-        $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
-                      "</strong> attacks <strong>".
-                      $this->battleManager->getOpponentFighter()->getName()."</strong>!";
-        $messages[] = "It inflicts ".$damage." points of damage.";
 
         if($this->battleManager->getOpponentFighter()->getIsSleep()) {
+            $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
+            "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong> with ".$damage." points of damage!";
             $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> has fainted.";
+        } else {
+            $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
+                          "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong>!";
+            $messages[] = "It inflicts ".$damage." points of damage.";
         }
 
         return [

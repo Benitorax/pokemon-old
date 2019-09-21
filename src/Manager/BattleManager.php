@@ -176,6 +176,13 @@ class BattleManager extends AbstractBattleManager
             $pokemon = $this->getPlayerFighter();
         }
         $level = $pokemon->getLevel();
+        if($level) {
+            return [ 
+                'hasLeveledUp' => false,
+                'hasEvolved' => false
+            ];
+        }
+
         $name = $pokemon->getName();
         $pokemon->increaseLevel($increasedLevel = rand(10,22));
         $newPokemon = $this->pokeApiManager->checkNextEvolution($pokemon);
@@ -183,6 +190,7 @@ class BattleManager extends AbstractBattleManager
 
         if($newPokemon) {
             return [
+                'hasLeveledUp' => true,
                 'hasEvolved' => true,
                 'name' => $name,
                 'newName' => $newPokemon->getName(),
@@ -192,6 +200,7 @@ class BattleManager extends AbstractBattleManager
         }
 
         return [
+            'hasLeveledUp' => true,
             'hasEvolved' => false,
             'name' => $name,
             'increasedLevel' => $increasedLevel,
@@ -209,6 +218,7 @@ class BattleManager extends AbstractBattleManager
         $pokemon->increaseHealthPoint(rand(40,60));
         $healthPointRange = $pokemon->getHealthPoint() - $healthPoint;
         $pokemon->getTrainer()->useHealthPotion();
+        $this->getPlayerTeam()->increaseHealCount();
         $this->manager->flush();
 
         return $healthPointRange;

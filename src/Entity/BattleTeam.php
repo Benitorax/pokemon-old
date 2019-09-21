@@ -114,6 +114,7 @@ class BattleTeam
      */
     public function getPokemons(): Collection
     {
+        $this->pokemons->first();
         return $this->pokemons;
     }
 

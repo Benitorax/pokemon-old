@@ -40,9 +40,7 @@ class TournamentHandler extends AdventureHandler
     }
     public function createBattle() 
     {
-        if(!$this->battleManager->getCurrentBattle()) {
-            $this->battleManager->createTournamentBattle();
-        }
+        $this->battleManager->createTournamentBattle();
     }
 
     public function handleSelectPokemonForTournament($data) 
@@ -145,7 +143,7 @@ class TournamentHandler extends AdventureHandler
         $opponentTeam = $battle->getOpponentTeam();
         $playerTeam = $battle->getPlayerTeam();
 
-        if($this->battleManager->getPlayerTeam()->getHealCount() > 3) {
+        if($this->battleManager->getPlayerTeam()->getHealCount() >= 3) {
             $messages[] = "You have already used your 3rd and last health potion!";
         } else {
             $hpRange = $this->battleManager->manageHealPlayerFighter();
@@ -214,24 +212,33 @@ class TournamentHandler extends AdventureHandler
 
     public function handleEndBattle()
     {
+        $user = $this->battleManager->getUser();
         if($this->battleManager->getPlayerTeam()->getIsVictorious()) {
-            $this->battleManager->getUser()->increasePokedollar(300);
-            $this->manager->flush();
+            $user->increaseConsecutiveWin();
             $datas = $this->battleManager->manageLevelUpForTournament();
-            $messages[] = "Congrats! You won the battle and 300$!";
+            if(is_int($user->getConsecutiveWin() / 3)) {
+                $user->increasePokedollar(500);
+                $user->increaseChampionCount();
+                $messages[] = "Congrats! You won the battle and 500$!";
+            } else {
+                $user->increasePokedollar(300);
+                $messages[] = "Congrats! You won the battle and 300$!";
+            }
+
             foreach($datas as $data) {
                 if($data['hasEvolved']) {
                     $messages[] = "<strong>".$data['name']."</strong> evolves to ".$data['newName']." (level: ".$data['newLevel'].".";
-                } else {
+                } elseif($data['hasLeveledUp']) {
                     $messages[] = "<strong>".$data['name']."</strong> levels up to ".$data['newLevel']." (+".$data['increasedLevel'].").";
                 }
             }
         } else {
-            $this->battleManager->getUser()->increasePokedollar(100);
-            $this->manager->flush();
+            $user->increasePokedollar(100);
+            $user->resetConsecutiveWin();
             $messages[] = "You have lost!";
             $messages[] = "You earn 100$ thanks to the battle!";
         }
+        $this->manager->flush();
 
         return [
             'messages' => $messages,

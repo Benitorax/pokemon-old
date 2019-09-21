@@ -83,6 +83,16 @@ class User implements UserInterface
      */
     private $tokenCreatedAt;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $consecutiveWin = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $championCount = 0;
+
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
@@ -325,6 +335,37 @@ class User implements UserInterface
     public function setTokenCreatedAt(?\DateTimeInterface $tokenCreatedAt): self
     {
         $this->tokenCreatedAt = $tokenCreatedAt;
+
+        return $this;
+    }
+
+    public function getConsecutiveWin(): ?int
+    {
+        return $this->consecutiveWin;
+    }
+
+    public function resetConsecutiveWin(): self
+    {
+        $this->consecutiveWin = 0;
+
+        return $this;
+    }
+
+    public function increaseConsecutiveWin(): self
+    {
+        $this->consecutiveWin += 1;
+
+        return $this;
+    }
+
+    public function getChampionCount(): ?int
+    {
+        return $this->championCount;
+    }
+
+    public function increaseChampionCount(): self
+    {
+        $this->championCount += 1;
 
         return $this;
     }

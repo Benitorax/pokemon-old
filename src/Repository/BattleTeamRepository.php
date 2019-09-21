@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\BattleTeam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method BattleTeam|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,17 @@ class BattleTeamRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findOneByTrainer(UserInterface $user)
+    {
+        return $this->createQueryBuilder('b')
+        ->andWhere('b.trainer = :user')
+        ->setParameter('user', $user)
+        ->leftJoin('b.trainer', 'u')
+        ->addSelect('u')
+        ->leftJoin('b.pokemons', 'p')
+        ->addSelect('p')
+        ->getQuery()
+        ->getOneOrNullResult()
+    ;
+    }
 }

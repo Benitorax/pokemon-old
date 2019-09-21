@@ -30,26 +30,22 @@ abstract class AbstractBattleManager
 
     public function getCurrentBattle()
     {
-        $playerTeam = $this->getPlayerTeam();
-
-        return $this->manager->getRepository(Battle::class)->findOneBy(['playerTeam' => $playerTeam]);
+        return $this->manager->getRepository(Battle::class)->findOneByTrainer($this->user);
     }
 
     public function getUser() {
-        return $this->user;
+        return $this->getPlayerTeam()->getTrainer();
     }
 
     public function getPlayerTeam()
     {
-        $playerTeam = $this->manager->getRepository(BattleTeam::class)->findOneBy(['trainer' => $this->user]);
+        $playerTeam = $this->manager->getRepository(BattleTeam::class)->findOneByTrainer($this->user);
 
         if($playerTeam) {
             return $playerTeam;
         }
 
-        $team = new BattleTeam();
-
-        return $team->setTrainer($this->user);
+        return (new BattleTeam())->setTrainer($this->user);
     }
 
     public function getOpponentTeam()

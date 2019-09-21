@@ -17,15 +17,19 @@
                 <th class="text-center" scope="row">Registered</th>
                 <td class="text-center">{{ user.createdAt|date('m/d/Y') }}</td>
             </tr>
-            <tr class="amountPokedollars">
-                <th class="text-center" scope="row">Pokedollars</th>
-                <td class="text-center">500</td>
+            <tr>
+                <th class="text-center" scope="row">Champion</th>
+                <td class="text-center">{{ user.championCount }}</td>
             </tr>
-            <tr class="countPokeballs">
+            <tr>
+                <th class="text-center" scope="row">Pokedollars</th>
+                <td class="text-center">{{ user.pokedollar }}</td>
+            </tr>
+            <tr>
                 <th class="text-center" scope="row">Pokeballs</th>
                 <td class="text-center">{{ user.pokeball }}</td>
             </tr>
-            <tr class="countHealthPotions">
+            <tr>
                 <th class="text-center" scope="row">Health potions</th>
                 <td class="text-center">{{ user.healthPotion }}</td>
             </tr>

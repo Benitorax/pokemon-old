@@ -13,19 +13,23 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="amountPokedollars">
+      <tr>
         <th scope="row">Pokedollars</th>
         <td>{{ user.pokedollar }}</td>
       </tr>
-      <tr class="countPokemons">
+      <tr>
+        <th scope="row">Champion count</th>
+        <td>{{ user.championCount }}</td>
+      </tr>
+      <tr>
         <th scope="row">Pokemons count</th>
         <td>{{ user.pokemons|length }}</td>
       </tr>
-      <tr class="countPokeballs">
+      <tr>
         <th scope="row">Pokeballs count</th>
         <td>{{ user.pokeball }}</td>
       </tr>
-      <tr class="countHealthPotions">
+      <tr>
         <th scope="row">Health potions count</th>
         <td>{{ user.healthPotion }}</td>
       </tr>
