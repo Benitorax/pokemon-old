@@ -46,6 +46,16 @@ class Battle
      */
     private $turn = 'player';
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isStart = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isEnd = false;
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -110,6 +120,30 @@ class Battle
             $this->turn = $turn;
         }
         
+        return $this;
+    }
+
+    public function getIsStart(): ?bool
+    {
+        return $this->isStart;
+    }
+
+    public function setIsStart(bool $isStart): self
+    {
+        $this->isStart = $isStart;
+
+        return $this;
+    }
+
+    public function getIsEnd(): ?bool
+    {
+        return $this->isEnd;
+    }
+
+    public function setIsEnd(bool $isEnd): self
+    {
+        $this->isEnd = $isEnd;
+
         return $this;
     }
 }

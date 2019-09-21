@@ -22,7 +22,7 @@
                 </tr>
                 <tr>
                     <th scope="row">Registered</th>
-                    <td>{{ user.createdAt }}</td>
+                    <td>{{ user.createdAt|date('m/d/Y') }}</td>
                 </tr>
             </tbody>
         </table>

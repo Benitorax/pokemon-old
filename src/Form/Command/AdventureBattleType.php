@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class AttackOrPokeballType extends AbstractType
+class AdventureBattleType extends AbstractType
 {
     private $battleManager;
 

@@ -15,9 +15,6 @@ class AdventureController extends AbstractController
      */
     public function index(Request $request, AdventureHandler $adventureHandler)
     {
-        $form = $this->createForm(TravelType::class);
-        $form->handleRequest($request);
-
         if($request->isMethod('POST')) {
             $data = $adventureHandler->handleRequest($request);
 
@@ -31,6 +28,7 @@ class AdventureController extends AbstractController
         }
 
         $adventureHandler->clear();
+        $form = $this->createForm(TravelType::class);
 
         return $this->render('adventure/index.html.twig', [
             'form' => $form->createView(),

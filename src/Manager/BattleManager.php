@@ -3,6 +3,7 @@
 namespace App\Manager;
 
 use App\Entity\BattleTeam;
+use App\Entity\Pokemon;
 use App\Manager\AbstractBattleManager;
 
 class BattleManager extends AbstractBattleManager
@@ -17,6 +18,21 @@ class BattleManager extends AbstractBattleManager
 
         $opponentTeam = $this->createAdventureOpponentTeam($habitat);
         $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'adventure');
+        $this->persistAndFlush($battle);
+
+        return $battle;
+    }
+
+    public function createTournamentBattle()
+    {
+        $playerTeam = $this->getPlayerTeam();
+        $playerTeam->setTrainer($this->user);
+
+        $habitat = $this->pokeApiManager->getRandomHabitat();
+        $this->persistAndFlush($habitat);
+
+        $opponentTeam = $this->createTournamentOpponentTeam($habitat);
+        $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'tournament');
         $this->persistAndFlush($battle);
 
         return $battle;
@@ -45,13 +61,32 @@ class BattleManager extends AbstractBattleManager
     public function createAdventureOpponentTeam($habitat)
     {
         $pokemon = $this->pokeApiManager->getRandomPokemonFromHabitat($habitat);
-        $opponent = $this->createOpponent();
+        $opponent = $this->createAdventureOpponent();
         $opponent->addPokemon($pokemon);
     
         $team = new BattleTeam();
         $team->setTrainer($opponent)
-             ->setCurrentFighter($pokemon)
-             ->addPokemon($pokemon);
+             ->addPokemon($pokemon)
+             ->setCurrentFighter($pokemon);
+        
+        return $team;
+    }
+
+    public function createTournamentOpponentTeam($habitat)
+    {
+        $opponent = $this->createTournamentOpponent();
+        $team = new BattleTeam();
+        $team->setTrainer($opponent);
+
+        for($i = 0; $i < 3; $i++) {
+            $pokemon = $this->pokeApiManager->getRandomPokemonFromHabitat($habitat);
+            $opponent->addPokemon($pokemon);
+            $team->addPokemon($pokemon);
+
+            if($i == 0) {
+                $team->setCurrentFighter($pokemon);
+            }
+        }
         
         return $team;
     }
@@ -61,8 +96,17 @@ class BattleManager extends AbstractBattleManager
      */
     public function addFighterSelected($idPokemon)
     {
-        $pokemon = $this->getDBPokemonFromId($idPokemon);     
-        $this->getPlayerTeam()->setCurrentFighter($pokemon)->addPokemon($pokemon);
+        $pokemon = $this->getDBPokemonFromId($idPokemon);
+        $playerTeam = $this->getPlayerTeam();
+        if($playerTeam->getPokemons()->contains($pokemon)) {
+            return;
+        }
+
+        $playerTeam->addPokemon($pokemon);
+        if($playerTeam->getPokemons()->count() == 1) {
+            $playerTeam->setCurrentFighter($pokemon);
+        }
+
         $this->persistAndFlush($pokemon);
     }
 
@@ -119,31 +163,39 @@ class BattleManager extends AbstractBattleManager
     }
 
     public function manageLevelUpForTournament() {
+        $pokemons = $this->getPlayerTeam()->getPokemons();
+        $data = [];
+        foreach($pokemons as $pokemon) {
+            $data[] = $this->manageLevelUpForAdventure($pokemon);
+        }
+        return $data;
     }
 
-    public function manageLevelUpForAdventure() {
-        $pokemon = $this->getPlayerFighter();
+    public function manageLevelUpForAdventure(Pokemon $pokemon = null) {
+        if(!$pokemon) {
+            $pokemon = $this->getPlayerFighter();
+        }
         $level = $pokemon->getLevel();
         $name = $pokemon->getName();
         $pokemon->increaseLevel($increasedLevel = rand(10,22));
         $newPokemon = $this->pokeApiManager->checkNextEvolution($pokemon);
+        $this->manager->flush();
 
         if($newPokemon) {
-            $this->manager->flush();
-
             return [
                 'hasEvolved' => true,
                 'name' => $name,
                 'newName' => $newPokemon->getName(),
-                'increasedLevel' => $newPokemon->getLevel() - $level
+                'increasedLevel' => $newPokemon->getLevel() - $level,
+                'newLevel' => $newPokemon->getLevel()
             ];
         }
-        $this->manager->flush();
 
         return [
             'hasEvolved' => false,
             'name' => $name,
-            'increasedLevel' => $increasedLevel
+            'increasedLevel' => $increasedLevel,
+            'newLevel' => $pokemon->getLevel()
         ];
     }
 
@@ -174,5 +226,56 @@ class BattleManager extends AbstractBattleManager
         $this->manager->flush();
 
         return $hpLost = $hp - $newHp;
+    }
+
+    public function manageChangeFighterOfTeam(BattleTeam $battleTeam)
+    {
+        $pokemons = $battleTeam->getPokemons();
+        $isAllSleep = true;
+        foreach($pokemons as $pokemon) {
+            if(!$pokemon->getIsSleep()) {
+                $battleTeam->setCurrentFighter($pokemon);
+                $isAllSleep = false;
+                break;
+            }
+        }
+        $this->getCurrentBattle()->setTurn('player');
+        $this->manager->flush();
+
+        if($isAllSleep) {
+            $battleTeam->setHasNoMoreFighter(true);
+            $battleTeam->setCurrentFighter(null);
+            $this->endBattle($battleTeam);
+            return false;
+        }
+        return true;
+    }
+
+    public function startBattle() {
+        $this->getCurrentBattle()->setIsStart(true);
+        $this->manager->flush();
+    }
+
+    public function endBattle(BattleTeam $battleTeam) {
+        $this->getCurrentBattle()->setIsEnd(true);
+        $battle = $this->getCurrentBattle();
+        // $battleTeam has lost
+        $battleTeam->setIsVictorious(false);
+        if($battle->getPlayerTeam() === $battleTeam) {
+            $battle->getOpponentTeam()->setIsVictorious(true);
+        } elseif($battle->getOpponentTeam() === $battleTeam) {
+            $battle->getPlayerTeam()->setIsVictorious(true);
+        }
+        $this->manager->flush();
+    }
+
+    public function restorePlayerPokemons()
+    {
+        $pokemons = $this->getPlayerTeam()->getPokemons();
+        foreach($pokemons as $pokemon) {
+            $pokemon->setHealthPoint(100);
+            $pokemon->setIsSleep(false);
+        }
+        $this->manager->flush();
     }
 }

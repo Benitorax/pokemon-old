@@ -2,21 +2,20 @@
 
 namespace App\Handler;
 
-use App\Entity\Pokemon;
 use App\Form\Command\NextType;
 use App\Manager\BattleManager;
 use App\Manager\CommandManager;
 use App\Form\Command\TravelType;
 use App\Form\Command\SelectPokemonType;
-use App\Form\Command\AttackOrPokeballType;
+use App\Form\Command\AdventureBattleType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class AdventureHandler
 {
-    private $battleManager;
-    private $manager;
-    private $commandManager;
+    protected $battleManager;
+    protected $manager;
+    protected $commandManager;
 
     public function __construct(BattleManager $battleManager, ObjectManager $manager, CommandManager $commandManager)
     {
@@ -95,7 +94,7 @@ class AdventureHandler
             'messages' => $messages,
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => $this->commandManager->createCommandForm(AttackOrPokeballType::class)
+            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class)
         ];
 
     }
@@ -148,7 +147,7 @@ class AdventureHandler
             if($result == 'failed') { $messages[] = "You missed!"; }
             else { $messages[] = 'You don\'t have any pokeball!'; }
 
-            $form = $this->commandManager->createCommandForm(AttackOrPokeballType::class);
+            $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
         }
 
         return [
@@ -172,7 +171,7 @@ class AdventureHandler
             $this->clear();
         } else {
             $messages[] = "<strong>".$battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong> has prevented your escape!";
-            $form = $this->commandManager->createCommandForm(AttackOrPokeballType::class);
+            $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
             $opponentTeam = $battle->getOpponentTeam();
             $playerTeam = $battle->getPlayerTeam(); 
         }
@@ -202,7 +201,7 @@ class AdventureHandler
             'messages' => $messages,
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
-            'form' => $this->commandManager->createCommandForm(AttackOrPokeballType::class)
+            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class)
         ];
     }
 
@@ -212,7 +211,7 @@ class AdventureHandler
         $battle = $this->battleManager->getCurrentBattle();
         $opponentFighter = $battle->getOpponentTeam()->getCurrentFighter();
         $playerFighter = $battle->getPlayerTeam()->getCurrentFighter(); 
-        $form = $this->commandManager->createCommandForm(AttackOrPokeballType::class);
+        $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
 
         if($playerFighter->getIsSleep()) {
             $form = $this->commandManager->createCommandForm(TravelType::class);

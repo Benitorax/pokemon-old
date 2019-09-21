@@ -7,15 +7,14 @@ use App\Entity\Habitat;
 use App\Entity\Pokemon;
 use App\Entity\BattleTeam;
 use App\Api\PokeApi\PokeApiManager;
+use App\Entity\Trainer;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\Common\Persistence\ObjectManager;
 
 abstract class AbstractBattleManager
 {
     protected $manager;
-
     protected $pokeApiManager;
-
     protected $user;
 
     public function __construct(
@@ -34,6 +33,10 @@ abstract class AbstractBattleManager
         $playerTeam = $this->getPlayerTeam();
 
         return $this->manager->getRepository(Battle::class)->findOneBy(['playerTeam' => $playerTeam]);
+    }
+
+    public function getUser() {
+        return $this->user;
     }
 
     public function getPlayerTeam()
@@ -86,12 +89,21 @@ abstract class AbstractBattleManager
         return $battle;
     }
 
-    public function createOpponent(string $name = 'unknown') {
+    public function createAdventureOpponent(string $name = 'unknown') {
         $user = new User();
         
         return $user->setUsername($name)
              ->setPassword('unknown')
              ->setEmail('unknown')
+             ->setCreatedAt(new \DateTime('now'));
+    }
+
+    public function createTournamentOpponent(string $name = 'unknown') {
+        $user = new User();
+        $trainer = (new Trainer)->getRandomTrainer();
+        return $user->setUsername($trainer['username'])
+             ->setPassword('unknown')
+             ->setEmail($trainer['email'])
              ->setCreatedAt(new \DateTime('now'));
     }
 
@@ -101,5 +113,17 @@ abstract class AbstractBattleManager
 
     public function getOpponentFighter() {
         return $this->getOpponentTeam()->getCurrentFighter();
+    }
+
+    public function getOpponentTrainer() {
+        return $this->getOpponentTeam()->getTrainer();
+    }
+
+    public function getLastPlayerPokemon() {
+        return $this->getPlayerTeam()->getPokemons()->last();
+    }
+
+    public function getLastOpponentPokemon() {
+        return $this->getOpponentTeam()->getPokemons()->last();
     }
 }

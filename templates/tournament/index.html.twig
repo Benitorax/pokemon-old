@@ -1,7 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TournamentController!{% endblock %}
+{% block title %}Tournament{% endblock %}
 
 {% block body %}
-
+<div class="row justify-content-center">
+    <div class="col-sm-5">
+        <div class="row">
+            <div class="col-sm-12 p-3 mb-2 border border-secondary rounded-lg text-white bg-dark">
+                {% for message in messages %}
+                    <div class="text-center">{{ message|raw }}</div>
+                {% else %}
+                    <div class="text-center">
+                        Welcome to the tournament!<br>
+                        You will battle against another trainer.<br>
+                        Select the 1st pokemon to fight.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div style="min-height: 300px;" class="col-sm-12 mb-2 border border-secondary rounded-lg">
+                <div class="mt-2">
+                    {% if opponent %}
+                        <div class="text-right"><strong>{{ opponent.currentFighter.name|capitalize }}</strong></div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ opponent.currentFighter.healthPoint }}%" aria-valuenow="{{ opponent.currentFighter.healthPoint }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mr-4"><img class="float-right" src="{{ opponent.currentFighter.spriteFrontUrl }}"></div>
+                    {% endif %}
+                </div>
+                {% if centerImageUrl is defined %}
+                    <div class="row">
+                        <img class="mx-auto" src="{{ centerImageUrl }}">
+                    </div>
+                {% else %}
+                    <br><br><br><br>
+                {% endif %}
+                <div class="mb-3">
+                    {% if player and player.currentFighter %}
+                        <div class="ml-4"><img src="{{ player.currentFighter.spriteBackUrl }}"></div>
+                        <div class="text-left"><strong>{{ player.currentFighter.name|capitalize }}</strong></div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ player.currentFighter.healthPoint }}%" aria-valuenow="{{ player.currentFighter.healthPoint }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {{ form_start(form, {attr: {class: 'tournament-form form-inline justify-content-center'} }) }}
+        {{ form_widget(form, {attr: {class: 'row'} }) }}
+        {{ form_end(form) }}
+    </div>
+</div>
 {% endblock %}
