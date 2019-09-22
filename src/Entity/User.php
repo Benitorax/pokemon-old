@@ -233,6 +233,7 @@ class User implements UserInterface
      */
     public function getPokemons(): Collection
     {
+        dump('User::getPokemons()');
         return $this->pokemons;
     }
 

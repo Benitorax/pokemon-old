@@ -101,19 +101,23 @@ class AdventureHandler
 
     public function handleAttack() 
     {
-        $damage = $this->battleManager->manageAttackOpponent();
-        $battle = $this->battleManager->getCurrentBattle();
-
         if($this->battleManager->getOpponentFighter()->getIsSleep()) {
-            $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
-            "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong> with ".$damage." points of damage!";
-            $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> has fainted.";
+            $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> is already harmless.";
         } else {
-            $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
-                          "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong>!";
-            $messages[] = "It inflicts ".$damage." points of damage.";
+            $damage = $this->battleManager->manageAttackOpponent();
+
+            if($this->battleManager->getOpponentFighter()->getIsSleep()) {
+                $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
+                "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong> with ".$damage." points of damage!";
+                $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> has fainted.";
+            } else {
+                $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
+                              "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong>!";
+                $messages[] = "It inflicts ".$damage." points of damage.";
+            }    
         }
 
+        $battle = $this->battleManager->getCurrentBattle();
         return [
             'messages' => $messages,
             'opponent' => $battle->getOpponentTeam(),

@@ -87,6 +87,7 @@ class Battle
 
     public function getPlayerTeam(): ?BattleTeam
     {
+        dump('Battle::getPlayerTeam()');
         return $this->playerTeam;
     }
 
@@ -99,6 +100,7 @@ class Battle
 
     public function getOpponentTeam(): ?BattleTeam
     {
+        dump('Battle::getOpponentTeam()');
         return $this->opponentTeam;
     }
 

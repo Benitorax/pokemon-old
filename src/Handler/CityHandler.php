@@ -15,6 +15,7 @@ class CityHandler
 
     const POKEBALL_PRICE = 10;
     const HEALTH_POTION_PRICE = 15;
+    const RESTORE_POKEMON_PRICE = 30;
 
     public function __construct(Security $security, PokemonRepository $pokemonRepository, ObjectManager $manager, CustomSession $session) 
     {
@@ -29,7 +30,7 @@ class CityHandler
         $form = $form->getData();
         $isValidated = $this->validatePurchaseMoney($form);
 
-        if(!$isValidated) {
+        if(!$isValidated || ($form['pokeball'] == 0 && $form['healthPotion'] == 0)) {
             return;
         }
 
@@ -75,6 +76,10 @@ class CityHandler
         foreach($pokemons as $pokemon) {
             $pokemon->setHealthPoint(100);
             $pokemon->setIsSleep(false);
+        }
+        
+        if(count($pokemons) >= 3) {
+            $this->user->decreasePokedollar(self::RESTORE_POKEMON_PRICE);
         }
 
         $this->manager->flush();

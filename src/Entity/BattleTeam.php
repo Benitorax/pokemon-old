@@ -86,6 +86,7 @@ class BattleTeam
 
     public function getCurrentFighter(): ?Pokemon
     {
+        dump('BattleTeam::getCurrentFighter()');
         return $this->currentFighter;
     }
 
@@ -99,6 +100,7 @@ class BattleTeam
 
     public function getTrainer(): ?User
     {
+        dump('BattleTeam::getTrainer()');
         return $this->trainer;
     }
 
@@ -114,6 +116,7 @@ class BattleTeam
      */
     public function getPokemons(): Collection
     {
+        dump('BattleTeam::getPokemons()');
         $this->pokemons->first();
         return $this->pokemons;
     }

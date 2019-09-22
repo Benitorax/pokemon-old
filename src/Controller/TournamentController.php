@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\BattleTeam;
 use App\Handler\TournamentHandler;
 use App\Repository\PokemonRepository;
+use App\Repository\BattleTeamRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\Command\SelectPokemonForTournamentType;
-use App\Repository\BattleTeamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TournamentController extends AbstractController
@@ -16,12 +15,35 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/", name="tournament")
      */
-    public function index(Request $request, TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository, BattleTeamRepository $battleTeamRepository)
+    public function index(PokemonRepository $pokemonRepository)
     {
-        $pokemons = $pokemonRepository->findAllFullHPByTrainer($this->getUser());
-        $playerTeam = $battleTeamRepository->findOneBy(['trainer' =>$this->getUser()]);
-        if(count($pokemons) < 3 && !$playerTeam) {
-            return $this->render('tournament/not_enough_pokemons.html.twig');
+        $pokemons = $pokemonRepository->findAllFullHPByTrainer($user = $this->getUser());
+        $isAllowed = false;
+        if(count($pokemons) >= 3 ) {
+            $isAllowed = true;
+        }
+
+        $wins = $user->getConsecutiveWin() % 3;
+        if($wins === 0) { $buttonMessage = 'First round'; }
+        elseif($wins === 1) { $buttonMessage = 'Semi-final round'; }
+        elseif($wins === 2) { $buttonMessage = 'Final round'; }
+
+        return $this->render('tournament/index.html.twig', [
+            'isAllowed' => $isAllowed,
+            'buttonMessage' => $buttonMessage
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/battle", name="tournament_battle")
+     */
+    public function battle(Request $request, TournamentHandler $tournamentHandler, BattleTeamRepository $battleTeamRepository, PokemonRepository $pokemonRepository)
+    {
+        $playerTeam = $battleTeamRepository->findOneByTrainer($this->getUser());
+        $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($this->getUser());
+
+        if($pokemonsCount < 3 && $playerTeam->getPokemons()->count() != 3) {
+            return $this->redirectToRoute('tournament');
         }
         
         if($request->isMethod('POST')) {
@@ -40,7 +62,7 @@ class TournamentController extends AbstractController
         $tournamentHandler->createBattle();
         $form = $this->createForm(SelectPokemonForTournamentType::class);
 
-        return $this->render('tournament/index.html.twig', [
+        return $this->render('tournament/battle.html.twig', [
             'form' => $form->createView(),
             'opponent' => null,
             'player' => null,

@@ -60,6 +60,8 @@ class UserRepository extends ServiceEntityRepository
     public function findAllActivated()
     {
         return $this->createQueryBuilder('u')
+            ->leftJoin('u.pokemons', 'p')
+            ->addSelect('p')
             ->andWhere('u.isActivated = true')
             ->orderBy('u.username', 'ASC')
             ->getQuery()

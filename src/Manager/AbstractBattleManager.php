@@ -39,13 +39,7 @@ abstract class AbstractBattleManager
 
     public function getPlayerTeam()
     {
-        $playerTeam = $this->manager->getRepository(BattleTeam::class)->findOneByTrainer($this->user);
-
-        if($playerTeam) {
-            return $playerTeam;
-        }
-
-        return (new BattleTeam())->setTrainer($this->user);
+        return $this->getCurrentBattle()->getPlayerTeam();
     }
 
     public function getOpponentTeam()
@@ -68,10 +62,6 @@ abstract class AbstractBattleManager
             $this->manager->remove($object);
         }
         $this->manager->flush();
-    }
-
-    public function getDBPokemonFromId($idPokemon) {
-        return $this->manager->getRepository(Pokemon::class)->find($idPokemon);
     }
 
     public function createBattle(BattleTeam $playerTeam, BattleTeam $opponentTeam, Habitat $habitat, string $type) {

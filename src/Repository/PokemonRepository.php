@@ -72,29 +72,51 @@ class PokemonRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findSleepingPokemonsByTrainer(UserInterface $user)
+    public function findReadyPokemonsByTrainerQueryBuilder(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.trainer = :val')
-            ->andWhere('p.isSleep = true')
+            ->andWhere('p.isSleep = false')
             ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC')
-            ->getQuery()
-            ->getResult()
+            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
         ;
     }
 
     public function findAllFullHPByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-        ->andWhere('p.trainer = :val')
-        ->andWhere('p.isSleep = false')
-        ->andWhere('p.healthPoint = 100')
-        ->setParameter('val', $user)
-        ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
-        ->getQuery()
-        ->getResult()
-    ;
+            ->andWhere('p.trainer = :val')
+            ->andWhere('p.isSleep = false')
+            ->andWhere('p.healthPoint = 100')
+            ->setParameter('val', $user)
+            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
+    public function findAllFullHPByTrainerQueryBuilder(UserInterface $user)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.trainer = :val')
+            ->andWhere('p.isSleep = false')
+            ->andWhere('p.healthPoint = 100')
+            ->setParameter('val', $user)
+            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+        ;
+    }
+
+    public function findAllFullHPByTrainerNumber(UserInterface $user)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p)')
+            ->andWhere('p.trainer = :val')
+            ->andWhere('p.isSleep = false')
+            ->andWhere('p.healthPoint = 100')
+            ->setParameter('val', $user)
+            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 }

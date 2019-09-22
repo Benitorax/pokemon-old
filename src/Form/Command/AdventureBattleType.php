@@ -28,16 +28,13 @@ class AdventureBattleType extends AbstractType
             ]);
         }
 
-        if($this->isPlayerFighterDamaged()) {
-            $builder->add('heal', SubmitType::class, [
+        $builder
+            ->add('heal', SubmitType::class, [
                 'label' => 'Heal',
                 'attr' => [
                     'class' => "btn btn-outline-secondary"
                 ]
-            ]);
-        }
-
-        $builder
+            ])
             ->add('throwPokeball', SubmitType::class, [
                 'label' => 'Throw pokeball',
                 'attr' => [
@@ -63,10 +60,5 @@ class AdventureBattleType extends AbstractType
     public function isOpponentFighterSleeping()
     {
         return $this->battleManager->getOpponentFighter()->getIsSleep();
-    }
-
-    public function isPlayerFighterDamaged()
-    {
-        return $this->battleManager->getPlayerFighter()->getHealthPoint() < 100;
     }
 }

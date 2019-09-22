@@ -10,7 +10,7 @@ class BattleManager extends AbstractBattleManager
 {
     public function createAdventureBattle()
     {
-        $playerTeam = $this->getPlayerTeam();
+        $playerTeam = new BattleTeam();
         $playerTeam->setTrainer($this->user);
 
         $habitat = $this->pokeApiManager->getRandomHabitat();
@@ -25,11 +25,11 @@ class BattleManager extends AbstractBattleManager
 
     public function createTournamentBattle()
     {
-        $playerTeam = $this->getPlayerTeam();
+        $playerTeam = new BattleTeam();
         $playerTeam->setTrainer($this->user);
 
         $habitat = $this->pokeApiManager->getRandomHabitat();
-        $this->persistAndFlush($habitat);
+        //$this->persistAndFlush($habitat);
 
         $opponentTeam = $this->createTournamentOpponentTeam($habitat);
         $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'tournament');
@@ -42,13 +42,13 @@ class BattleManager extends AbstractBattleManager
     {
         if($battle = $this->getCurrentBattle())
         {
-            $playerPokemons = $this->getPlayerTeam()->getPokemons();
+            $playerPokemons = $battle->getPlayerTeam()->getPokemons();
             foreach($playerPokemons as $pokemon) {
                 $pokemon->setBattleTeam(null);
             }
 
-            $opponent = $this->getOpponentTeam()->getTrainer();
-            $opponentPokemons = $this->getOpponentTeam()->getPokemons()->toArray();        
+            $opponent = $battle->getOpponentTeam()->getTrainer();
+            $opponentPokemons = $battle->getOpponentTeam()->getPokemons()->toArray();        
             foreach($opponentPokemons as $oPokemon) {
                 $oPokemon->setBattleTeam(null);
             }
@@ -91,12 +91,8 @@ class BattleManager extends AbstractBattleManager
         return $team;
     }
 
-    /**
-     * Have to refactor when create battle for tournament
-     */
-    public function addFighterSelected($idPokemon)
+    public function addFighterSelected($pokemon)
     {
-        $pokemon = $this->getDBPokemonFromId($idPokemon);
         $playerTeam = $this->getPlayerTeam();
         if($playerTeam->getPokemons()->contains($pokemon)) {
             return;

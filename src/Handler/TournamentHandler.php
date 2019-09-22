@@ -16,9 +16,14 @@ class TournamentHandler extends AdventureHandler
         $form = $this->commandManager->createFormByCommand($command);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            if($this->battleManager->getCurrentBattle()->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
+            {
+                return $this->handleNext();
+            }
             return $this->handle($form);
         }
-        dd('WHAT_TO_DO_IF_YOU_COME_HERE');
+        dump('what to do if come here?');
+        return $this->handleNext();
     }
 
     public function handle($form) 
