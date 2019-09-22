@@ -54,13 +54,14 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pokemon", mappedBy="trainer", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OrderBy({"name" = "ASC", "level" = "DESC"})
      */
     private $pokemons;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $healthPotion = 2;
+    private $healthPotion = 5;
 
     /**
      * @ORM\Column(type="boolean")
@@ -76,6 +77,21 @@ class User implements UserInterface
      * @ORM\Column(type="uuid", nullable=true)
      */
     private $token;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $tokenCreatedAt;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $consecutiveWin = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $championCount = 0;
 
     public function __construct()
     {
@@ -217,6 +233,7 @@ class User implements UserInterface
      */
     public function getPokemons(): Collection
     {
+        dump('User::getPokemons()');
         return $this->pokemons;
     }
 
@@ -232,6 +249,10 @@ class User implements UserInterface
 
     public function removePokemon(Pokemon $pokemon): self
     {
+        if($this->pokemons->count() == 1) {
+            return false;
+        }
+
         if ($this->pokemons->contains($pokemon)) {
             $this->pokemons->removeElement($pokemon);
             // set the owning side to null (unless already changed)
@@ -251,6 +272,15 @@ class User implements UserInterface
     public function setHealthPotion(int $healthPotion): self
     {
         $this->healthPotion = $healthPotion;
+
+        return $this;
+    }
+
+    public function useHealthPotion(): self
+    {
+        if($this->healthPotion >= 1) {
+            $this->healthPotion -= 1;
+        }
 
         return $this;
     }
@@ -294,6 +324,49 @@ class User implements UserInterface
     public function setToken($token): self
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    public function getTokenCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->tokenCreatedAt;
+    }
+
+    public function setTokenCreatedAt(?\DateTimeInterface $tokenCreatedAt): self
+    {
+        $this->tokenCreatedAt = $tokenCreatedAt;
+
+        return $this;
+    }
+
+    public function getConsecutiveWin(): ?int
+    {
+        return $this->consecutiveWin;
+    }
+
+    public function resetConsecutiveWin(): self
+    {
+        $this->consecutiveWin = 0;
+
+        return $this;
+    }
+
+    public function increaseConsecutiveWin(): self
+    {
+        $this->consecutiveWin += 1;
+
+        return $this;
+    }
+
+    public function getChampionCount(): ?int
+    {
+        return $this->championCount;
+    }
+
+    public function increaseChampionCount(): self
+    {
+        $this->championCount += 1;
 
         return $this;
     }

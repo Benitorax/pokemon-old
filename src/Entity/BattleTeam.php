@@ -45,6 +45,11 @@ class BattleTeam
      */
     private $pokemons;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $healCount = 0;
+
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
@@ -81,13 +86,13 @@ class BattleTeam
 
     public function getCurrentFighter(): ?Pokemon
     {
+        dump('BattleTeam::getCurrentFighter()');
         return $this->currentFighter;
     }
 
     public function setCurrentFighter(?Pokemon $currentFighter): self
     {
-
-        if (!$this->pokemons->contains($currentFighter)) {
+        if ($this->pokemons->contains($currentFighter)) {
             $this->currentFighter = $currentFighter;
         }
         return $this;
@@ -95,6 +100,7 @@ class BattleTeam
 
     public function getTrainer(): ?User
     {
+        dump('BattleTeam::getTrainer()');
         return $this->trainer;
     }
 
@@ -110,6 +116,8 @@ class BattleTeam
      */
     public function getPokemons(): Collection
     {
+        dump('BattleTeam::getPokemons()');
+        $this->pokemons->first();
         return $this->pokemons;
     }
 
@@ -144,6 +152,18 @@ class BattleTeam
             }
         }
         $this->pokemons->clear();
+
+        return $this;
+    }
+
+    public function getHealCount(): ?int
+    {
+        return $this->healCount;
+    }
+
+    public function increaseHealCount(): self
+    {
+        $this->healCount += 1;
 
         return $this;
     }

@@ -73,6 +73,7 @@ class SecurityController extends AbstractController
         $user = $userRepository->findOneBy(['token' => $token]);
         if($user) {
             $user->setToken(null);
+            $user->setTokenCreatedAt(null);
             $user->setIsActivated(true);
             $manager->flush();
             $this->addFlash('success', 'Thank you, your account is now activated.');
@@ -116,12 +117,19 @@ class SecurityController extends AbstractController
         if(!$token) { throw new \ErrorException('This page does\'t exist.'); }
         $user = $userRepository->findOneBy(['token' => $token]);
 
+        $interval = (new \DateTime('now'))->diff($user->getTokenCreatedAt());
+        if($interval->format('%a') >= 1) {
+            $this->addFlash('danger', 'Your request has expired. Make a new request again.');
+            return $this->redirectToRoute('app_password_forgotten');
+        } 
+        
         if($user) {
             $resetPasswordForm = $this->createForm(ResetPasswordType::class);
-            $resetPasswordForm->handleRequest($request);
-
+            $resetPasswordForm->handleRequest($request);    
             if($resetPasswordForm->isSubmitted() && $resetPasswordForm->isValid()) {
+
                 $user->setToken(null);
+                $user->setTokenCreatedAt(null);
                 $userHandler->modifyPassword($user, $resetPasswordForm->getData()['newPassword']);
                 $manager->flush();
                 $mailer->sendMailToConfirmResetPassword($user);
@@ -131,7 +139,7 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/password_reset.html.twig', [
-            'resetPasswordForm' => $resetPasswordForm->createView() ?? null
+            'resetPasswordForm' => isset($resetPasswordForm) ? $resetPasswordForm->createView() : null,
         ]);    
     }
 }

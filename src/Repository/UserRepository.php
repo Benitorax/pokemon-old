@@ -57,6 +57,27 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findAllActivated()
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.pokemons', 'p')
+            ->addSelect('p')
+            ->andWhere('u.isActivated = true')
+            ->orderBy('u.username', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllAdmin()
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_ADMIN%')
+            ->orderBy('u.username', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllEmails()
     {
         $arrayResult =  $this->createQueryBuilder('u')

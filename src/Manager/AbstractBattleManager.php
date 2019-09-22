@@ -7,15 +7,14 @@ use App\Entity\Habitat;
 use App\Entity\Pokemon;
 use App\Entity\BattleTeam;
 use App\Api\PokeApi\PokeApiManager;
+use App\Entity\Trainer;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\Common\Persistence\ObjectManager;
 
 abstract class AbstractBattleManager
 {
     protected $manager;
-
     protected $pokeApiManager;
-
     protected $user;
 
     public function __construct(
@@ -31,22 +30,16 @@ abstract class AbstractBattleManager
 
     public function getCurrentBattle()
     {
-        $playerTeam = $this->getPlayerTeam();
+        return $this->manager->getRepository(Battle::class)->findOneByTrainer($this->user);
+    }
 
-        return $this->manager->getRepository(Battle::class)->findOneBy(['playerTeam' => $playerTeam]);
+    public function getUser() {
+        return $this->getPlayerTeam()->getTrainer();
     }
 
     public function getPlayerTeam()
     {
-        $playerTeam = $this->manager->getRepository(BattleTeam::class)->findOneBy(['trainer' => $this->user]);
-
-        if($playerTeam) {
-            return $playerTeam;
-        }
-
-        $team = new BattleTeam();
-
-        return $team->setTrainer($this->user);
+        return $this->getCurrentBattle()->getPlayerTeam();
     }
 
     public function getOpponentTeam()
@@ -71,10 +64,6 @@ abstract class AbstractBattleManager
         $this->manager->flush();
     }
 
-    public function getDBPokemonFromId($idPokemon) {
-        return $this->manager->getRepository(Pokemon::class)->find($idPokemon);
-    }
-
     public function createBattle(BattleTeam $playerTeam, BattleTeam $opponentTeam, Habitat $habitat, string $type) {
         $battle = new Battle();
         $battle
@@ -86,12 +75,21 @@ abstract class AbstractBattleManager
         return $battle;
     }
 
-    public function createOpponent(string $name = 'unknown') {
+    public function createAdventureOpponent(string $name = 'unknown') {
         $user = new User();
         
         return $user->setUsername($name)
              ->setPassword('unknown')
              ->setEmail('unknown')
+             ->setCreatedAt(new \DateTime('now'));
+    }
+
+    public function createTournamentOpponent(string $name = 'unknown') {
+        $user = new User();
+        $trainer = (new Trainer)->getRandomTrainer();
+        return $user->setUsername($trainer['username'])
+             ->setPassword('unknown')
+             ->setEmail($trainer['email'])
              ->setCreatedAt(new \DateTime('now'));
     }
 
@@ -101,5 +99,17 @@ abstract class AbstractBattleManager
 
     public function getOpponentFighter() {
         return $this->getOpponentTeam()->getCurrentFighter();
+    }
+
+    public function getOpponentTrainer() {
+        return $this->getOpponentTeam()->getTrainer();
+    }
+
+    public function getLastPlayerPokemon() {
+        return $this->getPlayerTeam()->getPokemons()->last();
+    }
+
+    public function getLastOpponentPokemon() {
+        return $this->getOpponentTeam()->getPokemons()->last();
     }
 }

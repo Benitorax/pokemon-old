@@ -2,20 +2,20 @@
 
 namespace App\Handler;
 
-use App\Form\Command\AttackOrPokeballType;
-use App\Form\Command\SelectPokemonType;
-use App\Form\Command\ThrowPokeballType;
-use App\Form\Command\TravelType;
+use App\Form\Command\NextType;
 use App\Manager\BattleManager;
 use App\Manager\CommandManager;
-use Doctrine\Common\Persistence\ObjectManager;
+use App\Form\Command\TravelType;
+use App\Form\Command\SelectPokemonType;
+use App\Form\Command\AdventureBattleType;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 
 class AdventureHandler
 {
-    private $battleManager;
-    private $manager;
-    private $commandManager;
+    protected $battleManager;
+    protected $manager;
+    protected $commandManager;
 
     public function __construct(BattleManager $battleManager, ObjectManager $manager, CommandManager $commandManager)
     {
@@ -29,14 +29,18 @@ class AdventureHandler
         $command = $request->request->keys()[0];
         $form = $this->commandManager->createFormByCommand($command);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            if($battle = $this->battleManager->getCurrentBattle()) {
+                if($battle->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
+                {
+                    return $this->handleNext();
+                }
+            }
             return $this->handle($form);
         }
 
         return $this->handleTravel();
     }
-
 
     public function handle($form) 
     {
@@ -45,7 +49,7 @@ class AdventureHandler
         {
             case 'travel':
                 return $this->handleTravel();
-            case 'submitPokemon':
+            case 'selectPokemon':
                 return $this->handleSelectPokemon($form);
             case 'attack':
                 return $this->handleAttack();
@@ -53,6 +57,10 @@ class AdventureHandler
                 return $this->handleThrowPokeball();
             case 'leave':
                 return $this->handleLeave();
+            case 'heal':
+                return $this->handleHeal();
+            case 'next':
+                return $this->handleNext();
         }
     }
 
@@ -63,12 +71,8 @@ class AdventureHandler
 
     public function handleTravel() 
     {
-        $battle = $this->battleManager->getCurrentBattle();
-        
-        if(!$battle)
-        {
-            $battle = $this->battleManager->createAdventureBattle();
-        } 
+        $this->clear();
+        $battle = $this->battleManager->createAdventureBattle();
         $messages[] = "You're located around <strong>". $battle->getArena()->getName() ."</strong> area.";
         $messages[] = "And you come across... <strong>". $battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong>!";
 
@@ -82,7 +86,7 @@ class AdventureHandler
 
     public function handleSelectPokemon($data) 
     {
-        $this->battleManager->addFighterSelected($data->get('selectPokemon')->getData());
+        $this->battleManager->addFighterSelected($data->get('choicePokemon')->getData());
         $battle = $this->battleManager->getCurrentBattle();
         $messages[] = "You have selected <strong>". $battle->getPlayerTeam()->getCurrentFighter()->getName() ."</strong>!";
 
@@ -90,31 +94,35 @@ class AdventureHandler
             'messages' => $messages,
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => $this->commandManager->createCommandForm(AttackOrPokeballType::class)
+            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class)
         ];
 
     }
 
     public function handleAttack() 
     {
-        $damage = $this->battleManager->manageAttackOpponent();
-        $battle = $this->battleManager->getCurrentBattle();
-        $form = $this->commandManager->createCommandForm(AttackOrPokeballType::class);
-        $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
-                      "</strong> attacks <strong>".
-                      $this->battleManager->getOpponentFighter()->getName()."</strong>!";
-        $messages[] = "It inflicts ".$damage." points of damage.";
-
         if($this->battleManager->getOpponentFighter()->getIsSleep()) {
-            $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> has fainted.";
-            $form = $this->commandManager->createCommandForm(ThrowPokeballType::class);
+            $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> is already harmless.";
+        } else {
+            $damage = $this->battleManager->manageAttackOpponent();
+
+            if($this->battleManager->getOpponentFighter()->getIsSleep()) {
+                $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
+                "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong> with ".$damage." points of damage!";
+                $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> has fainted.";
+            } else {
+                $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
+                              "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong>!";
+                $messages[] = "It inflicts ".$damage." points of damage.";
+            }    
         }
 
+        $battle = $this->battleManager->getCurrentBattle();
         return [
             'messages' => $messages,
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => $form
+            'form' => $this->commandManager->createCommandForm(NextType::class)
         ];
     }
 
@@ -140,18 +148,12 @@ class AdventureHandler
             $this->clear();
             $opponentTeam = null;
             $playerTeam = null;
-    
-        
+
         } else {
-        
             if($result == 'failed') { $messages[] = "You missed!"; }
             else { $messages[] = 'You don\'t have any pokeball!'; }
 
-            if($opponentTeam->getCurrentFighter()->getIsSleep()) {
-                $form = $this->commandManager->createCommandForm(ThrowPokeballType::class);
-            }else {
-                $form = $this->commandManager->createCommandForm(AttackOrPokeballType::class);
-            }
+            $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
         }
 
         return [
@@ -175,7 +177,7 @@ class AdventureHandler
             $this->clear();
         } else {
             $messages[] = "<strong>".$battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong> has prevented your escape!";
-            $form = $this->commandManager->createCommandForm(AttackOrPokeballType::class);
+            $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
             $opponentTeam = $battle->getOpponentTeam();
             $playerTeam = $battle->getPlayerTeam(); 
         }
@@ -184,6 +186,55 @@ class AdventureHandler
             'messages' => $messages,
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
+            'form' => $form
+        ];
+    }
+
+    public function handleHeal() {
+        /** @var BattleManager $this->battleManager */
+        $hpRange = $this->battleManager->manageHealPlayerFighter();
+        $battle = $this->battleManager->getCurrentBattle();
+        $opponentTeam = $battle->getOpponentTeam();
+        $playerTeam = $battle->getPlayerTeam();
+
+        if($hpRange) {
+            $messages[] = "<strong>".$playerTeam->getCurrentFighter()->getName() ."</strong> has been healed (+".$hpRange."HP)!";
+        } else {
+            $messages[] = "You don't have any health potions!";
+        }
+
+        return [
+            'messages' => $messages,
+            'opponent' => $opponentTeam,
+            'player' => $playerTeam,
+            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class)
+        ];
+    }
+
+    public function handleNext() {
+        /** @var BattleManager $this->battleManager */
+        $damage = $this->battleManager->manageDamagePlayerFighter();
+        $battle = $this->battleManager->getCurrentBattle();
+        $opponentFighter = $battle->getOpponentTeam()->getCurrentFighter();
+        $playerFighter = $battle->getPlayerTeam()->getCurrentFighter(); 
+        $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
+
+        if($playerFighter->getIsSleep()) {
+            $form = $this->commandManager->createCommandForm(TravelType::class);
+            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
+                            $playerFighter->getName() ."</strong> out (-".$damage." HP).";
+
+            $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
+            $this->clear();
+        } else {
+            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
+            $messages[] = "It inflicts ".$damage." points of damage.";
+        }
+
+        return [
+            'messages' => $messages,
+            'opponent' => $battle->getOpponentTeam(),
+            'player' => $battle->getPlayerTeam(),
             'form' => $form
         ];
     }

@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Form\DeleteAccountType;
 use App\Form\ModifyPasswordType;
 use App\Entity\ModifyPasswordDTO;
+use App\Form\ContactMessageType;
+use App\Mailer\CustomMailer;
+use App\Manager\ContactMessageManager;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +39,7 @@ class AppController extends AbstractController
      */
     public function showAccount()
     {
-        return $this->render('app/showAccount.html.twig', [
+        return $this->render('app/show_account.html.twig', [
         ]);
     }
 
@@ -89,8 +92,28 @@ class AppController extends AbstractController
             return $this->redirectToRoute('app_index');
         }
 
-        return $this->render('app/deleteAccount.html.twig', [
+        return $this->render('app/delete_account.html.twig', [
             'deleteAccountForm' => $deleteAccountForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/contact/", name="app_contact")
+     */
+    public function sendMessageToAdmin(Request $request, ContactMessageManager $messageManager, CustomMailer $mailer)
+    {
+        $contactForm = $this->createForm(ContactMessageType::class);
+        $contactForm->handleRequest($request);
+        if($contactForm->isSubmitted() && $contactForm->isValid()) {
+            $message = $messageManager->createContactMessage($contactForm->getData());
+            $this->addFlash('success', 'Your message has been sent.');
+            $mailer->sentMailToAdminForNewMessage($message);
+
+            return $this->redirectToRoute('app_index');
+        }
+
+        return $this->render('app/contact.html.twig', [
+            'contactForm' => $contactForm->createView()
         ]);
     }
 }

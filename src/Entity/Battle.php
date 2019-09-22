@@ -41,6 +41,21 @@ class Battle
      */
     private $opponentTeam;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $turn = 'player';
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isStart = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isEnd = false;
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -72,6 +87,7 @@ class Battle
 
     public function getPlayerTeam(): ?BattleTeam
     {
+        dump('Battle::getPlayerTeam()');
         return $this->playerTeam;
     }
 
@@ -84,12 +100,51 @@ class Battle
 
     public function getOpponentTeam(): ?BattleTeam
     {
+        dump('Battle::getOpponentTeam()');
         return $this->opponentTeam;
     }
 
     public function setOpponentTeam(BattleTeam $opponentTeam): self
     {
         $this->opponentTeam = $opponentTeam;
+
+        return $this;
+    }
+
+    public function getTurn(): ?string
+    {
+        return $this->turn;
+    }
+
+    public function setTurn(string $turn): self
+    {
+        if(in_array($turn, ['player', 'opponent'])) {
+            $this->turn = $turn;
+        }
+        
+        return $this;
+    }
+
+    public function getIsStart(): ?bool
+    {
+        return $this->isStart;
+    }
+
+    public function setIsStart(bool $isStart): self
+    {
+        $this->isStart = $isStart;
+
+        return $this;
+    }
+
+    public function getIsEnd(): ?bool
+    {
+        return $this->isEnd;
+    }
+
+    public function setIsEnd(bool $isEnd): self
+    {
+        $this->isEnd = $isEnd;
 
         return $this;
     }

@@ -20,6 +20,10 @@
                     <th scope="row">Password</th>
                     <td><a href="{{ path('app_modify_password') }}">Modify</a></td>
                 </tr>
+                <tr>
+                    <th scope="row">Registered</th>
+                    <td>{{ user.createdAt|date('m/d/Y') }}</td>
+                </tr>
             </tbody>
         </table>
         <p class="w-100 font-weight-light text-right"><a class="text-danger" href="{{ path('app_account_delete') }}">Delete your account</a></p>

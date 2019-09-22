@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    <h1 class="text-secondary text-center">{{ user.username }}</h1>
+
+    <table class="my-5 table">
+        <thead>
+            <tr class="table-primary">
+                <th class="text-center" scope="col">Infos</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th class="text-center" scope="row">Registered</th>
+                <td class="text-center">{{ user.createdAt|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th class="text-center" scope="row">Champion</th>
+                <td class="text-center">{{ user.championCount }}</td>
+            </tr>
+            <tr>
+                <th class="text-center" scope="row">Pokedollars</th>
+                <td class="text-center">{{ user.pokedollar }}</td>
+            </tr>
+            <tr>
+                <th class="text-center" scope="row">Pokeballs</th>
+                <td class="text-center">{{ user.pokeball }}</td>
+            </tr>
+            <tr>
+                <th class="text-center" scope="row">Health potions</th>
+                <td class="text-center">{{ user.healthPotion }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="mt-5 table">
+        <thead>
+            <tr class="table-primary">
+                <th class="text-center" scope="col">Total: {{ user.pokemons|length }}</th>
+                <th class="text-center" scope="col">Pokemon</th>
+                <th class="text-center" scope="col">Picture</th>
+                <th class="text-center" scope="col">Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pokemon in user.pokemons %}
+                <tr >
+                    <td class="text-center align-middle"><strong>{{ loop.index }}</strong></td>
+                    <td class="text-center align-middle">
+                        <p class="text-primary">
+                            <strong>{{ pokemon.name }}</strong>
+                        </p>
+                    </td>
+                    <td class="text-center align-middle"><img class="mw-10" src="{{ pokemon.spriteFrontUrl }}"></td>
+                    <td class="text-center align-middle text-primary"><strong>{{ pokemon.level }}</strong></td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <p>
+        <a href="{{ path('trainer_list') }}">Go back</a>
+    </p>
+{% endblock %}

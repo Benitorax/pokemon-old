@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    <h1 class="text-secondary">List of pokemon trainers</h1>
+
+    <table class="mt-5 table">
+        <thead>
+            <tr class="table-primary">
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Trainer</th>
+                <th class="text-center" scope="col">Pokemons</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+
+                <tr class="amountPokedollars">
+                    <td class="text-center align-middle" scope="row"><strong>{{ loop.index }}</strong></td>
+                    <td class="text-center align-middle"><a href="{{ path('trainer_show', {id:user.id}) }}">{{ user.username }}</a></td>
+                    <td class="text-center align-middle">{{  user.pokemons|length }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,11 +1,15 @@
 <?php
 namespace App\Manager;
 
-use App\Form\Command\AttackOrPokeballType;
+use App\Form\Command\NextType;
+use App\Form\Command\TravelType;
 use App\Form\Command\SelectPokemonType;
 use App\Form\Command\ThrowPokeballType;
-use App\Form\Command\TravelType;
+use App\Form\Command\AdventureBattleType;
+use App\Form\Command\RestorePokemonsType;
+use App\Form\Command\TournamentBattleType;
 use Symfony\Component\Form\FormFactoryInterface;
+use App\Form\Command\SelectPokemonForTournamentType;
 
 class CommandManager
 {
@@ -34,10 +38,18 @@ class CommandManager
                 return $this->createCommandForm(TravelType::class);
             case 'select_pokemon':
                 return $this->createCommandForm(SelectPokemonType::class);
-            case 'attack_or_pokeball':
-                return $this->createCommandForm(AttackOrPokeballType::class);
+            case 'adventure_battle':
+                return $this->createCommandForm(AdventureBattleType::class);
+            case 'tournament_battle':
+                return $this->createCommandForm(TournamentBattleType::class);
             case 'throw_pokeball':
                 return $this->createCommandForm(ThrowPokeballType::class);
+            case 'next':
+                return $this->createCommandForm(NextType::class);
+            case 'select_pokemon_for_tournament':
+                return $this->createCommandForm(SelectPokemonForTournamentType::class);
+            case 'restore_pokemons':
+                return $this->createCommandForm(RestorePokemonsType::class);
         }
 
         return $this->createCommandForm(TravelType::class);

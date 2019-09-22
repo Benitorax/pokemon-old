@@ -11,10 +11,10 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class SelectPokemonType extends AbstractType
+class SelectPokemonForTournamentType extends AbstractType
 {
     private $user;
-
+    
     public function __construct(Security $security)
     {
         $this->user = $security->getUser();
@@ -26,7 +26,7 @@ class SelectPokemonType extends AbstractType
             ->add('choicePokemon', EntityType::class, [
                 'class' => Pokemon::class,
                 'query_builder' => function(PokemonRepository $pokemonRepository) {
-                    return $pokemonRepository->findReadyPokemonsByTrainerQueryBuilder($this->user);
+                    return $pokemonRepository->findAllFullHPByTrainerQueryBuilder($this->user);
                 },
                 'label' => false,
                 'attr' => [
@@ -43,6 +43,11 @@ class SelectPokemonType extends AbstractType
                 ]
             ])
         ;
+    }
+
+    public function getParent()
+    {
+        return SelectPokemonType::class;
     }
 
     public function configureOptions(OptionsResolver $resolver)

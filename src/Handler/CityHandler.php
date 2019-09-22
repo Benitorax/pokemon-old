@@ -15,6 +15,7 @@ class CityHandler
 
     const POKEBALL_PRICE = 10;
     const HEALTH_POTION_PRICE = 15;
+    const RESTORE_POKEMON_PRICE = 30;
 
     public function __construct(Security $security, PokemonRepository $pokemonRepository, ObjectManager $manager, CustomSession $session) 
     {
@@ -29,7 +30,7 @@ class CityHandler
         $form = $form->getData();
         $isValidated = $this->validatePurchaseMoney($form);
 
-        if(!$isValidated) {
+        if(!$isValidated || ($form['pokeball'] == 0 && $form['healthPotion'] == 0)) {
             return;
         }
 
@@ -76,6 +77,10 @@ class CityHandler
             $pokemon->setHealthPoint(100);
             $pokemon->setIsSleep(false);
         }
+        
+        if(count($pokemons) >= 3) {
+            $this->user->decreasePokedollar(self::RESTORE_POKEMON_PRICE);
+        }
 
         $this->manager->flush();
 
@@ -86,14 +91,16 @@ class CityHandler
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
         $donatedPokemon = $this->pokemonRepository->find($pokemonId);
 
+        if($pokemons->count() <= 1) {
+            $this->session->add('danger', "You can't donate your only pokemon.");
+        }
+
         if(in_array($donatedPokemon, $pokemons)) {
             $this->user->removePokemon($donatedPokemon);
             $this->manager->remove($donatedPokemon);
             $this->manager->flush();
+            $this->session->add('success', sprintf("%s has been donated", $donatedPokemon->getName()));
         }
-
-        $message = sprintf("%s has been donated", $donatedPokemon->getName());
-        $this->session->add('success', $message);
     }
 
     public function validatePurchaseMoney($data) {
