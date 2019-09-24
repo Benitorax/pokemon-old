@@ -23,6 +23,9 @@
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_profile' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('trainer_profile') }}">Profile</a>
                         </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'trainer_list' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('trainer_list') }}">Trainers</a>
+                        </li>
                         <li class="nav-item{% if app.request.get('_route') == 'adventure' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('adventure') }}">Adventure</a>
                         </li>
@@ -45,6 +48,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         {% if is_granted('ROLE_USER') %}
                             <a class="dropdown-item" href="{{ path('app_account') }}">Account</a>
+                            <a class="dropdown-item" href="{{ path('pokemon_exchange_list') }}">Pokemon exchange</a>
                             <a class="dropdown-item" href="{{ path('app_contact') }}">Contact</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
                         {% else %}

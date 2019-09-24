@@ -172,7 +172,7 @@ class BattleManager extends AbstractBattleManager
             $pokemon = $this->getPlayerFighter();
         }
         $level = $pokemon->getLevel();
-        if($level) {
+        if($level == 100) {
             return [ 
                 'hasLeveledUp' => false,
                 'hasEvolved' => false

@@ -80,7 +80,7 @@ abstract class AbstractBattleManager
         
         return $user->setUsername($name)
              ->setPassword('unknown')
-             ->setEmail('unknown')
+             ->setEmail(uniqid())
              ->setCreatedAt(new \DateTime('now'));
     }
 

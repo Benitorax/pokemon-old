@@ -4,7 +4,11 @@
 
 {% block body %}
     <h1 class="text-secondary text-center">{{ user.username }}</h1>
-
+    <div class="row justify-content-center">
+        {% if user is not same as(app.user) %}
+            <a href="{{ path('pokemon_exchange_create', {id:user.id}) }}"><span class="btn btn-sm btn-outline-dark">Do you want to exchange pokemons with this trainer?<span></a>
+        {% endif %}
+    </div>
     <table class="my-5 table">
         <thead>
             <tr class="table-primary">
@@ -46,7 +50,7 @@
         </thead>
         <tbody>
             {% for pokemon in user.pokemons %}
-                <tr >
+                <tr>
                     <td class="text-center align-middle"><strong>{{ loop.index }}</strong></td>
                     <td class="text-center align-middle">
                         <p class="text-primary">
@@ -61,6 +65,6 @@
         </tbody>
     </table>
     <p>
-        <a href="{{ path('trainer_list') }}">Go back</a>
+        <a href="{{ path('trainer_list') }}"><span class="btn btn-sm btn-secondary">Go back to trainer's list</span></a>
     </p>
 {% endblock %}

@@ -61,9 +61,7 @@ class CityHandler
             $this->restorePokemon();
 
         } elseif($request === 'donatePokemon') {
-
-            if(is_int($pokemonId = $form->getData()['selectPokemon'])) {
-
+            if($pokemonId = $form->getData()['selectPokemon']) {
                 $this->donatePokemon($pokemonId);
             } else {
                 $this->session->add('danger', 'You have to select a pokemon');
@@ -91,11 +89,9 @@ class CityHandler
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
         $donatedPokemon = $this->pokemonRepository->find($pokemonId);
 
-        if($pokemons->count() <= 1) {
+        if(count($pokemons) <= 1) {
             $this->session->add('danger', "You can't donate your only pokemon.");
-        }
-
-        if(in_array($donatedPokemon, $pokemons)) {
+        } elseif(in_array($donatedPokemon, $pokemons)) {
             $this->user->removePokemon($donatedPokemon);
             $this->manager->remove($donatedPokemon);
             $this->manager->flush();
