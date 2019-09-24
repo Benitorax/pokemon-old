@@ -22,7 +22,6 @@ class TournamentHandler extends AdventureHandler
             }
             return $this->handle($form);
         }
-        dump('what to do if come here?');
         return $this->handleNext();
     }
 
