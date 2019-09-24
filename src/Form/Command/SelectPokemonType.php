@@ -19,7 +19,7 @@ class SelectPokemonType extends AbstractType
     {
         $this->user = $security->getUser();
     }
-
+    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder

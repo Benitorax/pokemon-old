@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exchange pokemon{% endblock %}
+{% form_theme pokemonExchangeForm 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+    <h1 class="text-secondary">Exchange pokemon</h1>
+
+    {{ form_start(pokemonExchangeForm) }}
+    {{ form_widget(pokemonExchangeForm) }}
+    {{ form_end(pokemonExchangeForm) }}
+{% endblock %}

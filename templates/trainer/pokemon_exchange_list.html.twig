@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pokemon exchanges in progress{% endblock %}
+
+{% block body %}
+    <h1 class="text-secondary mb-5">Pokemon exchanges in progress</h1>
+
+    {% for ex in pokemonExchanges %}
+        <div class="card border border-info">
+            <div class="card-body">
+                <table class="table table-light">
+                    <thead class="table-info">
+                        <tr>
+                            <th class="text-center">Offerer</th>
+                            <th class="text-center">Proposed</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Recipient</th>
+                            <th class="text-center">Requested</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{ ex.trainer1.username }}</td>
+                            <td class="text-center font-weight-bold text-primary">{{ ex.pokemon1.name }} (level: {{ ex.pokemon1.level }})</td>
+                            <td class="text-center align-middle table-secondary font-weight-bold">{{ex.status}}</td>
+                            <td class="text-center">{{ ex.trainer2.username }}</td>
+                            <td class="text-center font-weight-bold text-primary">{{ ex.pokemon2.name }} (level: {{ ex.pokemon2.level }})</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-center font-weight-bold">
+                                Response: {% if ex.answer1 is not same as('None') %}{{ ex.answer1 }}{% endif %}
+                            </td>
+                            <td class="text-center table-secondary">
+                                {%- if ex.updatedAt is not null -%}
+                                    Updated the {{ ex.updatedAt|date('m/d/Y \\a\\t H:i') }}
+                                {%- else -%}
+                                    Created the {{ ex.createdAt|date('m/d/Y \\a\\t H:i:s') }}
+                                {%- endif -%}
+                            </td>
+                            <td colspan="2" class="text-center font-weight-bold">
+                                Response: {% if ex.answer2 is not same as('None') %}{{ ex.answer2 }}{% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row justify-content-center">
+                    <a href="{{ path('pokemon_exchange_edit', {id: ex.id}) }}"><button class="mr-5 btn btn-warning">Modify</button></a>
+                    {% if app.user is same as(ex.trainer1) %}
+                        {% if ex.answer1 is same as('Accepted') %}
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Withdraw</button></a>
+                        {% elseif ex.answer1 is same as('None') %}
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Refuse</button></a>
+                        {% endif %}
+                    {% elseif app.user is same as(ex.trainer2) %}
+                        {% if ex.answer2 is same as('Accepted') %}
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Withdraw</button></a>
+                        {% elseif ex.answer2 is same as('None') %}
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Refuse</button></a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

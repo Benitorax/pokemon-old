@@ -3,6 +3,7 @@
 namespace App\Form\Command;
 
 use App\Entity\Pokemon;
+use App\Repository\BattleTeamRepository;
 use App\Repository\PokemonRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Security\Core\Security;

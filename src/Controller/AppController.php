@@ -107,7 +107,7 @@ class AppController extends AbstractController
         if($contactForm->isSubmitted() && $contactForm->isValid()) {
             $message = $messageManager->createContactMessage($contactForm->getData());
             $this->addFlash('success', 'Your message has been sent.');
-            $mailer->sentMailToAdminForNewMessage($message);
+            $mailer->sendMailToAdminForNewMessage($message);
 
             return $this->redirectToRoute('app_index');
         }

@@ -5,6 +5,7 @@ use DateTime;
 use Ramsey\Uuid\Uuid;
 use \Twig\Environment;
 use App\Entity\ContactMessage;
+use App\Entity\PokemonExchange;
 use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -43,14 +44,14 @@ class CustomMailer
         $this->mailer->send($message);
     }
 
-    public function sentMailToAdminForNewMessage(ContactMessage $cMessage) {
+    public function sendMailToAdminForNewMessage(ContactMessage $cMessage) 
+    {
         $users = $this->userRepository->findAllAdmin();
         foreach($users as $user) {
             $message = $this->prepareMessageToAdmin('admin_message_new', 'You have received a new message', $user, $cMessage);
             $this->mailer->send($message);
         }
     }
-
 
     public function prepareMessage(string $template, string $subject, UserInterface $user)
     {
@@ -94,5 +95,48 @@ class CustomMailer
         $user->setToken(Uuid::uuid4());
         $user->setTokenCreatedAt(new \DateTime('now'));
         $this->manager->flush();
+    }
+
+    public function sendMailForNewPokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    {
+        $message = $this->prepareMessageForPokemonExchange('pokemon_exchange_new', 'You have received a request for pokemons exchange', $user, $exchange);
+        $this->mailer->send($message);
+    }
+
+    public function sendMailForEditPokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    {
+        $message = $this->prepareMessageForPokemonExchange('pokemon_exchange_edit', 'A request for pokemons exchange has been modified', $user, $exchange);
+        $this->mailer->send($message);
+    }
+
+    public function sendMailForRefusePokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    {
+        $message = $this->prepareMessageForPokemonExchange('pokemon_exchange_refuse', 'A request for pokemons exchange has been refused or withdrawn', $user, $exchange);
+        $this->mailer->send($message);
+    }
+
+    public function sendMailForAcceptPokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    {
+        $message = $this->prepareMessageForPokemonExchange('pokemon_exchange_accept', 'A request for pokemons exchange has been accepted', $user, $exchange);
+        $this->mailer->send($message);
+    }
+
+    public function prepareMessageForPokemonExchange(string $template, string $subject, UserInterface $user, PokemonExchange $exchange)
+    {
+        return (new \Swift_Message($subject))
+            ->setFrom('contact@pokemon.com')
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->twig->render(
+                    // templates/hello/email.txt.twig
+                    'email/pokemon_exchange/'.$template.'.html.twig',[
+                        'username' => $user->getUsername(),
+                        'ex' => $exchange,
+                        'title' => $subject
+                    ]
+                    ),
+                    'text/html'
+            )
+        ;
     }
 }

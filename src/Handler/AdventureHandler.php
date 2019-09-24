@@ -138,12 +138,13 @@ class AdventureHandler
             $form = $this->commandManager->createCommandForm(TravelType::class);
             $data = $this->battleManager->manageLevelupForAdventure();
             $messages[] = "<strong>". $opponentTeam->getCurrentFighter()->getName() ."</strong> was captured!";
-            $messages[] = "<strong>". $data['name'] ."</strong> levels up to ".
-                          $playerTeam->getCurrentFighter()->getLevel()." (+". $data['increasedLevel'] .").";
             if($data['hasEvolved']) {
                 $spriteFrontUrl = $playerTeam->getCurrentFighter()->getspriteFrontUrl();
                 $messages[] = "<strong>". $data['name'] ."</strong> evolves to <strong>".
                               $data['newName'].'</strong>.';
+            } elseif($data['hasLeveledUp']) {
+                $messages[] = "<strong>". $data['name'] ."</strong> levels up to ".
+                $playerTeam->getCurrentFighter()->getLevel()." (+". $data['increasedLevel'] .").";
             }
             $this->clear();
             $opponentTeam = null;
@@ -212,29 +213,35 @@ class AdventureHandler
     }
 
     public function handleNext() {
-        /** @var BattleManager $this->battleManager */
-        $damage = $this->battleManager->manageDamagePlayerFighter();
         $battle = $this->battleManager->getCurrentBattle();
+        $opponentTeam = $battle->getOpponentTeam();
+        $playerTeam = $battle->getPlayerTeam();
         $opponentFighter = $battle->getOpponentTeam()->getCurrentFighter();
         $playerFighter = $battle->getPlayerTeam()->getCurrentFighter(); 
         $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
 
-        if($playerFighter->getIsSleep()) {
-            $form = $this->commandManager->createCommandForm(TravelType::class);
-            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
-                            $playerFighter->getName() ."</strong> out (-".$damage." HP).";
+        if(!$opponentFighter->getIsSleep()) {
+            $damage = $this->battleManager->manageDamagePlayerFighter();
 
-            $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
-            $this->clear();
+            if($playerFighter->getIsSleep()) {
+                $form = $this->commandManager->createCommandForm(TravelType::class);
+                $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
+                                $playerFighter->getName() ."</strong> out (-".$damage." HP).";
+    
+                $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
+                $this->clear();
+            } else {
+                $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
+                $messages[] = "It inflicts ".$damage." points of damage.";
+            }    
         } else {
-            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
-            $messages[] = "It inflicts ".$damage." points of damage.";
+            $messages[] = 'Try to capture it!';
         }
 
         return [
             'messages' => $messages,
-            'opponent' => $battle->getOpponentTeam(),
-            'player' => $battle->getPlayerTeam(),
+            'opponent' => $opponentTeam,
+            'player' => $playerTeam,
             'form' => $form
         ];
     }
