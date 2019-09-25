@@ -47,6 +47,9 @@ class CustomMailer
     public function sendMailToAdminForNewMessage(ContactMessage $cMessage) 
     {
         $users = $this->userRepository->findAllAdmin();
+        
+        if(!$users) { return; }
+
         foreach($users as $user) {
             $message = $this->prepareMessageToAdmin('admin_message_new', 'You have received a new message', $user, $cMessage);
             $this->mailer->send($message);
