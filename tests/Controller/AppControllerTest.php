@@ -104,4 +104,41 @@ class AppControllerTest extends CustomWebTestCase
 
         // ...
     }
+
+    public function testPokemonExchangeBetween2Trainers()
+    {
+        $misty = $this->createUserAndLogIn('Misty', 'misty@mail.com', '123456', 1);
+        $ash = $this->createUserAndLogIn('Ash', 'ash@mail.com', '123456', 4);
+        
+        $ash->request('GET', '/trainer/pokemons');
+        $this->assertContains('Charmander', $ash->getResponse()->getContent());
+        $misty->request('GET', '/trainer/pokemons');
+        $this->assertContains('Bulbasaur', $misty->getResponse()->getContent());
+
+        $ash->request('GET', '/trainer/list');
+        $ash->clickLink('Misty');
+        $ash->clickLink('Do you want to exchange pokemons with this trainer?');
+        $ash->submitForm('Submit');
+        $ash->followRedirect();
+        $this->assertContains('Your request of pokemons exchange has been submit', $ash->getResponse()->getContent());
+        
+        $misty->request('GET', '/exchange');
+        $misty->clickLink('Modify');
+        $misty->submitForm('Submit');
+        $misty->followRedirect();
+        $this->assertContains('The modification of pokemons exchange has been submit', $misty->getResponse()->getContent());
+
+        $ash->request('GET', '/exchange');
+        $ash->clickLink('Accept');
+        $ash->followRedirect();
+        $this->assertContains('You have accepted the exchange', $ash->getResponse()->getContent());
+
+        $ash->request('GET', '/trainer/pokemons');
+        $this->assertContains('Bulbasaur', $ash->getResponse()->getContent());
+        $misty->request('GET', '/trainer/pokemons');
+        $this->assertContains('Charmander', $misty->getResponse()->getContent());
+
+        //dump($ash->getResponse()->getContent());
+
+    }
 }

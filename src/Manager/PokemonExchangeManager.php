@@ -10,13 +10,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class PokemonExchangeManager
 {
     private $manager;
-    private $pokExRepository;
     private $mailer;
 
-    public function __construct(ObjectManager $manager, PokemonExchangeRepository $pokExRepository, CustomMailer $mailer)
+    public function __construct(ObjectManager $manager, CustomMailer $mailer)
     {
         $this->manager = $manager;
-        $this->pokExRepository = $pokExRepository;
         $this->mailer = $mailer;
     }
 
@@ -39,12 +37,12 @@ class PokemonExchangeManager
     {
         $pokemonExchange->setUpdatedAt(new \DateTime('now'))->setStatus(PokemonExchange::STATUS_MODIFIED);
 
-        if($pokemonExchange->getTrainer1() == $user) {
+        if($pokemonExchange->getTrainer1() === $user) {
             $pokemonExchange
                 ->setAnswer1(PokemonExchange::USER_ACCEPT_CONTRACT)
                 ->setAnswer2(PokemonExchange::USER_NO_ANSWER_CONTRACT);
             $this->mailer->sendMailForEditPokemonExchange($pokemonExchange->getTrainer2(), $pokemonExchange);
-        } elseif($pokemonExchange->getTrainer2() == $user) {
+        } elseif($pokemonExchange->getTrainer2() === $user) {
             $pokemonExchange
                 ->setAnswer1(PokemonExchange::USER_NO_ANSWER_CONTRACT)
                 ->setAnswer2(PokemonExchange::USER_ACCEPT_CONTRACT);
@@ -57,10 +55,10 @@ class PokemonExchangeManager
 
     public function acceptPokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user)
     {
-        if($pokemonExchange->getTrainer1() == $user) {
+        if($pokemonExchange->getTrainer1() === $user) {
             $pokemonExchange->setAnswer1(PokemonExchange::USER_ACCEPT_CONTRACT);
             $this->mailer->sendMailForAcceptPokemonExchange($pokemonExchange->getTrainer2(), $pokemonExchange);
-        } elseif($pokemonExchange->getTrainer2() == $user) {
+        } elseif($pokemonExchange->getTrainer2() === $user) {
             $pokemonExchange->setAnswer2(PokemonExchange::USER_ACCEPT_CONTRACT);
             $this->mailer->sendMailForAcceptPokemonExchange($pokemonExchange->getTrainer1(), $pokemonExchange);
         }
@@ -79,10 +77,10 @@ class PokemonExchangeManager
 
     public function deletePokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user)
     {
-        if($pokemonExchange->getTrainer1() == $user) {
+        if($pokemonExchange->getTrainer1() === $user) {
             $pokemonExchange->setAnswer1(PokemonExchange::USER_REFUSE_CONTRACT);
             $this->mailer->sendMailForRefusePokemonExchange($pokemonExchange->getTrainer2(), $pokemonExchange);
-        } elseif($pokemonExchange->getTrainer2() == $user) {
+        } elseif($pokemonExchange->getTrainer2() === $user) {
             $pokemonExchange->setAnswer2(PokemonExchange::USER_REFUSE_CONTRACT);
             $this->mailer->sendMailForRefusePokemonExchange($pokemonExchange->getTrainer1(), $pokemonExchange);
         }
