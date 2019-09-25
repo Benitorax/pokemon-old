@@ -25,9 +25,11 @@ class CityController extends AbstractController
 
             if($shopForm->isSubmitted() && $shopForm->isValid()) {
                 $cityHandler->handleShopForm($shopForm);
+                return $this->redirectToRoute('city');
 
             } elseif($infirmaryForm->isSubmitted() && $infirmaryForm->isValid()) {
                 $cityHandler->handleInfirmaryForm($infirmaryForm);
+                return $this->redirectToRoute('city');
             }
         }
 

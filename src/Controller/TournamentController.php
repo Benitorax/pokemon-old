@@ -49,12 +49,13 @@ class TournamentController extends AbstractController
         if($request->isMethod('POST')) {
             $data = $tournamentHandler->handleRequest($request);
 
-            return $this->render('adventure/index.html.twig', [
+            return $this->render('tournament/battle.html.twig', [
                 'form' => $data['form']->createView(),
                 'opponent' => $data['opponent'],
                 'player' => $data['player'],
                 'messages' => $data['messages'],
-                'centerImageUrl' => $data['centerImageUrl'] ?? null
+                'centerImageUrl' => $data['centerImageUrl'] ?? null,
+                'textColor' => $data['textColor'] ?? null
             ]);
         }
 

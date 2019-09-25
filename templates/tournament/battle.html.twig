@@ -6,7 +6,7 @@
 <div class="row justify-content-center">
     <div class="col-sm-5">
         <div class="row">
-            <div class="col-sm-12 p-3 mb-2 border border-secondary rounded-lg text-white bg-dark">
+            <div class="col-sm-12 p-3 mb-2 border border-secondary rounded-lg text-white bg-dark{% if textColor is defined %} {{textColor}}{% endif %}" style="min-height: 90px;">
                 {% for message in messages %}
                     <div class="text-center">{{ message|raw }}</div>
                 {% else %}
@@ -29,11 +29,9 @@
                     {% endif %}
                 </div>
                 {% if centerImageUrl is defined %}
-                    <div class="row">
+                    <div class="row mt-4" style="min-height: 80px;">
                         <img class="mx-auto" src="{{ centerImageUrl }}">
                     </div>
-                {% else %}
-                    <br><br><br><br>
                 {% endif %}
                 <div class="mb-3">
                     {% if player and player.currentFighter %}

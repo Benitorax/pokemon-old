@@ -138,7 +138,8 @@ class TournamentHandler extends AdventureHandler
             'messages' => $messages,
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => $form
+            'form' => $form,
+            'textColor' => 'text-danger'
         ];
     }
 
@@ -146,6 +147,7 @@ class TournamentHandler extends AdventureHandler
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = $battle->getOpponentTeam();
         $playerTeam = $battle->getPlayerTeam();
+        $textColor = 'text-danger';
 
         if($this->battleManager->getPlayerTeam()->getHealCount() >= 3) {
             $messages[] = "You have already used your 3rd and last health potion!";
@@ -153,6 +155,7 @@ class TournamentHandler extends AdventureHandler
             $hpRange = $this->battleManager->manageHealPlayerFighter();
             if($hpRange) {
                 $messages[] = "<strong>".$playerTeam->getCurrentFighter()->getName() ."</strong> has been healed (+".$hpRange."HP)!";
+                $textColor = 'text-info';
             } else {
                 $messages[] = "You don't have any health potions!";
             }
@@ -162,7 +165,8 @@ class TournamentHandler extends AdventureHandler
             'messages' => $messages,
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
-            'form' => $this->commandManager->createCommandForm(TournamentBattleType::class)
+            'form' => $this->commandManager->createCommandForm(TournamentBattleType::class),
+            'textColor' => isset($textColor) ? $textColor : null
         ];
     }
 
@@ -182,7 +186,7 @@ class TournamentHandler extends AdventureHandler
         if($this->battleManager->getPlayerFighter()->getIsSleep()) {
             $isChanged = $this->battleManager->manageChangeFighterOfTeam($this->battleManager->getPlayerTeam());
             if($isChanged) {
-                $messages[] = "You summon <strong>". $this->battleManager->getPlayerFighter()->getName() ."</strong>"; 
+                $messages[] = "You summon <strong>". $this->battleManager->getPlayerFighter()->getName() ."</strong>";
             }
         }
         $form = $this->commandManager->createCommandForm(TournamentBattleType::class);
@@ -231,9 +235,9 @@ class TournamentHandler extends AdventureHandler
 
             foreach($datas as $data) {
                 if($data['hasEvolved']) {
-                    $messages[] = "<strong>".$data['name']."</strong> evolves to ".$data['newName']." (level: ".$data['newLevel'].".";
+                    $messages[] = "<strong>".$data['name']."</strong> evolves to <strong>".$data['newName']."</strong> (level: ".$data['newLevel'].").";
                 } elseif($data['hasLeveledUp']) {
-                    $messages[] = "<strong>".$data['name']."</strong> levels up to ".$data['newLevel']." (+".$data['increasedLevel'].").";
+                    $messages[] = "<strong>".$data['name']."</strong> levels up to <strong>".$data['newLevel']."</strong> (+".$data['increasedLevel'].").";
                 }
             }
         } else {

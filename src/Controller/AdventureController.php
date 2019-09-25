@@ -23,7 +23,8 @@ class AdventureController extends AbstractController
                 'opponent' => $data['opponent'],
                 'player' => $data['player'],
                 'messages' => $data['messages'],
-                'centerImageUrl' => $data['centerImageUrl'] ?? null
+                'centerImageUrl' => $data['centerImageUrl'] ?? null,
+                'textColor' => $data['textColor'] ?? null
             ]);
         }
 

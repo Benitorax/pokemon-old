@@ -141,7 +141,7 @@ class AdventureHandler
             if($data['hasEvolved']) {
                 $spriteFrontUrl = $playerTeam->getCurrentFighter()->getspriteFrontUrl();
                 $messages[] = "<strong>". $data['name'] ."</strong> evolves to <strong>".
-                              $data['newName'].'</strong>.';
+                              $data['newName'].'</strong> (level: '.$data['newLevel'].").";
             } elseif($data['hasLeveledUp']) {
                 $messages[] = "<strong>". $data['name'] ."</strong> levels up to ".
                 $playerTeam->getCurrentFighter()->getLevel()." (+". $data['increasedLevel'] .").";
@@ -153,7 +153,7 @@ class AdventureHandler
         } else {
             if($result == 'failed') { $messages[] = "You missed!"; }
             else { $messages[] = 'You don\'t have any pokeball!'; }
-
+            $textColor = 'text-danger';
             $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
         }
 
@@ -162,7 +162,8 @@ class AdventureHandler
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
             'form' => $form,
-            'centerImageUrl' => $spriteFrontUrl ?? null
+            'centerImageUrl' => $spriteFrontUrl ?? null,
+            'textColor' => isset($textColor) ? $textColor : null
         ];
     }
 
@@ -200,15 +201,18 @@ class AdventureHandler
 
         if($hpRange) {
             $messages[] = "<strong>".$playerTeam->getCurrentFighter()->getName() ."</strong> has been healed (+".$hpRange."HP)!";
+            $textColor = 'text-info';
         } else {
             $messages[] = "You don't have any health potions!";
+            $textColor = 'text-danger';
         }
 
         return [
             'messages' => $messages,
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
-            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class)
+            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class),
+            'textColor' => isset($textColor) ? $textColor : null
         ];
     }
 
@@ -227,12 +231,13 @@ class AdventureHandler
                 $form = $this->commandManager->createCommandForm(TravelType::class);
                 $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
                                 $playerFighter->getName() ."</strong> out (-".$damage." HP).";
-    
                 $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
+                $textColor = 'text-danger';
                 $this->clear();
             } else {
                 $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
                 $messages[] = "It inflicts ".$damage." points of damage.";
+                $textColor = 'text-danger';
             }    
         } else {
             $messages[] = 'Try to capture it!';
@@ -242,7 +247,8 @@ class AdventureHandler
             'messages' => $messages,
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
-            'form' => $form
+            'form' => $form,
+            'textColor' => isset($textColor) ? $textColor : null
         ];
     }
 }

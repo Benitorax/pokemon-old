@@ -31,10 +31,11 @@ class CityHandler
         $isValidated = $this->validatePurchaseMoney($form);
 
         if(!$isValidated || ($form['pokeball'] == 0 && $form['healthPotion'] == 0)) {
+            $this->session->add('danger', 'Select the number of items you would like to buy.');
             return;
         }
 
-        if(is_int($pokeballNumber = $form['pokeball'])) {
+        if(is_int($pokeballNumber = $form['pokeball']) && $form['pokeball'] != 0) {
             $this->user->addPokeball($pokeballNumber);
             $this->user->decreasePokedollar($pokeballNumber*self::POKEBALL_PRICE);
 
@@ -42,7 +43,7 @@ class CityHandler
             $this->session->add('success', $pokeballMessage);
         }
 
-        if(is_int($hpNumber = $form['healthPotion'])) {
+        if(is_int($hpNumber = $form['healthPotion']) && $form['healthPotion'] != 0) {
             $this->user->addHealthPotion($hpNumber);
             $this->user->decreasePokedollar($hpNumber*self::HEALTH_POTION_PRICE);
 
