@@ -3,13 +3,14 @@
 <p>It only includes the first generation, so the first 151 pokemons, from Bulbasaur to Mew.</p>
 <p>Trainers in tournament are auto generated. Users can interact each other only by exchanging pokemon. They can also leave messages in contact page that only admin users can read.</p>
 
-## Database
+## Database and email configuration
 <p>
   Update the config in .env file for your database by defining the <code>DATABASE_URL=</code>.<br>
-  In .env file you can also config an email by defining <code>MAILER_URL=</code>, then you have to comment <code>disable_delivery: true</code> in swiftmailer.yaml.
+  In .env file you can also config an email address by defining <code>MAILER_URL=</code>, then you have to comment or delete the line with <code>disable_delivery: true</code> in swiftmailer.yaml. <br>
+  If you don't config an email address, you need to check your emails in the profiler to activate the account you register.
 </p>
 
-<p>Create the database:<br>
+<p>Then, create the database:<br>
   <code>php bin/console doctrine:database:create</code><br>
   <code>php bin/console doctrine:schema:create</code><br>
   <code>php bin/console doctrine:schema:update --force</code>
@@ -21,6 +22,7 @@
   If you have Symfony CLI Tool, you can launch the server with:<br>
   <code>symfony server:start</code>
 </p>
+
 ## Application
 <p>You can:</p>
 <ul>
