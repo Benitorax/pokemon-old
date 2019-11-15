@@ -5,6 +5,7 @@ namespace App\Entity;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PokemonRepository")
@@ -16,16 +17,19 @@ class Pokemon
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
+     * @Groups("selection")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"battle", "selection"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("selection")
      */
     private $level;
 
@@ -41,11 +45,13 @@ class Pokemon
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("battle")
      */
     private $spriteFrontUrl;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("battle")
      */
     private $spriteBackUrl;
 
@@ -56,6 +62,7 @@ class Pokemon
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("battle")
      */
     private $healthPoint = 100;
 

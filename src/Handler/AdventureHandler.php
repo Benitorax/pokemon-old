@@ -2,12 +2,10 @@
 
 namespace App\Handler;
 
-use App\Form\Command\NextType;
+use App\Entity\Pokemon;
 use App\Manager\BattleManager;
 use App\Manager\CommandManager;
-use App\Form\Command\TravelType;
-use App\Form\Command\SelectPokemonType;
-use App\Form\Command\AdventureBattleType;
+use App\Manager\BattleFormManager;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -16,12 +14,14 @@ class AdventureHandler
     protected $battleManager;
     protected $manager;
     protected $commandManager;
+    protected $battleFormManager;
 
-    public function __construct(BattleManager $battleManager, ObjectManager $manager, CommandManager $commandManager)
+    public function __construct(BattleManager $battleManager, ObjectManager $manager, CommandManager $commandManager, BattleFormManager $battleFormManager)
     {
         $this->battleManager = $battleManager;
         $this->manager = $manager;
         $this->commandManager = $commandManager;
+        $this->battleFormManager = $battleFormManager;
     }
     
     public function handleRequest(Request $request)
@@ -75,26 +75,33 @@ class AdventureHandler
         $battle = $this->battleManager->createAdventureBattle();
         $messages[] = "You're located around <strong>". $battle->getArena()->getName() ."</strong> area.";
         $messages[] = "And you come across... <strong>". $battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong>!";
+        $user = $battle->getPlayerTeam()->getTrainer();
 
         return [
-            'messages' => $messages,
+            'messages' => [
+                'messages' => $messages,
+                "textColor" => "text-white"
+            ],
             'opponent' => $battle->getOpponentTeam(),
-            'player' => $battle->getPlayerTeam(),
-            'form' => $this->commandManager->createCommandForm(SelectPokemonType::class)
+            'player' => null,
+            'form' => [$this->battleFormManager->createSelectPokemonField($user)]
         ];
     }
 
-    public function handleSelectPokemon($data) 
+    public function handleSelectPokemon(Pokemon $pokemon) 
     {
-        $this->battleManager->addFighterSelected($data->get('choicePokemon')->getData());
+        $this->battleManager->addFighterSelected($pokemon);
         $battle = $this->battleManager->getCurrentBattle();
         $messages[] = "You have selected <strong>". $battle->getPlayerTeam()->getCurrentFighter()->getName() ."</strong>!";
 
         return [
-            'messages' => $messages,
+            'messages' => [
+                'messages' => $messages,
+                "textColor" => "text-white"
+            ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class)
+            'form' => $this->battleFormManager->createAdventureButtons()
         ];
 
     }
@@ -119,10 +126,13 @@ class AdventureHandler
 
         $battle = $this->battleManager->getCurrentBattle();
         return [
-            'messages' => $messages,
+            'messages' => [
+                'messages' => $messages,
+                "textColor" => "text-white"
+            ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => $this->commandManager->createCommandForm(NextType::class)
+            'form' => [$this->battleFormManager->createNextButton()]
         ];
     }
 
@@ -135,9 +145,10 @@ class AdventureHandler
 
         if($result == 'success') {
         
-            $form = $this->commandManager->createCommandForm(TravelType::class);
+            $form = [$this->battleFormManager->createTravelButton()];
             $data = $this->battleManager->manageLevelupForAdventure();
             $messages[] = "<strong>". $opponentTeam->getCurrentFighter()->getName() ."</strong> was captured!";
+            $textColor = "text-success";
             if($data['hasEvolved']) {
                 $spriteFrontUrl = $playerTeam->getCurrentFighter()->getspriteFrontUrl();
                 $messages[] = "<strong>". $data['name'] ."</strong> evolves to <strong>".
@@ -154,16 +165,18 @@ class AdventureHandler
             if($result == 'failed') { $messages[] = "You missed!"; }
             else { $messages[] = 'You don\'t have any pokeball!'; }
             $textColor = 'text-danger';
-            $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
+            $form = $this->battleFormManager->createAdventureButtons();
         }
 
         return [
-            'messages' => $messages,
+            'messages' => [
+               'messages' => $messages,
+               "textColor" => isset($textColor) ? $textColor : "text-white"
+            ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
             'form' => $form,
             'centerImageUrl' => $spriteFrontUrl ?? null,
-            'textColor' => isset($textColor) ? $textColor : null
         ];
     }
 
@@ -175,17 +188,22 @@ class AdventureHandler
 
         if($result) {
             $messages[] = "You leave with success!";
-            $form = $this->commandManager->createCommandForm(TravelType::class);
+            $textColor = 'text-success';
+            $form = [$this->battleFormManager->createTravelButton()];
             $this->clear();
         } else {
             $messages[] = "<strong>".$battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong> has prevented your escape!";
-            $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
+            $textColor = 'text-danger';
+            $form = $this->battleFormManager->createAdventureButtons();
             $opponentTeam = $battle->getOpponentTeam();
             $playerTeam = $battle->getPlayerTeam(); 
         }
 
         return [
-            'messages' => $messages,
+            'messages' => [
+                'messages' => $messages,
+                "textColor" => isset($textColor) ? $textColor : "text-white"
+            ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
             'form' => $form
@@ -208,11 +226,13 @@ class AdventureHandler
         }
 
         return [
-            'messages' => $messages,
+            'messages' => [
+                'messages' => $messages,
+                "textColor" => isset($textColor) ? $textColor : "text-white"
+            ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
-            'form' => $this->commandManager->createCommandForm(AdventureBattleType::class),
-            'textColor' => isset($textColor) ? $textColor : null
+            'form' => $this->battleFormManager->createAdventureButtons(),
         ];
     }
 
@@ -222,13 +242,13 @@ class AdventureHandler
         $playerTeam = $battle->getPlayerTeam();
         $opponentFighter = $battle->getOpponentTeam()->getCurrentFighter();
         $playerFighter = $battle->getPlayerTeam()->getCurrentFighter(); 
-        $form = $this->commandManager->createCommandForm(AdventureBattleType::class);
+        $form = $this->battleFormManager->createAdventureButtons();
 
         if(!$opponentFighter->getIsSleep()) {
             $damage = $this->battleManager->manageDamagePlayerFighter();
 
             if($playerFighter->getIsSleep()) {
-                $form = $this->commandManager->createCommandForm(TravelType::class);
+                $form = [$this->battleFormManager->createTravelButton()];
                 $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
                                 $playerFighter->getName() ."</strong> out (-".$damage." HP).";
                 $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
@@ -244,11 +264,22 @@ class AdventureHandler
         }
 
         return [
-            'messages' => $messages,
+            'messages' => [
+                'messages' => $messages,
+                "textColor" => isset($textColor) ? $textColor : "text-white"
+            ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
             'form' => $form,
-            'textColor' => isset($textColor) ? $textColor : null
         ];
+    }
+
+    public function checkTurn() {
+        if($battle = $this->battleManager->getCurrentBattle()) {
+            if($battle->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
+            {
+                return $this->handleNext();
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
+    .addEntry('adventure_battle', './assets/js/Components/AdventureBattle.js')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 
@@ -48,9 +49,18 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     // enables @babel/preset-env polyfills
-    .configureBabel(() => {}, {
+    /*.configureBabel(() => {}, {
         useBuiltIns: 'usage',
         corejs: 3
+    })*/
+    .configureBabel((babelConfig) => {
+        if (Encore.isProduction()) {
+            babelConfig.plugins.push(
+                'transform-react-remove-prop-types'
+            );
+        }
+
+        babelConfig.plugins.push('transform-object-rest-spread');
     })
 
     // enables Sass/SCSS support
@@ -67,7 +77,7 @@ Encore
     //.autoProvidejQuery()
 
     // uncomment if you use API Platform Admin (composer req api-admin)
-    //.enableReactPreset()
+    .enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
 ;
 
