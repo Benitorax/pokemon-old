@@ -8,6 +8,9 @@ use App\Manager\AbstractBattleManager;
 
 class BattleManager extends AbstractBattleManager
 {
+    const POKEMON_HP_FULL = 1;
+    const NO_HP_POTION = 2;
+
     public function createAdventureBattle()
     {
         $playerTeam = new BattleTeam();
@@ -206,9 +209,14 @@ class BattleManager extends AbstractBattleManager
 
     public function manageHealPlayerFighter()
     {
-        if($this->getPlayerFighter()->getTrainer()->getHealthPotion() == 0) {
-            return false;
+        if($this->getPlayerFighter()->getHealthPoint() === 100) {
+            return self::POKEMON_HP_FULL;
         }
+
+        if($this->getPlayerFighter()->getTrainer()->getHealthPotion() == 0) {
+            return self::NO_HP_POTION;
+        }
+
         $pokemon = $this->getPlayerFighter();
         $healthPoint = $pokemon->getHealthPoint();
         $pokemon->increaseHealthPoint(rand(40,60));

@@ -14,32 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdventureController extends AbstractController
 {
     /**
-     * @Route("/adventure/", name="adventure")
+     * @Route("/adventure/", name="adventure", methods={"GET"})
      */
-    public function index(Request $request, AdventureHandler $adventureHandler)
+    public function index(AdventureHandler $adventureHandler)
     {
-        if($request->isMethod('POST')) {
-            $data = $adventureHandler->handleRequest($request);
-
-            return $this->render('adventure/index.html.twig', [
-                'form' => $data['form']->createView(),
-                'opponent' => $data['opponent'],
-                'player' => $data['player'],
-                'messages' => $data['messages'],
-                'centerImageUrl' => $data['centerImageUrl'] ?? null,
-                'textColor' => $data['textColor'] ?? null
-            ]);
-        }
-
         $adventureHandler->clear();
-        $form = $this->createForm(TravelType::class);
         $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('adventure/index.html.twig', [
-            'form' => $form->createView(),
-            'opponent' => null,
-            'player' => null,
-            'messages' => null,
             "csrfToken" => $csrfToken
         ]);
     }
@@ -49,8 +31,7 @@ class AdventureController extends AbstractController
      */
     public function start(PokemonRepository $pokemonRepository,BattleFormManager $formManager)
     {
-        // To DO : check if the user has at least one pokemon, otherwise redirect 
-        if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) == 900) {
+        if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
             $messages = [
                 "messages" => ["You need at least one pokemon to go on adventure"],
                 "textColor" => "text-white"
@@ -69,6 +50,9 @@ class AdventureController extends AbstractController
             "player" => null,
             'messages' => $messages,
             "centerImageUrl" => null,
+            "turn" => 'player',
+            "healthPotionCount" => null,
+            "pokeballCount" => null
         ]);
     }
 
@@ -93,6 +77,9 @@ class AdventureController extends AbstractController
             "player" => null,
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => 'player',
+            "healthPotionCount" => null,
+            "pokeballCount" => null
         ]);
     }
 
@@ -117,6 +104,9 @@ class AdventureController extends AbstractController
             "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -141,6 +131,9 @@ class AdventureController extends AbstractController
             "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => $data['turn'],
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -165,6 +158,9 @@ class AdventureController extends AbstractController
             "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -189,6 +185,9 @@ class AdventureController extends AbstractController
             "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => $data['turn'],
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -213,6 +212,9 @@ class AdventureController extends AbstractController
             "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -237,6 +239,9 @@ class AdventureController extends AbstractController
             "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
             "centerImageUrl" => null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
         ]);
     }
 }

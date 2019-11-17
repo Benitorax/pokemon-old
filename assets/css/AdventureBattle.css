@@ -1,0 +1,104 @@
+.pokemon-bounce {
+    animation: bounce 0.35s cubic-bezier(0.240, 0.575, 0.780, 1) infinite alternate;
+}
+
+:screen {
+    --width: 0px;
+    --height: 0px;
+    --half-width: 0;
+    --half-height: 0;
+}
+
+@keyframes bounce {
+    from {transform: translateY(2);}
+    to {transform: translateY(-2px);}
+}
+
+.pokemon-attack-opponent {
+    animation: attack-opponent 0.7s ease-in-out;
+}
+
+@keyframes attack-opponent {
+    from {transform: translate(0, 0);}
+    35% {transform: translate(calc(
+        160px - var(--width)
+    ), 90px);}
+    50% {transform: translate(calc(
+        (160px - var(--width)) / 2
+    ), 60px);}
+    65% {transform: translate(calc(
+        160px - var(--width)
+    ), 90px);}
+    to {transform: translate(0, 0);}
+}
+
+.pokemon-attack-player {
+    animation: attack-player 1s ease-in-out;
+}
+
+@keyframes attack-player {
+    from {transform: translate(0, 0);}
+    35% {transform: translate(calc(
+        var(--width) - 160px
+    ), -90px);}
+    50% {transform: translate(calc(
+        (var(--width) - 160px) / 2
+    ), -60px);}
+    65% {transform: translate(calc(
+        var(--width) - 160px
+    ), -90px);}
+    to {transform: translate(0, 0);}
+}
+
+.pokemon-sleep {
+    filter: brightness(60%)
+}
+
+.pokeball {
+    animation: pokeball-launch 1s ease-in-out;
+}
+
+@keyframes pokeball-launch {
+    from { 
+        transform: scale(1) translate(
+            calc(150px - var(--half-width)), 
+            calc(-100px + var(--half-height))
+        ) rotate(-330deg); 
+    }
+    to { 
+        transform: scale(0.5) translate(
+            calc(50px + var(--half-width)), 
+            calc(50px - var(--half-height))
+        ) rotate(30deg); 
+    }
+}
+
+.health-potion {
+    animation: potion 1s ease-in-out;
+}
+
+@keyframes potion {
+    from { transform: scale(1) translate(0, -20px); }
+    10% { transform: scale(0.7) translate(0, -80px); }
+    35% { transform: scale(0.5) translate(-150px, -100px); }
+    40% { transform: scale(0.5) translate(-150px, -100px) rotate(-11deg); }
+    60% { transform: scale(0.5) translate(-150px, -90px) rotate(10deg); }
+    80% { transform: scale(0.5) translate(-150px, -100px) rotate(-9deg); }
+    to { transform: scale(0) translate(-50px, -90px) rotate(8deg); }
+}
+
+.battle-text-success {
+    color: #99ff99 !important;
+}
+
+.battle-text-danger {
+    color: #ff6666 !important;
+}
+
+.battle-text-info {
+    color: #66ffff !important;
+}
+
+.bg-battle-message {
+    background-color: #00001f;
+}

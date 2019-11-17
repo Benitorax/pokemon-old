@@ -108,6 +108,7 @@ class AdventureHandler
 
     public function handleAttack() 
     {
+        $turn = 'player';
         if($this->battleManager->getOpponentFighter()->getIsSleep()) {
             $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> is already harmless.";
         } else {
@@ -121,6 +122,7 @@ class AdventureHandler
                 $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
                               "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong>!";
                 $messages[] = "It inflicts ".$damage." points of damage.";
+                $turn = 'opponent';
             }    
         }
 
@@ -132,7 +134,8 @@ class AdventureHandler
             ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => [$this->battleFormManager->createNextButton()]
+            'form' => [$this->battleFormManager->createNextButton()],
+            'turn' => $turn
         ];
     }
 
@@ -141,14 +144,15 @@ class AdventureHandler
         $result = $this->battleManager->manageThrowPokeball();
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = $battle->getOpponentTeam();
-        $playerTeam =$battle->getPlayerTeam();
+        $playerTeam = $battle->getPlayerTeam();
+        $turn = 'player';
 
         if($result == 'success') {
         
             $form = [$this->battleFormManager->createTravelButton()];
             $data = $this->battleManager->manageLevelupForAdventure();
             $messages[] = "<strong>". $opponentTeam->getCurrentFighter()->getName() ."</strong> was captured!";
-            $textColor = "text-success";
+            $textColor = "battle-text-success";
             if($data['hasEvolved']) {
                 $spriteFrontUrl = $playerTeam->getCurrentFighter()->getspriteFrontUrl();
                 $messages[] = "<strong>". $data['name'] ."</strong> evolves to <strong>".
@@ -162,10 +166,18 @@ class AdventureHandler
             $playerTeam = null;
 
         } else {
-            if($result == 'failed') { $messages[] = "You missed!"; }
-            else { $messages[] = 'You don\'t have any pokeball!'; }
-            $textColor = 'text-danger';
-            $form = $this->battleFormManager->createAdventureButtons();
+            if($result == 'failed') { 
+                $messages[] = "You missed!";
+                $form = [$this->battleFormManager->createNextButton()];
+                if(!$opponentTeam->getCurrentFighter()->getIsSleep()) {
+                    $turn = 'opponent';
+                }
+            }
+            else { 
+                $messages[] = 'You don\'t have any pokeball!';
+                $form = $this->battleFormManager->createAdventureButtons();
+            }
+            $textColor = 'battle-text-danger';
         }
 
         return [
@@ -177,6 +189,7 @@ class AdventureHandler
             'player' => $playerTeam,
             'form' => $form,
             'centerImageUrl' => $spriteFrontUrl ?? null,
+            'turn' => $turn
         ];
     }
 
@@ -188,12 +201,12 @@ class AdventureHandler
 
         if($result) {
             $messages[] = "You leave with success!";
-            $textColor = 'text-success';
+            $textColor = 'battle-text-success';
             $form = [$this->battleFormManager->createTravelButton()];
             $this->clear();
         } else {
             $messages[] = "<strong>".$battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong> has prevented your escape!";
-            $textColor = 'text-danger';
+            $textColor = 'battle-text-danger';
             $form = $this->battleFormManager->createAdventureButtons();
             $opponentTeam = $battle->getOpponentTeam();
             $playerTeam = $battle->getPlayerTeam(); 
@@ -212,17 +225,19 @@ class AdventureHandler
 
     public function handleHeal() {
         /** @var BattleManager $this->battleManager */
-        $hpRange = $this->battleManager->manageHealPlayerFighter();
+        $result = $this->battleManager->manageHealPlayerFighter();
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = $battle->getOpponentTeam();
         $playerTeam = $battle->getPlayerTeam();
 
-        if($hpRange) {
-            $messages[] = "<strong>".$playerTeam->getCurrentFighter()->getName() ."</strong> has been healed (+".$hpRange."HP)!";
-            $textColor = 'text-info';
-        } else {
+        if($result === BattleManager::POKEMON_HP_FULL) {
+            $messages[] = "Your pokemon already has all its health points!";
+        } elseif($result === BattleManager::NO_HP_POTION) {
             $messages[] = "You don't have any health potions!";
-            $textColor = 'text-danger';
+            $textColor = 'battle-text-danger';
+        } else {
+            $messages[] = "<strong>".$playerTeam->getCurrentFighter()->getName() ."</strong> has been healed (+".$result."HP)!";
+            $textColor = 'battle-text-info';
         }
 
         return [
@@ -252,12 +267,12 @@ class AdventureHandler
                 $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
                                 $playerFighter->getName() ."</strong> out (-".$damage." HP).";
                 $messages[] = "Besides, <strong>". $opponentFighter->getName() ."</strong> has escaped.";
-                $textColor = 'text-danger';
+                $textColor = 'battle-text-danger';
                 $this->clear();
             } else {
                 $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
                 $messages[] = "It inflicts ".$damage." points of damage.";
-                $textColor = 'text-danger';
+                $textColor = 'battle-text-danger';
             }    
         } else {
             $messages[] = 'Try to capture it!';

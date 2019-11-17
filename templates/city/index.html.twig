@@ -14,13 +14,14 @@
             </div>
             <div class="card-body">
                 <h6 class="card-subtitle mt-3 mb-2 text-muted">Enter the number of items</h6>
-                {{ form_start(shopForm, {attr: {class: 'w-25'}}) }}
+                {{ form_start(shopForm, {attr: {class: 'col-sm-10 col-md-8 col-lg-6 col-xl-5'}}) }}
                     <div class="form-inline">
-                        <span class="mr-5">{{ form_label(shopForm.pokeball) }}</span>
+                        <span class="">{{ form_label(shopForm.pokeball) }}</span>
                         <span class="ml-auto">{{ form_widget(shopForm.pokeball) }}</span>
                     </div>
+                    <br />
                     <div class="form-inline">
-                        <span class="mr-5">{{ form_label(shopForm.healthPotion) }}</span>
+                        <span class="">{{ form_label(shopForm.healthPotion) }}</span>
                         <span class="ml-auto">{{ form_widget(shopForm.healthPotion) }}</span>
                     </div>
                     <div class="mt-5">

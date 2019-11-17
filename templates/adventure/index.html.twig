@@ -6,13 +6,18 @@
 <div id="r-battle" class="row justify-content-center">
 </div>
 <span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
-{% endblock %}
+{% endblock body %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {# <script src="{{ asset('build/adventure_battle.css') }}"></script> #}
+    {{ encore_entry_link_tags('adventure_battle') }}
+{% endblock stylesheets %}
 
 {% block javascripts %}
     {{ parent() }}
     {# <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script> #}
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="{{ asset('build/adventure_battle.js') }}"></script>
     {{ encore_entry_script_tags('adventure_battle') }}
-{% endblock %}
+{% endblock javascripts %}
