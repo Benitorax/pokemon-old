@@ -4,23 +4,19 @@ namespace App\Handler;
 
 use App\Entity\Pokemon;
 use App\Manager\BattleManager;
-use App\Manager\CommandManager;
 use App\Manager\BattleFormManager;
-use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class AdventureHandler
 {
     protected $battleManager;
     protected $manager;
-    protected $commandManager;
     protected $battleFormManager;
 
-    public function __construct(BattleManager $battleManager, ObjectManager $manager, CommandManager $commandManager, BattleFormManager $battleFormManager)
+    public function __construct(BattleManager $battleManager, ObjectManager $manager, BattleFormManager $battleFormManager)
     {
         $this->battleManager = $battleManager;
         $this->manager = $manager;
-        $this->commandManager = $commandManager;
         $this->battleFormManager = $battleFormManager;
     }
 

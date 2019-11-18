@@ -268,13 +268,14 @@ class TournamentController extends AbstractController
         }
 
         $data = $tournamentHandler->handleRestorePokemons();
+        $round = $this->getUser()->getConsecutiveWin() % 3;
 
         return $this->json([
             "form" => $data['form'],
             "opponent" => null,
             "player" => null,
             'messages' => $data['messages'],
-            "centerImageUrl" => ['/images/round'.($this->getUser()->getChampionCount() % 3).'.png'],
+            "centerImageUrl" => ['/images/round'.$round.'.png'],
             "turn" => 'player',
             "pokeballCount" => null,
             "healthPotionCount" => null

@@ -5,7 +5,6 @@ use App\Entity\Pokemon;
 use App\Manager\BattleManager;
 use App\Handler\AdventureHandler;
 use App\Manager\BattleFormManager;
-use Symfony\Component\HttpFoundation\Request;
 
 class TournamentHandler extends AdventureHandler
 {    
