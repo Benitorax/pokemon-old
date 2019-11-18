@@ -11,21 +11,21 @@ function Opponent(props) {
     let transitions = useTransition(opponents, null, {
         from: { opacity: 0.5, transform: 'translateX(50px)' },
         enter: { opacity: 1, transform: 'translateX(0)' },
-        leave: { opacity: 0.5, filter: 'brightness(0%)' },
+        leave: { opacity: 0.5, display: 'none' },
     });  
 
     const baseClassName = 'mr-4';
     const [className, setClassName] = useState(baseClassName);
 
     useEffect(() => {
-        setTimeout(() => { 
-            setClassName(baseClassName + ' pokemon-bounce');
-        }, 1100);
+        setTimeout(() => setClassName(baseClassName + ' pokemon-bounce'), 1100);
     }, []);
 
     useEffect(() => {
         if(parseInt(opponent.healthPoint) === 0 ) {
             setClassName(baseClassName + ' pokemon-bounce pokemon-sleep')
+        } else {
+            setClassName(baseClassName + ' pokemon-bounce');
         }
     }, [opponent.healthPoint]);
 
@@ -36,9 +36,7 @@ function Opponent(props) {
             setClassName(baseClassName + ' pokemon-attack-opponent');
         }
 
-        setTimeout(() => { 
-            setClassName(baseClassName + ' pokemon-bounce');
-        }, 1400);
+        setTimeout(() => setClassName(baseClassName + ' pokemon-bounce'), 1400);
     }, [props.command]);
 
     return (
@@ -62,26 +60,30 @@ function Player(props) {
     let transitions = useTransition(players, null, {
         from: { opacity: 0, transform: 'translateX(-50px)' },
         enter: { opacity: 1, transform: 'translateX(0)' },
-        leave: { opacity: 0, filter: 'brightness(0%)' },
+        leave: { opacity: 0, display: 'none' },
     });   
 
     const baseClassName = 'mr-4';
     const [className, setClassName] = useState(baseClassName);
 
     useEffect(() => {
-        setTimeout(() => { 
-            setClassName(baseClassName + ' pokemon-bounce');
-        }, 1100);
+        setTimeout(() => setClassName(baseClassName + ' pokemon-bounce'), 1100);
     }, []);
 
     useEffect(() => {
         if(props.command === 'attack') {
             setClassName(baseClassName + ' pokemon-attack-player');
         }
-        setTimeout(() => { 
-            setClassName(baseClassName + ' pokemon-bounce');
-        }, 1400);
+        setTimeout(() => setClassName(baseClassName + ' pokemon-bounce'), 1400);
     }, [props.command]);
+
+    useEffect(() => {
+        if(parseInt(player.healthPoint) === 0 ) {
+            setClassName(baseClassName + ' pokemon-bounce pokemon-sleep')
+        } else {
+            setClassName(baseClassName + ' pokemon-bounce');
+        }
+    }, [player.healthPoint]);
 
     return (
         <>
@@ -108,7 +110,7 @@ function CenterImage(props) {
     useEffect(() => {
         if(command === 'throwPokeball' && parseInt(props.pokeballCount) > 0) {
             setNewClassName('pokeball');
-            setUrlImage('/images/pokeball3.png')
+            setUrlImage('/images/pokeball.png')
             setTimeout(() => {
                 setUrlImage(null)
                 setClassName(null);
@@ -127,14 +129,18 @@ function CenterImage(props) {
     
     return (
         <>
+            <div style={{ height: '96px' }}>
+                <div className="row" style={{ maxHeight: '0px' }}>
+                    { props.centerImageUrl === null ? null :
+                        props.centerImageUrl.map( (centerImageUrl, index) =>
+                            <img key={index} className="mx-auto mt-3" src={ centerImageUrl }/>
+                        )
+                    }
+                </div>
+            </div>
             { urlImage === null ? null :
                 <div className={className} style={{ zIndex: 10, maxHeight: '0px'}}>
                     <img className="mx-auto" src={urlImage}/>
-                </div>
-            }
-            { props.centerImageUrl === null ? null :
-                <div className="row">
-                    <img className="mx-auto" src={ props.centerImageUrl }/>
                 </div>
             }
         </>
@@ -160,7 +166,7 @@ export function BattleScreen(props) {
             <div id="screen" style={{minHeight: '300px'}} className="col-sm-12 mb-2 border border-secondary rounded-lg">
                 <div className="mt-2">
                     { props.opponent !== null ? <Opponent turn={props.turn} command={props.command} opponent={props.opponent}/> : null }
-                </div><br/><br/><br/><br/>
+                </div>
                 <CenterImage 
                     healthPoint = {healthPoint}
                     pokeballCount={props.pokeballCount} 

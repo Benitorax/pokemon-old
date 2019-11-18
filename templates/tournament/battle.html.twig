@@ -3,7 +3,29 @@
 {% block title %}Tournament{% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
+    <div id="r-battle" class="row justify-content-center"></div>
+    <div>
+        <span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {# <script src="{{ asset('build/adventure_battle.css') }}"></script> #}
+    {{ encore_entry_link_tags('tournament_battle') }}
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script> #}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {{ encore_entry_script_tags('tournament_battle') }}
+{% endblock javascripts %}
+
+
+
+{# <div class="row justify-content-center">
     <div class="col-sm-5">
         <div class="row">
             <div class="col-sm-12 p-3 mb-2 border border-secondary rounded-lg text-white bg-dark{% if textColor is defined %} {{textColor}}{% endif %}" style="min-height: 90px;">
@@ -48,5 +70,5 @@
         {{ form_widget(form, {attr: {class: 'row'} }) }}
         {{ form_end(form) }}
     </div>
-</div>
-{% endblock %}
+</div> #}
+

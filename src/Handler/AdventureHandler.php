@@ -75,7 +75,6 @@ class AdventureHandler
         $battle = $this->battleManager->createAdventureBattle();
         $messages[] = "You're located around <strong>". $battle->getArena()->getName() ."</strong> area.";
         $messages[] = "And you come across... <strong>". $battle->getOpponentTeam()->getCurrentFighter()->getName() ."</strong>!";
-        $user = $battle->getPlayerTeam()->getTrainer();
 
         return [
             'messages' => [
@@ -84,7 +83,7 @@ class AdventureHandler
             ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => null,
-            'form' => [$this->battleFormManager->createSelectPokemonField($user)]
+            'form' => [$this->battleFormManager->createSelectPokemonField()]
         ];
     }
 
@@ -103,7 +102,6 @@ class AdventureHandler
             'player' => $battle->getPlayerTeam(),
             'form' => $this->battleFormManager->createAdventureButtons()
         ];
-
     }
 
     public function handleAttack() 
@@ -188,7 +186,7 @@ class AdventureHandler
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
             'form' => $form,
-            'centerImageUrl' => $spriteFrontUrl ?? null,
+            'centerImageUrl' => isset($spriteFrontUrl) ? [$spriteFrontUrl] : null,
             'turn' => $turn
         ];
     }

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\Command\TravelType;
 use App\Handler\AdventureHandler;
 use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
@@ -184,7 +183,7 @@ class AdventureController extends AbstractController
             "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
             "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            "centerImageUrl" => $data['centerImageUrl'],
             "turn" => $data['turn'],
             "pokeballCount" => $this->getUser()->getPokeball(),
             "healthPotionCount" => $this->getUser()->getHealthPotion()

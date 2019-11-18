@@ -8,7 +8,7 @@ import { getDataModel } from './DataModel';
 import '../../css/AdventureBattle.css';
 
 
-export function AdventureBattle() {
+export function TournamentBattle() {
     const [data, setData] = useState(getDataModel());
     function updateData($data) {
         setData($prevData => Object.assign({}, $prevData, $data));
@@ -16,9 +16,9 @@ export function AdventureBattle() {
 
     useEffect(() => {
         if(data.messages === null) {
-            axios.get('/adventure/start')
+            axios.get('/tournament/start')
             .then(function (response) {
-                console.log('response from /adventure/start', response.data);
+                console.log('response from /tournament/start', response.data);
                 updateData(response.data);
             })
             .catch(function (error) {
@@ -30,22 +30,34 @@ export function AdventureBattle() {
     const [command, setCommand] = useState(null);
     function updateCommand(command) {
         setCommand(command);
-        if(['travel', 'leave'].includes(command)) {
-            showAshOnScreen('ash-support');
+        if('selectPokemon' === command) {
+            showImageOnScreen('ash', 'ash-support');
+        } else if(
+            (command === 'next' && data.turn === 'opponent') || ['attack', 'heal'].includes(command)
+        ) {
+            let className = [
+                ['ash', 'ash-support'], 
+                ['ash', 'ash-crazy'], 
+                ['crowd', 'crowd-move']
+            ][Math.floor(Math.random() * Math.floor(3))];
+            setTimeout(() => showImageOnScreen(className[0], className[1]), 1000);
         }
     }
 
-    const [showAsh, setShowAsh] = useState(false);
-    const [classNameAsh, setClassNameAsh] = useState(null);
-    function showAshOnScreen(className) {
-        setShowAsh(true);
-        setTimeout(() => setShowAsh(false), 1000);
-        setClassNameAsh('row '+className)
+    const [showImage, setShowImage] = useState(false);
+    const [imageObject, setImageObject] = useState(null);
+    function showImageOnScreen(url, className) {
+        setTimeout(() => setShowImage(false), 1000);
+        setImageObject({
+            url: '/images/'+ url +'.png',
+            className: 'row ' + className
+        });
+        setShowImage(true);
     }
 
     return (
         <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 mt-3">
-            <Message messages={data.messages}/>
+            <Message messages={data.messages} />
             <BattleScreen 
                 pokeballCount={data.pokeballCount} 
                 healthPotionCount={data.healthPotionCount} 
@@ -56,13 +68,13 @@ export function AdventureBattle() {
                 centerImageUrl={data.centerImageUrl}
             />
             { data.form !== null ? <Form turn={data.turn} onCommandExecuted={updateCommand} onNewData={updateData} form={data.form}/> : null }
-            { showAsh === false ? null : <div className={classNameAsh} style={{ maxHeight: '0px' }}><img className="mx-auto" src="/images/ash.png"/></div> }
+            { showImage === false ? null : <div className={imageObject.className} style={{ maxHeight: '0px' }}><img className="mx-auto" src={imageObject.url}/></div> }
         </div>
     );
 }
 
 const battleNode = document.getElementById('r-battle');
 render(
-    <AdventureBattle/>, 
+    <TournamentBattle/>, 
     battleNode
 );

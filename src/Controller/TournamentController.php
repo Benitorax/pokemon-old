@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Handler\TournamentHandler;
+use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
+use App\Serializer\PokemonSerializer;
 use App\Repository\BattleTeamRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\Command\SelectPokemonForTournamentType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TournamentController extends AbstractController
@@ -25,8 +26,8 @@ class TournamentController extends AbstractController
 
         $wins = $user->getConsecutiveWin() % 3;
         if($wins === 0) { $buttonMessage = 'First round'; }
-        elseif($wins === 1) { $buttonMessage = 'Semi-final round'; }
-        elseif($wins === 2) { $buttonMessage = 'Final round'; }
+        elseif($wins === 1) { $buttonMessage = 'Semi-final'; }
+        elseif($wins === 2) { $buttonMessage = 'Final'; }
 
         return $this->render('tournament/index.html.twig', [
             'isAllowed' => $isAllowed,
@@ -37,7 +38,7 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/battle", name="tournament_battle")
      */
-    public function battle(Request $request, TournamentHandler $tournamentHandler, BattleTeamRepository $battleTeamRepository, PokemonRepository $pokemonRepository)
+    public function battle(TournamentHandler $tournamentHandler, BattleTeamRepository $battleTeamRepository, PokemonRepository $pokemonRepository)
     {
         $playerTeam = $battleTeamRepository->findOneByTrainer($this->getUser());
         $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($this->getUser());
@@ -46,29 +47,237 @@ class TournamentController extends AbstractController
             return $this->redirectToRoute('tournament');
         }
         
-        if($request->isMethod('POST')) {
-            $data = $tournamentHandler->handleRequest($request);
-
-            return $this->render('tournament/battle.html.twig', [
-                'form' => $data['form']->createView(),
-                'opponent' => $data['opponent'],
-                'player' => $data['player'],
-                'messages' => $data['messages'],
-                'centerImageUrl' => $data['centerImageUrl'] ?? null,
-                'textColor' => $data['textColor'] ?? null
-            ]);
-        }
-
         $tournamentHandler->clear();
         $tournamentHandler->createBattle();
-        $form = $this->createForm(SelectPokemonForTournamentType::class);
+
+        $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('tournament/battle.html.twig', [
-            'form' => $form->createView(),
-            'opponent' => null,
-            'player' => null,
-            'messages' => null,
-            'centerImageUrl' => null
+            "csrfToken" => $csrfToken
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/start", name="tournament_start", methods={"GET"})
+     */
+    public function start(PokemonRepository $pokemonRepository, BattleFormManager $formManager)
+    {
+        if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
+            $messages = [
+                "messages" => ["You need at least one pokemon to go on adventure."],
+                "textColor" => "text-white"
+            ];
+            return $this->json(["messages" => $messages]);
+        }
+        $selectField = $formManager->createSelectPokemonFieldForTournament();
+        $wins = $this->getUser()->getConsecutiveWin() % 3;
+        if($wins === 0) { $round = 'First round'; }
+        elseif($wins === 1) { $round = 'Semi-final'; }
+        elseif($wins === 2) { $round = 'Final'; }
+
+        $messages = [
+            "messages" => ["<strong>".$round."</strong>", "You will battle against another trainer.", "Select the 1st pokemon to fight!"],
+            "textColor" => "text-white"
+        ];
+
+        return $this->json([
+            "form" => [$selectField],
+            "opponent" => null,
+            "player" => null,
+            'messages' => $messages,
+            "centerImageUrl" => ['/images/round'.$wins.'.png'],
+            "turn" => 'player',
+            "healthPotionCount" => null,
+            "pokeballCount" => null
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/select-pokemon", name="tournament_pokemon_select", methods={"POST"})
+     */
+    public function selectPokemon(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser, PokemonRepository $pokemonRepository)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+        $pokemon = $pokemonRepository->find($data->pokemonId);
+        $data = $tournamentHandler->handleSelectPokemon($pokemon);
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => null,
+            "player" => null,
+            'messages' => $data['messages'],
+            "centerImageUrl" => $data['centerImageUrl'],
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/attack", name="tournament_attack", methods={"POST"})
+     */
+    public function attack(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+
+        $data = $tournamentHandler->handleAttack();
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'messages' => $data['messages'],
+            "centerImageUrl" => null,
+            "turn" => $data['turn'],
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/heal", name="tournament_heal", methods={"POST"})
+     */
+    public function heal(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+
+        $data = $tournamentHandler->handleHeal();
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'messages' => $data['messages'],
+            "centerImageUrl" => null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/throw-pokeball", name="tournament_pokeball_throw", methods={"POST"})
+     */
+    public function throwPokeball(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+
+        $data = $tournamentHandler->handleThrowPokeball();
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'messages' => $data['messages'],
+            "centerImageUrl" => null,
+            "turn" => $data['turn'],
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/leave", name="tournament_leave", methods={"POST"})
+     */
+    public function leave(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+
+        $data = $tournamentHandler->handleLeave();
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'messages' => $data['messages'],
+            "centerImageUrl" => null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/next", name="tournament_next", methods={"POST"})
+     */
+    public function next(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+
+        $data = $tournamentHandler->handleNext();
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            "player" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'messages' => $data['messages'],
+            "centerImageUrl" => isset($data['centerImageUrl']) ? $data['centerImageUrl'] : null,
+            "turn" => 'player',
+            "pokeballCount" => $this->getUser()->getPokeball(),
+            "healthPotionCount" => $this->getUser()->getHealthPotion()
+        ]);
+    }
+
+    /**
+     * @Route("/tournament/restore-pokemons", name="tournament_pokemons_restore", methods={"POST"})
+     */
+    public function restorePokemons(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    {
+        $data = $request->getContent();
+        /** stdclass */
+        $data = json_decode($data);
+        $csrfToken = $data->csrfToken;
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            return $this->json([], 403);
+        }
+
+        $data = $tournamentHandler->handleRestorePokemons();
+
+        return $this->json([
+            "form" => $data['form'],
+            "opponent" => null,
+            "player" => null,
+            'messages' => $data['messages'],
+            "centerImageUrl" => ['/images/round'.($this->getUser()->getChampionCount() % 3).'.png'],
+            "turn" => 'player',
+            "pokeballCount" => null,
+            "healthPotionCount" => null
         ]);
     }
 }

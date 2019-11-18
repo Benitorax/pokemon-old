@@ -8,7 +8,12 @@ function Button(props) {
 
     function handleClick(e) {
         e.preventDefault();
-        props.onNewData({ messages: null });
+        props.onNewData({ 
+            messages: {
+                messages: ['...'],
+                textColor: 'text-white' 
+            }
+        });
         props.onCommandExecuted(info.name);
         console.log('request to', info.url, props.data);
         axios.post(info.url, {
@@ -26,7 +31,7 @@ function Button(props) {
 
     return (
         <div>
-            <button type="submit" id={ info.name } name={ info.name } className={ info.className } disabled={props.disabled} onClick={ handleClick }>
+            <button type="submit" id={ info.name } name={ info.name } className={ info.className }  onClick={ handleClick }>
                 { info.buttonText }
             </button>
         </div>
@@ -50,15 +55,19 @@ function Select(props) {
         props.onCommandExecuted(command);
     }
 
+    useEffect(() => {
+        setPokemonSelected(props.info.pokemons[0].id);
+    }, [props.info.pokemons]);
+
     return (
         <>
-            <select id={info.name} name={info.name} className={info.className} onChange={ handleChange } disabled={props.disabled}>
+            <select id={info.name} name={info.name} className={info.className} onChange={ handleChange } >
                 { props.info.pokemons.map((pokemon) =>
                     <option key={pokemon.id} value={pokemon.id}>{pokemon.name} (level {pokemon.level})</option>
                 ) }
             </select>
             <div>
-            <Button onCommandExecuted={tranferCommandToParent} onNewData={tranferNewDataToParent} data={pokemonSelected} info={info.button} disabled={props.disabled}/>
+            <Button onCommandExecuted={tranferCommandToParent} onNewData={tranferNewDataToParent} data={pokemonSelected} info={info.button} />
         </div>
         </>
     );
@@ -66,33 +75,38 @@ function Select(props) {
 
 export function Form(props) {
     if(props.form === null) return '';
-    const [disabled, setDisabled] = useState(false);
+    const [showForm, setShowForm] = useState(true);
 
     function tranferNewDataToParent(data) {
         props.onNewData(data);
-        setDisabled(true);
+        setShowForm(false);
     }
 
     function tranferCommandToParent(command) {
         props.onCommandExecuted(command);
+
     }
     
     useEffect(() => {
-        setDisabled(false);
+        setShowForm(true);
     }, [props.form]);
 
     let fields = props.form.map((field) => {
         if(field.type === 'button') {
-            return <Button onNewData={tranferNewDataToParent} onCommandExecuted={tranferCommandToParent} key={field.name} info={field} disabled={disabled}/>
+            return <Button onNewData={tranferNewDataToParent} onCommandExecuted={tranferCommandToParent} key={field.name} info={field} />
 
         } else if(field.type === 'select') {
-            return <Select onNewData={tranferNewDataToParent} onCommandExecuted={tranferCommandToParent} key={field.name} info={field} disabled={disabled}/>
+            return <Select onNewData={tranferNewDataToParent} onCommandExecuted={tranferCommandToParent} key={field.name} info={field} />
         }
-    })
+    });
 
     return (
-        <form name="adventure_battle" method="post" className="adventure-form form-inline justify-content-center">
-            { fields }
-        </form>
+        <>
+            { showForm === false ? null :
+                <form name="adventure_battle" method="post" className="adventure-form form-inline justify-content-around">
+                    { fields }
+                </form>
+            }
+        </>
     );
 }

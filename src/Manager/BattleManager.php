@@ -194,7 +194,8 @@ class BattleManager extends AbstractBattleManager
                 'name' => $name,
                 'newName' => $newPokemon->getName(),
                 'increasedLevel' => $newPokemon->getLevel() - $level,
-                'newLevel' => $newPokemon->getLevel()
+                'newLevel' => $newPokemon->getLevel(),
+                'SpriteFrontUrl' => $newPokemon->getSpriteFrontUrl()
             ];
         }
 

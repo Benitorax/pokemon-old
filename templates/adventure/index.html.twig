@@ -3,9 +3,10 @@
 {% block title %}Adventure{% endblock %}
 
 {% block body %}
-<div id="r-battle" class="row justify-content-center">
-</div>
-<span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
+    <div id="r-battle" class="row justify-content-center"></div>
+    <div>
+        <span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
+    </div>
 {% endblock body %}
 
 {% block stylesheets %}

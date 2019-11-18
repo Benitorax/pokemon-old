@@ -10,7 +10,7 @@
 }
 
 @keyframes bounce {
-    from {transform: translateY(2);}
+    from {transform: translateY(2px);}
     to {transform: translateY(-2px);}
 }
 
@@ -85,6 +85,74 @@
     60% { transform: scale(0.5) translate(-150px, -90px) rotate(10deg); }
     80% { transform: scale(0.5) translate(-150px, -100px) rotate(-9deg); }
     to { transform: scale(0) translate(-50px, -90px) rotate(8deg); }
+}
+
+.ash-support {
+    animation: k-ash-move 1s ease-out;
+}
+
+@keyframes k-ash-move {
+    from { transform: rotate(-15deg) translate(
+        var(--half-width), calc(100px - var(--height))
+    ); }
+    40% { transform: translate(
+        0, calc(40px - var(--height))
+    ); }
+    60% { transform: translate(
+        0, calc(40px - var(--height))
+    ); }
+    to { transform: rotate(-15deg) translate(
+        calc(50px - var(--half-width)), calc(-20px - var(--height))
+    ); }
+}
+
+.ash-crazy {
+    animation: k-ash-crazy 1s ease-out;
+}
+
+@keyframes k-ash-crazy {
+    from { transform: rotate(0deg) translate(
+        var(--half-width), calc(0px - var(--height))
+    ); }
+    20% { transform: rotate(30deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    40% { transform: rotate(90deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    60% { transform: rotate(90deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    80% { transform: rotate(30deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    to { transform: rotate(0deg) translate(
+        calc(50px - var(--half-width)), calc(0px - var(--height))
+    ); }
+}
+.crowd-move {
+    animation: k-crowd 1s linear;
+}
+
+@keyframes k-crowd {
+    from { transform: rotate(3deg) translate(
+        0, calc(-30px - var(--half-height))
+    ); }
+    20% { transform: rotate(1deg) translate(
+        0, calc(0px - var(--half-height))
+    ); }
+    40% { transform: rotate(-3deg) translate(
+        0, calc(-30px - var(--half-height))
+    ); }
+    60% { transform: rotate(0deg) translate(
+        0, calc(0px - var(--half-height))
+    ); }
+    80% { transform: rotate(3deg) translate(
+        0, calc(-30px - var(--half-height))
+    ); }
+    to { transform: rotate(-1deg) translate(
+        0, calc(0px - var(--half-height))
+    ); }
 }
 
 .battle-text-success {
