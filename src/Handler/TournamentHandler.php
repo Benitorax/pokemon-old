@@ -9,38 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TournamentHandler extends AdventureHandler
 {    
-    public function handleRequest(Request $request)
-    {
-        $command = $request->request->keys()[0];
-        $form = $this->commandManager->createFormByCommand($command);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if($this->battleManager->getCurrentBattle()->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
-            {
-                return $this->handleNext();
-            }
-            return $this->handle($form);
-        }
-        return $this->handleNext();
-    }
-
-    public function handle($form) 
-    {
-        $command = $form->getClickedButton()->getName();
-        switch($command)
-        {
-            case 'selectPokemon':
-                return $this->handleSelectPokemon($form);
-            case 'attack':
-                return $this->handleAttack();
-            case 'heal':
-                return $this->handleHeal();
-            case 'next':
-                return $this->handleNext();
-            case 'restorePokemons':
-                return $this->handleRestorePokemons();
-        }
-    }
     public function createBattle() 
     {
         $this->battleManager->createTournamentBattle();

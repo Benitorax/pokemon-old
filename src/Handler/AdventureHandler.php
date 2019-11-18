@@ -23,46 +23,6 @@ class AdventureHandler
         $this->commandManager = $commandManager;
         $this->battleFormManager = $battleFormManager;
     }
-    
-    public function handleRequest(Request $request)
-    {
-        $command = $request->request->keys()[0];
-        $form = $this->commandManager->createFormByCommand($command);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if($battle = $this->battleManager->getCurrentBattle()) {
-                if($battle->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
-                {
-                    return $this->handleNext();
-                }
-            }
-            return $this->handle($form);
-        }
-
-        return $this->handleTravel();
-    }
-
-    public function handle($form) 
-    {
-        $command = $form->getClickedButton()->getName();
-        switch($command)
-        {
-            case 'travel':
-                return $this->handleTravel();
-            case 'selectPokemon':
-                return $this->handleSelectPokemon($form);
-            case 'attack':
-                return $this->handleAttack();
-            case 'throwPokeball':
-                return $this->handleThrowPokeball();
-            case 'leave':
-                return $this->handleLeave();
-            case 'heal':
-                return $this->handleHeal();
-            case 'next':
-                return $this->handleNext();
-        }
-    }
 
     public function clear()
     {
@@ -109,9 +69,11 @@ class AdventureHandler
         $turn = 'player';
         if($this->battleManager->getOpponentFighter()->getIsSleep()) {
             $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> is already harmless.";
+            $messages[] = "Try to capture it!";
+            $form = $this->battleFormManager->createAdventureButtons();
         } else {
             $damage = $this->battleManager->manageAttackOpponent();
-
+            $form = [$this->battleFormManager->createNextButton()];
             if($this->battleManager->getOpponentFighter()->getIsSleep()) {
                 $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
                 "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong> with ".$damage." points of damage!";
@@ -132,7 +94,7 @@ class AdventureHandler
             ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
-            'form' => [$this->battleFormManager->createNextButton()],
+            'form' => $form,
             'turn' => $turn
         ];
     }
@@ -285,14 +247,5 @@ class AdventureHandler
             'player' => $playerTeam,
             'form' => $form,
         ];
-    }
-
-    public function checkTurn() {
-        if($battle = $this->battleManager->getCurrentBattle()) {
-            if($battle->getTurn() == 'opponent' && $form->getClickedButton()->getName() == 'attack') 
-            {
-                return $this->handleNext();
-            }
-        }
     }
 }

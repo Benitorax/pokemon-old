@@ -5,15 +5,20 @@
 {% block body %}
     <div class="row p-3 justify-content-center">
         <div class="mx-auto">
-            <h1 class="mb-5">Welcome to the tournament!</h1>
+            <div class="col-12">
+                <img class="img-fluid" src="{{ asset('images/tournament-index.jpeg') }}" />
+            </div>
+            <div>
+                <h1 class="mb-5">Welcome to the tournament!</h1>        
 
-            <p>You need at least 3 pokemons in shape to participate at the tournament.</p>
-            <p>
-                This is a battle between 2 trainers with <span class="text-success font-weight-bold">3 pokemons</span> each.<br><br>
-                You're also allowed to use <span class="text-success font-weight-bold">3 health potions</span> maximum during a battle.<br>
-                So don't forget to bring some with you!
-            </p>
-            <p>Overcome 3 battles in a row to win <span class="text-warning font-weight-bold">the tournament</span>!</p>
+                <p>You need at least 3 pokemons in shape to participate at the tournament.</p>
+                <p>
+                    This is a battle between 2 trainers with <span class="text-success font-weight-bold">3 pokemons</span> each.<br><br>
+                    You're also allowed to use <span class="text-success font-weight-bold">3 health potions</span> maximum during a battle.<br>
+                    So don't forget to bring some with you!
+                </p>
+                <p>Overcome 3 battles in a row to win <span class="text-warning font-weight-bold">the tournament</span>!</p>
+            </div>
         </div>
     </div>
     {% if isAllowed is same as(true) %}
