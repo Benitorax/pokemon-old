@@ -3,22 +3,21 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Message } from './Message/Message';
 import { BattleScreen } from './BattleScreen/BattleScreen';
 import { Form } from './Form/Form';
-import { getDataModel } from './DataModel';
+import { getNullData, getWaitingData } from './DataModel';
+import { api_get, api_post } from './battle_api';
 
 import '../../css/AdventureBattle.css';
 
 
 export function TournamentBattle() {
-    const [data, setData] = useState(getDataModel());
+    const [data, setData] = useState(getNullData());
     function updateData($data) {
         setData($prevData => Object.assign({}, $prevData, $data));
     }
 
     useEffect(() => {
         if(data.messages === null) {
-            axios.get('/tournament/start')
-            .then(function (response) {
-                console.log('response from /tournament/start', response.data);
+            api_get('/tournament/start').then(function (response) {
                 updateData(response.data);
             })
             .catch(function (error) {
@@ -28,7 +27,9 @@ export function TournamentBattle() {
     }, []);
 
     const [command, setCommand] = useState(null);
-    function updateCommand(command) {
+    function updateCommand(command, data) {
+        updateData(getWaitingData());
+        // -----------------------------------------------
         setCommand(command);
         if('selectPokemon' === command) {
             showImageOnScreen('ash', 'ash-support');
@@ -45,6 +46,14 @@ export function TournamentBattle() {
             ][Math.floor(Math.random() * Math.floor(6))];
             setTimeout(() => showImageOnScreen(className[0], className[1]), 800);
         }
+        //-------------------------------------------------------
+        api_post(data.url, data).then(function (response) {     
+            console.log(response.data);
+            updateData(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     const [showImage, setShowImage] = useState(false);

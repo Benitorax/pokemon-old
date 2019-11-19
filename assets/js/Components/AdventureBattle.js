@@ -3,36 +3,43 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Message } from './Message/Message';
 import { BattleScreen } from './BattleScreen/BattleScreen';
 import { Form } from './Form/Form';
-import { getDataModel } from './DataModel';
+import { getNullData, getWaitingData } from './DataModel';
+import { api_get, api_post } from './battle_api';
 
 import '../../css/AdventureBattle.css';
 
 
 export function AdventureBattle() {
-    const [data, setData] = useState(getDataModel());
+    const [data, setData] = useState(getNullData());
     function updateData($data) {
         setData($prevData => Object.assign({}, $prevData, $data));
     }
 
     useEffect(() => {
-        if(data.messages === null) {
-            axios.get('/adventure/start')
-            .then(function (response) {
-                console.log('response from /adventure/start', response.data);
-                updateData(response.data);
-            })
-            .catch(function (error) {
-                console.log('error', error);
-            });
-        }
+        api_get('/adventure/start').then(function (response) {
+            updateData(response.data);
+        })
+        .catch(function (error) {
+            console.log('error', error);
+        });
     }, []);
 
     const [command, setCommand] = useState(null);
-    function updateCommand(command) {
+    function updateCommand(command, data) {
+        updateData(getWaitingData());
+        //-------------------------------------
         setCommand(command);
         if(['travel', 'leave'].includes(command)) {
             showAshOnScreen('ash-support');
         }
+        // ------------------------------------
+        api_post(data.url, data).then(function (response) {     
+            console.log(response.data);
+            updateData(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     const [showAsh, setShowAsh] = useState(false);

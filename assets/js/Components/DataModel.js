@@ -1,4 +1,4 @@
-export function getDataModel() {
+export function getNullData() {
     return {
         form: null,
         opponent: null,
@@ -8,5 +8,14 @@ export function getDataModel() {
         turn: null,
         pokeballCount: null,
         healthPotionCount: null
-    }
-};
+    };
+}
+
+export function getWaitingData() {
+    return {
+        messages: {
+            messages: ['...'],
+            textColor: 'text-white'
+        }
+    };
+}

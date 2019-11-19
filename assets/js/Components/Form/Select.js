@@ -10,12 +10,8 @@ export function Select(props) {
         setPokemonSelected(e.target.value);
     }
 
-    function tranferNewDataToParent(data) {
-        props.onNewData(data);
-    }
-
-    function tranferCommandToParent(command) {
-        props.onCommandExecuted(command);
+    function tranferCommandToParent(command, data) {
+        props.onCommandExecuted(command, data);
     }
 
     useEffect(() => {
@@ -30,7 +26,7 @@ export function Select(props) {
                 ) }
             </select>
             <div>
-            <Button onCommandExecuted={tranferCommandToParent} onNewData={tranferNewDataToParent} data={pokemonSelected} info={info.button} />
+            <Button onCommandExecuted={tranferCommandToParent} data={pokemonSelected} info={info.button} />
         </div>
         </>
     );

@@ -20,7 +20,9 @@ export function Player(props) {
     }, []);
 
     useEffect(() => {
+        console.log('inside player, command:', props.command);
         if(props.command === 'attack') {
+            console.log('you should attack');
             setClassName(baseClassName + ' pokemon-attack-player');
         }
         setTimeout(() => setClassName(baseClassName + ' pokemon-bounce'), 1400);
