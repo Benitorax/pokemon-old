@@ -38,16 +38,19 @@ export function TournamentBattle() {
             let className = [
                 ['ash', 'ash-support'], 
                 ['ash', 'ash-crazy'], 
+                ['ash', 'ash-reverse'],
+                ['cheerleaders1', 'cheerleader1'],
+                ['cheerleaders2', 'cheerleader2'],
                 ['crowd', 'crowd-move']
-            ][Math.floor(Math.random() * Math.floor(3))];
-            setTimeout(() => showImageOnScreen(className[0], className[1]), 1000);
+            ][Math.floor(Math.random() * Math.floor(6))];
+            setTimeout(() => showImageOnScreen(className[0], className[1]), 800);
         }
     }
 
     const [showImage, setShowImage] = useState(false);
     const [imageObject, setImageObject] = useState(null);
     function showImageOnScreen(url, className) {
-        setTimeout(() => setShowImage(false), 1000);
+        setTimeout(() => setShowImage(false), 950);
         setImageObject({
             url: '/images/'+ url +'.png',
             className: 'row ' + className

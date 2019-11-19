@@ -23,14 +23,14 @@ class TournamentHandler extends AdventureHandler
         $this->battleManager->addFighterSelected($pokemon);
         
         $form = [$this->battleFormManager->createSelectPokemonFieldForTournament()];
-        $messages[] = "You have selected <strong>". $this->battleManager->getLastPlayerPokemon()->getName() ."</strong>!";
+        $messages[] = 'You have selected <strong>'. $this->battleManager->getLastPlayerPokemon()->getName() .'</strong>!';
         $centerImageUrl = null;
         
-        if($pokemonsCount == 0) { $messages[] = "Choose the 2nd pokemon to fight."; } 
-        elseif($pokemonsCount == 1) { $messages[] = "Finally, choose the 3rd pokemon."; } 
+        if($pokemonsCount == 0) { $messages[] = 'Choose the 2nd pokemon to fight.'; } 
+        elseif($pokemonsCount == 1) { $messages[] = 'Finally, choose the 3rd pokemon.'; } 
         elseif($pokemonsCount == 2) { 
             $this->battleManager->startBattle();
-            $messages[] = "<strong>". $this->battleManager->getOpponentTrainer()->getUsername() ."</strong> will be your opponent!";
+            $messages[] = '<strong>'. $this->battleManager->getOpponentTrainer()->getUsername() .'</strong> will be your opponent!';
             $form = [$this->battleFormManager->createNextButton(BattleFormManager::TOURNAMENT_MODE)];
             $centerImageUrl = [$this->battleManager->getOpponentTrainer()->getEmail()];
         }
@@ -38,7 +38,7 @@ class TournamentHandler extends AdventureHandler
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "text-white"
+                'textColor' => 'text-white'
             ],
             'opponent' => null,
             'player' => null,
@@ -51,29 +51,25 @@ class TournamentHandler extends AdventureHandler
     public function handleAttack() 
     {
         $turn = 'player';
-        if($this->battleManager->getOpponentFighter()->getIsSleep()) {
-            $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> is already harmless.";
-        } else {
-            $damage = $this->battleManager->manageAttackOpponent();
+        $damage = $this->battleManager->manageAttackOpponent();
 
-            if($this->battleManager->getOpponentFighter()->getIsSleep()) {
-                $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
-                "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong> with ".$damage." points of damage!";
-                $messages[] = "<strong>".$this->battleManager->getOpponentFighter()->getName()."</strong> has fainted.";
-                $textColor = 'battle-text-success';
-            } else {
-                $messages[] = "<strong>". $this->battleManager->getPlayerFighter()->getName() .
-                              "</strong> attacks <strong>". $this->battleManager->getOpponentFighter()->getName()."</strong>!";
-                $messages[] = "It inflicts ".$damage." points of damage.";
-                $turn = 'opponent';
-            }    
-        }
+        if($this->battleManager->getOpponentFighter()->getIsSleep()) {
+            $messages[] = '<strong>'. $this->battleManager->getPlayerFighter()->getName() .
+            '</strong> attacks <strong>'. $this->battleManager->getOpponentFighter()->getName().'</strong> with '.$damage.' points of damage!';
+            $messages[] = '<strong>'.$this->battleManager->getOpponentFighter()->getName().'</strong> has fainted.';
+            $textColor = 'battle-text-success';
+        } else {
+            $messages[] = '<strong>'. $this->battleManager->getPlayerFighter()->getName() .
+                            '</strong> attacks <strong>'. $this->battleManager->getOpponentFighter()->getName().'</strong>!';
+            $messages[] = "It inflicts ".$damage." points of damage.";
+            $turn = 'opponent';
+        }    
 
         $battle = $this->battleManager->getCurrentBattle();
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => isset($textColor) ? $textColor : "text-white"
+                'textColor' => isset($textColor) ? $textColor : 'text-white'
             ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
@@ -84,13 +80,13 @@ class TournamentHandler extends AdventureHandler
 
     public function presentOpponent()
     {
-        $messages[] = "You have selected <strong>". $this->battleManager->getLastPlayerPokemon()->getName() ."</strong>!";
-        $messages[] = "<strong>". $this->battleManager->getOpponentTrainer()->getUsername() ."</strong> will be your opponent!";
+        $messages[] = 'You have selected <strong>'. $this->battleManager->getLastPlayerPokemon()->getName() .'</strong>!';
+        $messages[] = '<strong>'. $this->battleManager->getOpponentTrainer()->getUsername() .'</strong> will be your opponent!';
 
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "text-white"
+                'textColor' => 'text-white'
             ],
             'opponent' => null,
             'player' => null,
@@ -111,12 +107,12 @@ class TournamentHandler extends AdventureHandler
             return $this->handleOpponentTurn();
         }
         
-        $messages[] = "<strong>".$this->battleManager->getOpponentTrainer()->getUsername()."</strong> invokes <strong>". $this->battleManager->getOpponentFighter()->getName() ."</strong>!";
+        $messages[] = '<strong>'.$this->battleManager->getOpponentTrainer()->getUsername().'</strong> invokes <strong>'. $this->battleManager->getOpponentFighter()->getName() .'</strong>!';
 
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "text-white"
+                'textColor' => 'text-white'
             ],
             'opponent' => $this->battleManager->getOpponentTeam(),
             'player' => $this->battleManager->getPlayerTeam(),
@@ -135,18 +131,18 @@ class TournamentHandler extends AdventureHandler
         $form = $this->battleFormManager->createTournamentButtons();
 
         if($playerFighter->getIsSleep()) {
-            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> has knocked <strong>". 
-                            $playerFighter->getName() ."</strong> out (-".$damage." HP).";
+            $messages[] = '<strong>'. $opponentFighter->getName() .'</strong> has knocked <strong>'. 
+                            $playerFighter->getName() .'</strong> out (-'.$damage.' HP).';
             $form = [$this->battleFormManager->createNextButton(BattleFormManager::TOURNAMENT_MODE)];
         } else {
-            $messages[] = "<strong>". $opponentFighter->getName() ."</strong> attacks <strong>". $playerFighter->getName() ."</strong>"; 
-            $messages[] = "It inflicts ".$damage." points of damage.";
+            $messages[] = '<strong>'. $opponentFighter->getName() .'</strong> attacks <strong>'. $playerFighter->getName() .'</strong>'; 
+            $messages[] = 'It inflicts '.$damage.' points of damage.';
         }
 
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "battle-text-danger"
+                'textColor' => 'battle-text-danger'
             ],
             'opponent' => $battle->getOpponentTeam(),
             'player' => $battle->getPlayerTeam(),
@@ -162,18 +158,18 @@ class TournamentHandler extends AdventureHandler
         $healCount = $this->battleManager->getPlayerTeam()->getHealCount();
         
         if($healCount >= 3) {
-            $messages[] = "You have already used your 3rd and last health potion!";
+            $messages[] = 'You have already used your 3rd and last health potion!';
         } else {
             $result = $this->battleManager->manageHealPlayerFighter();
             if($result === BattleManager::POKEMON_HP_FULL) {
-                $messages[] = "Your pokemon already has all its health points!";
+                $messages[] = 'Your pokemon already has all its health points!';
             } elseif($result === BattleManager::NO_HP_POTION) {
-                $messages[] = "You don't have any health potions!";
+                $messages[] = 'You don\'t have any health potions!';
                 $textColor = 'battle-text-danger';
             } else {
                 $healCount += 1;
-                $messages[] = "<strong>".$playerTeam->getCurrentFighter()->getName() ."</strong> has been healed (+".$result."HP)!";
-                $messages[] = $healCount . " potion". ($healCount > 1 ? 's':'') ." used.";
+                $messages[] = '<strong>'.$playerTeam->getCurrentFighter()->getName() .'</strong> has been healed (+'.$result.'HP)!';
+                $messages[] = $healCount . ' potion'. ($healCount > 1 ? 's':'') .' used.';
                 $textColor = 'battle-text-info';
             }
         }
@@ -181,7 +177,7 @@ class TournamentHandler extends AdventureHandler
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => $textColor
+                'textColor' => $textColor
             ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
@@ -198,14 +194,14 @@ class TournamentHandler extends AdventureHandler
         if($this->battleManager->getOpponentFighter()->getIsSleep()) {
             $isChanged = $this->battleManager->manageChangeFighterOfTeam($this->battleManager->getOpponentTeam());
             if($isChanged) {
-                $messages[] = "<strong>". $this->battleManager->getOpponentTrainer()->getUsername() ."</strong> invokes <strong>". $this->battleManager->getOpponentFighter()->getName() ."</strong>"; 
+                $messages[] = '<strong>'. $this->battleManager->getOpponentTrainer()->getUsername() .'</strong> invokes <strong>'. $this->battleManager->getOpponentFighter()->getName() .'</strong>'; 
             }
         }
 
         if($this->battleManager->getPlayerFighter()->getIsSleep()) {
             $isChanged = $this->battleManager->manageChangeFighterOfTeam($this->battleManager->getPlayerTeam());
             if($isChanged) {
-                $messages[] = "You summon <strong>". $this->battleManager->getPlayerFighter()->getName() ."</strong>";
+                $messages[] = 'You summon <strong>'. $this->battleManager->getPlayerFighter()->getName() .'</strong>';
             }
         }
 
@@ -216,7 +212,7 @@ class TournamentHandler extends AdventureHandler
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "text-white"
+                'textColor' => 'text-white'
             ],
             'opponent' =>  $this->battleManager->getOpponentTeam(),
             'player' => $this->battleManager->getPlayerTeam(),
@@ -226,8 +222,8 @@ class TournamentHandler extends AdventureHandler
     }
 
     public function handleRestorePokemons() {
-        $messages[] = "The infirmary service is free for participants of the tournament.";
-        $messages[] = "Your pokemons are now in good shape.";
+        $messages[] = 'The infirmary service is free for participants of the tournament.';
+        $messages[] = 'Your pokemons are now in good shape.';
         $messages[] = 'Select your 1st pokemon if you want to go on.';
         $this->battleManager->restorePlayerPokemons();
         $this->clear();
@@ -235,7 +231,7 @@ class TournamentHandler extends AdventureHandler
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "text-white"
+                'textColor' => 'text-white'
             ],
             'opponent' => null,
             'player' => null,
@@ -253,33 +249,34 @@ class TournamentHandler extends AdventureHandler
             if(is_int($user->getConsecutiveWin() / 3)) {
                 $user->increasePokedollar(500);
                 $user->increaseChampionCount();
-                $centerImageUrlArray[] = '/images/badge'.$user->getChampionCount().'.png';
-                $messages[] = "Congrats! You won the final and earn 500$!";
+                $badgeNumber = $user->getChampionCount() % 8;
+                $centerImageUrlArray[] = '/images/badge'.$badgeNumber.'.png';
+                $messages[] = 'Congrats! You won the final and earn 500$!';
             } else {
                 $user->increasePokedollar(300);
-                $messages[] = "Congrats! You won the battle and earn 300$!";
+                $messages[] = 'Congrats! You won the battle and earn 300$!';
             }
 
             foreach($datas as $data) {
                 if($data['hasEvolved']) {
-                    $messages[] = "<strong>".$data['name']."</strong> evolves to <strong>".$data['newName']."</strong> (level: ".$data['newLevel'].").";
+                    $messages[] = '<strong>'.$data['name'].'</strong> evolves to <strong>'.$data['newName'].'</strong> (level: '.$data['newLevel'].').';
                     $centerImageUrlArray[] = $data['SpriteFrontUrl'];
                 } elseif($data['hasLeveledUp']) {
-                    $messages[] = "<strong>".$data['name']."</strong> levels up to <strong>".$data['newLevel']."</strong> (+".$data['increasedLevel'].").";
+                    $messages[] = '<strong>'.$data['name'].'</strong> levels up to <strong>'.$data['newLevel'].'</strong> (+'.$data['increasedLevel'].').';
                 }
             }
         } else {
             $user->increasePokedollar(100);
             $user->resetConsecutiveWin();
-            $messages[] = "You have lost!";
-            $messages[] = "You earn 100$ thanks to the battle!";
+            $messages[] = 'You have lost!';
+            $messages[] = 'You earn 100$ thanks to the battle!';
         }
         $this->manager->flush();
 
         return [
             'messages' => [
                 'messages' => $messages,
-                "textColor" => "text-white"
+                'textColor' => 'text-white'
             ],
             'opponent' => null,
             'player' => null,
