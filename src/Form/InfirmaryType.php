@@ -23,7 +23,7 @@ class InfirmaryType extends AbstractType
     {
         $builder
             ->add('restorePokemon', SubmitType::class, [
-                'label' => count($this->userPokemons) >= 3 ? '30 $' :'Free service',
+                'label' => count($this->userPokemons) >= 3 ? 'Pay 30 $' :'Free service',
                 'attr' => [
                     'class' => "btn btn-success"
                 ]

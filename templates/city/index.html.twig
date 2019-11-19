@@ -10,7 +10,7 @@
         <div class="card border border-primary w-100 my-3">
             <div class="card-header text-white bg-primary">
                 <h5>Shop</h5>
-                <p class="text-right">Your wallet : <span style="color:yellow">{{ app.user.pokedollar }}</span> $</p>
+                <p class="text-right">Your wallet : <span id="wallet" style="color:yellow">{{ app.user.pokedollar }}</span> $</p>
             </div>
             <div class="card-body">
                 <h6 class="card-subtitle mt-3 mb-2 text-muted">Enter the number of items</h6>
@@ -24,7 +24,10 @@
                         <span class="">{{ form_label(shopForm.healthPotion) }}</span>
                         <span class="ml-auto">{{ form_widget(shopForm.healthPotion) }}</span>
                     </div>
-                    <div class="mt-5">
+                    <div class="my-3 font-weight-bold">
+                        <div id="purchase-total-block" class="text-warning">Total: <span id="purchase-total">0</span> $</div>
+                    </div>
+                    <div>
                         {{ form_widget(shopForm.submit, {attr: {class: 'w-100 btn btn-primary'} }) }}
                     </div>
                 {{ form_end(shopForm) }}
@@ -49,4 +52,9 @@
                 {{ form_end(infirmaryForm) }}
             </div>
         </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('city') }}
 {% endblock %}
