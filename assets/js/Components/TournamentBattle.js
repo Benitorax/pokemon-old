@@ -5,6 +5,7 @@ import { BattleScreen } from './BattleScreen/BattleScreen';
 import { Form } from './Form/Form';
 import { getNullData, getWaitingData } from './DataModel';
 import { api_get, api_post } from './battle_api';
+import { isInvalidCommand } from './booster';
 
 import '../../css/AdventureBattle.css';
 
@@ -27,7 +28,12 @@ export function TournamentBattle() {
     }, []);
 
     const [command, setCommand] = useState(null);
-    function updateCommand(command, data) {
+    function updateCommand(command, dataForApi) {
+        let result = isInvalidCommand(command, data);
+        if(result) {
+            updateData(result);
+            return;
+        }
         updateData(getWaitingData());
         // -----------------------------------------------
         setCommand(command);
@@ -47,7 +53,7 @@ export function TournamentBattle() {
             setTimeout(() => showImageOnScreen(className[0], className[1]), 800);
         }
         //-------------------------------------------------------
-        api_post(data.url, data).then(function (response) {     
+        api_post(dataForApi.url, dataForApi).then(function (response) {     
             console.log(response.data);
             updateData(response.data);
         })

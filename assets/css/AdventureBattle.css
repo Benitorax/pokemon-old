@@ -67,7 +67,7 @@
     }
     to { 
         transform: scale(0.5) translate(
-            calc(50px + var(--half-width)), 
+            calc(30px + var(--half-width)), 
             calc(50px - var(--half-height))
         ) rotate(30deg); 
     }
@@ -78,13 +78,13 @@
 }
 
 @keyframes potion {
-    from { transform: scale(1) translate(40px, -20px); }
-    10% { transform: scale(0.7) translate(40px, -80px); }
-    35% { transform: scale(0.5) translate(-110px, -100px); }
-    40% { transform: scale(0.5) translate(-110px, -100px) rotate(-11deg); }
-    60% { transform: scale(0.5) translate(-110px, -90px) rotate(10deg); }
-    80% { transform: scale(0.5) translate(-110px, -100px) rotate(-9deg); }
-    to { transform: scale(0) translate(-10px, -90px) rotate(8deg); }
+    from { transform: scale(1) translate(60px, -20px); }
+    10% { transform: scale(0.7) translate(60px, -80px); }
+    35% { transform: scale(0.5) translate(-90px, -100px); }
+    40% { transform: scale(0.5) translate(-90px, -100px) rotate(-11deg); }
+    60% { transform: scale(0.5) translate(-90px, -90px) rotate(10deg); }
+    80% { transform: scale(0.5) translate(-90px, -100px) rotate(-9deg); }
+    to { transform: scale(0) translate(10px, -90px) rotate(8deg); }
 }
 
 .ash-support {
@@ -162,22 +162,22 @@
 
 @keyframes k-cheerleader1 {
     from { transform: rotate(0deg) translate(
-        calc(270px - var(--half-width)), calc(20px - var(--height))
+        calc(270px - var(--half-width)), calc(40px - var(--height))
     ); }
     20% { transform: rotate(-1deg) translate(
-        calc(240px - var(--half-width)), calc(30px - var(--height))
+        calc(240px - var(--half-width)), calc(50px - var(--height))
     ); }
     40% { transform: rotate(0deg) translate(
-        calc(225px - var(--half-width)), calc(1px - var(--height))
+        calc(225px - var(--half-width)), calc(30px - var(--height))
     ); }
     60% { transform: rotate(1deg) translate(
-        calc(195px - var(--half-width)), calc(30px - var(--height))
+        calc(195px - var(--half-width)), calc(50px - var(--height))
     ); }
     80% { transform: rotate(0deg) translate(
-        calc(180px - var(--half-width)), calc(1px - var(--height))
+        calc(180px - var(--half-width)), calc(30px - var(--height))
     ); }
     to { transform: rotate(-1deg) translate(
-        calc(160px - var(--half-width)), calc(20px - var(--height))
+        calc(160px - var(--half-width)), calc(40px - var(--height))
     ); }
 }
 
