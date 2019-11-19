@@ -19,9 +19,9 @@ export function CenterImage(props) {
             }, 1000);
         }
 
-        if(command === 'heal' && parseInt(props.healthPotionCount) > 0 && parseInt(props.healthPoint) < 100) {
-            setNewClassName('health-potion');
-            setUrlImage('/images/health-potion.png')
+        if(command === 'heal' && parseInt(props.healingPotionCount) > 0 && parseInt(props.healthPoint) < 100) {
+            setNewClassName('healing-potion');
+            setUrlImage('/images/healing-potion.png')
             setTimeout(() => {
                 setUrlImage(null)
                 setClassName(null);

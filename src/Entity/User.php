@@ -61,7 +61,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $healthPotion = 5;
+    private $healingPotion = 5;
 
     /**
      * @ORM\Column(type="boolean")
@@ -259,30 +259,30 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getHealthPotion(): ?int
+    public function getHealingPotion(): ?int
     {
-        return $this->healthPotion;
+        return $this->healingPotion;
     }
 
-    public function setHealthPotion(int $healthPotion): self
+    public function setHealingPotion(int $healingPotion): self
     {
-        $this->healthPotion = $healthPotion;
+        $this->healingPotion = $healingPotion;
 
         return $this;
     }
 
-    public function useHealthPotion(): self
+    public function useHealingPotion(): self
     {
-        if($this->healthPotion >= 1) {
-            $this->healthPotion -= 1;
+        if($this->healingPotion >= 1) {
+            $this->healingPotion -= 1;
         }
 
         return $this;
     }
 
-    public function addHealthPotion(int $healthPotion): self
+    public function addHealingPotion(int $healingPotion): self
     {
-        $this->healthPotion += $healthPotion;
+        $this->healingPotion += $healingPotion;
 
         return $this;
     }

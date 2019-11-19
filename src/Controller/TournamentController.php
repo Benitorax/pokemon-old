@@ -84,7 +84,7 @@ class TournamentController extends AbstractController
             'messages' => $messages,
             'centerImageUrl' => ['/images/round'.$wins.'.png'],
             'turn' => 'player',
-            'healthPotionCount' => null,
+            'healingPotionCount' => null,
             'pokeballCount' => null
         ]);
     }
@@ -112,7 +112,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => $data['centerImageUrl'],
             'turn' => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -139,7 +139,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => null,
             'turn' => $data['turn'],
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -166,7 +166,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => null,
             'turn' => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -193,7 +193,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => null,
             'turn' => $data['turn'],
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -220,7 +220,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => null,
             'turn' => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -247,7 +247,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => isset($data['centerImageUrl']) ? $data['centerImageUrl'] : null,
             'turn' => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -275,7 +275,7 @@ class TournamentController extends AbstractController
             'centerImageUrl' => ['/images/round'.$round.'.png'],
             'turn' => 'player',
             'pokeballCount' => null,
-            'healthPotionCount' => null
+            'healingPotionCount' => null
         ]);
     }
 }

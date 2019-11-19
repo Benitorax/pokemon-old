@@ -7,7 +7,7 @@ export function getNullData() {
         centerImageUrl: null,
         turn: null,
         pokeballCount: null,
-        healthPotionCount: null
+        healingPotionCount: null
     };
 }
 

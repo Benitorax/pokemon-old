@@ -20,8 +20,8 @@ class ShopType extends AbstractType
                     'class' => "custom-select"
                 ]
             ])
-            ->add('healthPotion', ChoiceType::class, [
-                'label' => 'Health potion (15$)',
+            ->add('healingPotion', ChoiceType::class, [
+                'label' => 'Healing potion (15$)',
                 'choices' => range(0,100),
                 'attr' => [
                     'class' => "custom-select"

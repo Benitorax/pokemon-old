@@ -4,7 +4,7 @@ import {getNoPokeballData, getNoHealingPotionData, getPlayerAlreadyFullHPData, g
 export function isInvalidCommand(command, data) {
     if(command === 'throwPokeball' && parseInt(data.pokeballCount) === 0) {
         return getNoPokeballData();
-    } else if(command === 'heal' && parseInt(data.healthPotionCount) === 0) {
+    } else if(command === 'heal' && parseInt(data.healingPotionCount) === 0) {
         return getNoHealingPotionData();
     } else if(command === 'heal' && parseInt(data.player.healthPoint) === 100) {
         return getPlayerAlreadyFullHPData();

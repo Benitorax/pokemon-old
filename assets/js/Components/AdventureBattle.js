@@ -61,7 +61,7 @@ export function AdventureBattle() {
             <Message messages={data.messages}/>
             <BattleScreen 
                 pokeballCount={data.pokeballCount} 
-                healthPotionCount={data.healthPotionCount} 
+                healingPotionCount={data.healingPotionCount} 
                 turn={data.turn} 
                 opponent={data.opponent} 
                 player={data.player} 

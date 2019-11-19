@@ -30,7 +30,7 @@ class CityHandler
         $form = $form->getData();
         $isValidated = $this->validatePurchaseMoney($form);
 
-        if(!$isValidated || ($form['pokeball'] == 0 && $form['healthPotion'] == 0)) {
+        if(!$isValidated || ($form['pokeball'] == 0 && $form['healingPotion'] == 0)) {
             $this->session->add('danger', 'Select the number of items you would like to buy.');
             return;
         }
@@ -43,11 +43,11 @@ class CityHandler
             $this->session->add('success', $pokeballMessage);
         }
 
-        if(is_int($hpNumber = $form['healthPotion']) && $form['healthPotion'] != 0) {
-            $this->user->addHealthPotion($hpNumber);
+        if(is_int($hpNumber = $form['healingPotion']) && $form['healingPotion'] != 0) {
+            $this->user->addHealingPotion($hpNumber);
             $this->user->decreasePokedollar($hpNumber*self::HEALTH_POTION_PRICE);
 
-            $hpMessage = sprintf("Now you have %s health potions (+%d)", $this->user->getHealthPotion(), $hpNumber);
+            $hpMessage = sprintf("Now you have %s healing potions (+%d)", $this->user->getHealingPotion(), $hpNumber);
             $this->session->add('success', $hpMessage);
         }
 
@@ -110,7 +110,7 @@ class CityHandler
     public function validatePurchaseMoney($data) {
         $money = $this->user->getPokedollar();
         $amount = $data['pokeball'] * self::POKEBALL_PRICE +
-                  $data['healthPotion'] * self::HEALTH_POTION_PRICE;
+                  $data['healingPotion'] * self::HEALTH_POTION_PRICE;
         
         $isValidated = $money >= $amount;
         if(!$isValidated) {

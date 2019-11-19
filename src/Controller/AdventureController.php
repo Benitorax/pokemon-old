@@ -50,7 +50,7 @@ class AdventureController extends AbstractController
             'messages' => $messages,
             'centerImageUrl' => null,
             "turn" => 'player',
-            'healthPotionCount' => null,
+            'healingPotionCount' => null,
             'pokeballCount' => null
         ]);
     }
@@ -77,7 +77,7 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             "turn" => 'player',
-            'healthPotionCount' => null,
+            'healingPotionCount' => null,
             'pokeballCount' => null
         ]);
     }
@@ -105,7 +105,7 @@ class AdventureController extends AbstractController
             'centerImageUrl' => null,
             "turn" => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -132,7 +132,7 @@ class AdventureController extends AbstractController
             'centerImageUrl' => null,
             "turn" => $data['turn'],
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -159,7 +159,7 @@ class AdventureController extends AbstractController
             'centerImageUrl' => null,
             "turn" => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -186,7 +186,7 @@ class AdventureController extends AbstractController
             'centerImageUrl' => $data['centerImageUrl'],
             "turn" => $data['turn'],
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -213,7 +213,7 @@ class AdventureController extends AbstractController
             'centerImageUrl' => null,
             "turn" => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 
@@ -240,7 +240,7 @@ class AdventureController extends AbstractController
             'centerImageUrl' => null,
             "turn" => 'player',
             'pokeballCount' => $this->getUser()->getPokeball(),
-            'healthPotionCount' => $this->getUser()->getHealthPotion()
+            'healingPotionCount' => $this->getUser()->getHealingPotion()
         ]);
     }
 }

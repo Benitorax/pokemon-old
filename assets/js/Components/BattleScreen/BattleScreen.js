@@ -26,7 +26,7 @@ export function BattleScreen(props) {
                 <CenterImage 
                     healthPoint = {healthPoint}
                     pokeballCount={props.pokeballCount} 
-                    healthPotionCount={props.healthPotionCount} 
+                    healingPotionCount={props.healingPotionCount} 
                     centerImageUrl={props.centerImageUrl} 
                     command={props.command}
                 />

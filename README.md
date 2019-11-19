@@ -32,7 +32,7 @@
   <li>log in</li>
   <li>modify your password</li>
   <li>capture pokemons</li>
-  <li>buy items (pokeballs, health potions)</li>
+  <li>buy items (pokeballs, healing potions)</li>
   <li>restore your pokemons in the infirmary</li>
   <li>participate in tournament (you need 3 pokemons in good shape)</li>
   <li>earn more money by winning a battle or the tournament</li>
@@ -56,7 +56,7 @@
 <ul>
   <li>be easier to capture if damaged</li>
   <li>fight another pokemon</li>
-  <li>be healed with health potion or infirmary service</li>
+  <li>be healed with healing potion or infirmary service</li>
   <li>faint when lose all health points</li>
   <li>be restored at the infirmary service</li>
   <li>level up after a victory</li>

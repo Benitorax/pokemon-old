@@ -188,7 +188,7 @@ class AdventureHandler
         if($result === BattleManager::POKEMON_HP_FULL) {
             $messages[] = 'Your pokemon already has all its health points!';
         } elseif($result === BattleManager::NO_HP_POTION) {
-            $messages[] = 'You don\'t have any health potions!';
+            $messages[] = 'You don\'t have any healing potions!';
             $textColor = 'battle-text-danger';
         } else {
             $messages[] = '<strong>'.$playerTeam->getCurrentFighter()->getName() .'</strong> has been healed (+'.$result.'HP)!';

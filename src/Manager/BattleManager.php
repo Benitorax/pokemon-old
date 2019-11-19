@@ -214,7 +214,7 @@ class BattleManager extends AbstractBattleManager
             return self::POKEMON_HP_FULL;
         }
 
-        if($this->getPlayerFighter()->getTrainer()->getHealthPotion() == 0) {
+        if($this->getPlayerFighter()->getTrainer()->getHealingPotion() == 0) {
             return self::NO_HP_POTION;
         }
 
@@ -222,7 +222,7 @@ class BattleManager extends AbstractBattleManager
         $healthPoint = $pokemon->getHealthPoint();
         $pokemon->increaseHealthPoint(rand(40,60));
         $healthPointRange = $pokemon->getHealthPoint() - $healthPoint;
-        $pokemon->getTrainer()->useHealthPotion();
+        $pokemon->getTrainer()->useHealingPotion();
         $this->getPlayerTeam()->increaseHealCount();
         $this->manager->flush();
 

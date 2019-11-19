@@ -3,7 +3,7 @@
     var totalBlockElement = document.getElementById('purchase-total-block');
     var totalElement = document.getElementById('purchase-total');
     var pokeballElement = document.getElementById('shop_pokeball');
-    var hpPotionElement = document.getElementById('shop_healthPotion');
+    var hpPotionElement = document.getElementById('shop_healingPotion');
 
     var pokeballPrice = 10;
     var hpPotionPrice = 15;
