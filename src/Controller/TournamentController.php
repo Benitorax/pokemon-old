@@ -41,17 +41,16 @@ class TournamentController extends AbstractController
      */
     public function battle(TournamentHandler $tournamentHandler, BattleTeamRepository $battleTeamRepository, PokemonRepository $pokemonRepository)
     {
-        $playerTeam = $battleTeamRepository->findOneByTrainer($this->getUser());
-        $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($this->getUser());
+        $user = $this->getUser();
+        $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($user);
+        $csrfToken = $user->getId()->toString();
 
-        if($pokemonsCount < 3 && $playerTeam->getPokemons()->count() != 3) {
+        if($pokemonsCount < 3) {
             return $this->redirectToRoute('tournament');
         }
         
         $tournamentHandler->clear();
         $tournamentHandler->createBattle();
-
-        $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('tournament/battle.html.twig', [
             'csrfToken' => $csrfToken
@@ -73,7 +72,7 @@ class TournamentController extends AbstractController
         $selectField = $formManager->createSelectPokemonFieldForTournament();
         $wins = $this->getUser()->getConsecutiveWin() % 3;
         $messages = [
-            'messages' => ['You will battle against another trainer.', 'Select the 1st pokemon to fight!'],
+            'messages' => ['You will battle against a trainer.', 'Select the 1st pokemon to fight!'],
             'textColor' => 'text-white'
         ];
 

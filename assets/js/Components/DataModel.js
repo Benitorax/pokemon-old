@@ -1,3 +1,10 @@
+export function getNullImageObject() {
+    return {
+        url: null,
+        className: null
+    };
+}
+
 export function getNullData() {
     return {
         form: null,
@@ -52,6 +59,15 @@ export function getOpponentHarmlessData() {
         messages: {
             messages: ['The pokemon is already harmless!'],
             textColor: 'battle-text-danger'
+        }
+    };
+}
+
+export function getServerErrorData() {
+    return {
+        messages: {
+            messages: ['The website has encountered some technical issues.', 'Please refresh the page.'],
+            textColor: 'text-warning'
         }
     };
 }
