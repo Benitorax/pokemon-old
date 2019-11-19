@@ -78,13 +78,13 @@
 }
 
 @keyframes potion {
-    from { transform: scale(1) translate(0, -20px); }
-    10% { transform: scale(0.7) translate(0, -80px); }
-    35% { transform: scale(0.5) translate(-150px, -100px); }
-    40% { transform: scale(0.5) translate(-150px, -100px) rotate(-11deg); }
-    60% { transform: scale(0.5) translate(-150px, -90px) rotate(10deg); }
-    80% { transform: scale(0.5) translate(-150px, -100px) rotate(-9deg); }
-    to { transform: scale(0) translate(-50px, -90px) rotate(8deg); }
+    from { transform: scale(1) translate(40px, -20px); }
+    10% { transform: scale(0.7) translate(40px, -80px); }
+    35% { transform: scale(0.5) translate(-110px, -100px); }
+    40% { transform: scale(0.5) translate(-110px, -100px) rotate(-11deg); }
+    60% { transform: scale(0.5) translate(-110px, -90px) rotate(10deg); }
+    80% { transform: scale(0.5) translate(-110px, -100px) rotate(-9deg); }
+    to { transform: scale(0) translate(-10px, -90px) rotate(8deg); }
 }
 
 .ash-support {

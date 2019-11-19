@@ -1,8 +1,8 @@
 import { render } from 'react-dom';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { Message } from './Message';
-import { BattleScreen } from './BattleScreen';
-import { Form } from './Form';
+import { Message } from './Message/Message';
+import { BattleScreen } from './BattleScreen/BattleScreen';
+import { Form } from './Form/Form';
 import { getDataModel } from './DataModel';
 
 import '../../css/AdventureBattle.css';

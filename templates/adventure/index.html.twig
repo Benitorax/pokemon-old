@@ -11,14 +11,11 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {# <script src="{{ asset('build/adventure_battle.css') }}"></script> #}
     {{ encore_entry_link_tags('adventure_battle') }}
 {% endblock stylesheets %}
 
 {% block javascripts %}
     {{ parent() }}
-    {# <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script> #}
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     {{ encore_entry_script_tags('adventure_battle') }}
 {% endblock javascripts %}

@@ -72,12 +72,8 @@ class TournamentController extends AbstractController
         }
         $selectField = $formManager->createSelectPokemonFieldForTournament();
         $wins = $this->getUser()->getConsecutiveWin() % 3;
-        if($wins === 0) { $round = 'First round'; }
-        elseif($wins === 1) { $round = 'Semi-final'; }
-        elseif($wins === 2) { $round = 'Final'; }
-
         $messages = [
-            'messages' => ['<strong>'.$round.'</strong>', 'You will battle against another trainer.', 'Select the 1st pokemon to fight!'],
+            'messages' => ['You will battle against another trainer.', 'Select the 1st pokemon to fight!'],
             'textColor' => 'text-white'
         ];
 

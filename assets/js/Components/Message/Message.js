@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {useTransition, animated } from 'react-spring';
 import uuidv4 from 'uuid/v4';
-import '../../css/AdventureBattle.css';
 
 export function Message(props) {
     const [messages, setMessages] = useState([]);
