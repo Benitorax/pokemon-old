@@ -21,17 +21,20 @@
                         <a class="nav-link" href="{{ path('app_index') }}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item{% if app.request.get('_route') == 'adventure' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('adventure') }}">Adventure</a>
+                        </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'tournament' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('tournament') }}">Tournament</a>
+                        </li>
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_profile' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('trainer_profile') }}">Profile</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_list' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('trainer_list') }}">Trainers</a>
                         </li>
-                        <li class="nav-item{% if app.request.get('_route') == 'adventure' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('adventure') }}">Adventure</a>
-                        </li>
-                        <li class="nav-item{% if app.request.get('_route') == 'tournament' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('tournament') }}">Tournament</a>
+                        <li class="nav-item{% if app.request.get('_route') == 'pokemon_exchange_list' %} active{% endif %}">
+                            <a class="nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'city' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('city') }}">City</a>
@@ -49,7 +52,6 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         {% if is_granted('ROLE_USER') %}
                             <a class="dropdown-item" href="{{ path('app_account') }}">Account</a>
-                            <a class="dropdown-item" href="{{ path('pokemon_exchange_list') }}">Pokemon exchange</a>
                             <a class="dropdown-item" href="{{ path('app_contact') }}">Contact</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
                         {% else %}
