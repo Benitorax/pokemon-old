@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import "trainer/_showBadge.html.twig" as showBadge %}
 
 {% block title %}Profile{% endblock %}
 
@@ -9,6 +10,7 @@
             <a href="{{ path('pokemon_exchange_create', {id:user.id}) }}"><span class="btn btn-sm btn-outline-dark">Do you want to exchange pokemons with this trainer?<span></a>
         {% endif %}
     </div>
+    {{ showBadge.showBadge(user.championCount) }}
     <table class="my-5 table">
         <thead>
             <tr class="table-primary">
@@ -42,7 +44,7 @@
     <table class="mt-5 table">
         <thead>
             <tr class="table-primary">
-                <th class="text-center" scope="col">Total: {{ user.pokemons|length }}</th>
+                <th class="text-center" scope="col">Nb: {{ user.pokemons|length }}</th>
                 <th class="text-center" scope="col">Pokemon</th>
                 <th class="text-center" scope="col">Picture</th>
                 <th class="text-center" scope="col">Level</th>

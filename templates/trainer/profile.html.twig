@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
+{% import "trainer/_showBadge.html.twig" as showBadge %}
 
 {% block title %}Profile{% endblock %}
 
 {% block body %}
   <h1 class="my-3 text-secondary">Profile: {{ user.username }}</h1>
-
+  {{ showBadge.showBadge(user.championCount) }}
   <table class="table">
     <thead>
       <tr class="table-primary">

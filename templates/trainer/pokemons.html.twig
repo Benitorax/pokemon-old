@@ -13,7 +13,6 @@
         <th class="text-center" scope="col">Picture</th>
         <th class="text-center" scope="col">Level</th>
         <th class="text-center" scope="col">Habitat</th>
-        <th class="text-center" scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
@@ -22,13 +21,12 @@
           <td class="text-center align-middle"><strong>{{ loop.index }}</strong></td>
           <td class="text-center align-middle">
             <p class="text-primary">
-              <strong>{{ pokemon.name }}</strong>
+              <strong>{{ pokemon.name }}</strong> {% if pokemon.isSleep %}<span class="text-danger">(Sleeping)</span>{% endif %}
             </p>
           </td>
           <td class="text-center align-middle"><img class="mw-10" src="{{ pokemon.spriteFrontUrl }}"></td>
           <td class="text-center align-middle text-primary"><strong>{{ pokemon.level }}</strong></td>
           <td class="text-center align-middle"><strong>{{ pokemon.habitat.name|capitalize }}</strong></td>
-          <td class="text-center align-middle">{% if pokemon.isSleep %}Sleeping{% endif %}</td>
         </tr>
       {% endfor %}
     </tbody>
