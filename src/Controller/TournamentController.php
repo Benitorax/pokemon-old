@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class TournamentController extends AbstractController
 {
     /**
-     * @Route("/tournament/", name="tournament")
+     * @Route("/tournament/", name="tournament", methods={"GET"})
      */
     public function index(PokemonRepository $pokemonRepository)
     {
@@ -25,9 +25,10 @@ class TournamentController extends AbstractController
         }
 
         $wins = $user->getConsecutiveWin() % 3;
-        if($wins === 0) { $buttonMessage = 'First round'; }
-        elseif($wins === 1) { $buttonMessage = 'Semi-final'; }
-        elseif($wins === 2) { $buttonMessage = 'Final'; }
+        $baseMessage = 'Ready for the ';
+        if($wins === 0) { $buttonMessage = $baseMessage.'first round'; }
+        elseif($wins === 1) { $buttonMessage = $baseMessage.'semi-final'; }
+        elseif($wins === 2) { $buttonMessage = $baseMessage.'final'; }
 
         return $this->render('tournament/index.html.twig', [
             'isAllowed' => $isAllowed,
@@ -36,7 +37,7 @@ class TournamentController extends AbstractController
     }
 
     /**
-     * @Route("/tournament/battle", name="tournament_battle")
+     * @Route("/tournament/battle", name="tournament_battle", methods={"GET"})
      */
     public function battle(TournamentHandler $tournamentHandler, BattleTeamRepository $battleTeamRepository, PokemonRepository $pokemonRepository)
     {
@@ -53,7 +54,7 @@ class TournamentController extends AbstractController
         $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('tournament/battle.html.twig', [
-            "csrfToken" => $csrfToken
+            'csrfToken' => $csrfToken
         ]);
     }
 
@@ -64,10 +65,10 @@ class TournamentController extends AbstractController
     {
         if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
             $messages = [
-                "messages" => ["You need at least one pokemon to go on adventure."],
-                "textColor" => "text-white"
+                'messages' => ['You need at least one pokemon to go on adventure.'],
+                'textColor' => 'text-white'
             ];
-            return $this->json(["messages" => $messages]);
+            return $this->json(['messages' => $messages]);
         }
         $selectField = $formManager->createSelectPokemonFieldForTournament();
         $wins = $this->getUser()->getConsecutiveWin() % 3;
@@ -76,19 +77,19 @@ class TournamentController extends AbstractController
         elseif($wins === 2) { $round = 'Final'; }
 
         $messages = [
-            "messages" => ["<strong>".$round."</strong>", "You will battle against another trainer.", "Select the 1st pokemon to fight!"],
-            "textColor" => "text-white"
+            'messages' => ['<strong>'.$round.'</strong>', 'You will battle against another trainer.', 'Select the 1st pokemon to fight!'],
+            'textColor' => 'text-white'
         ];
 
         return $this->json([
-            "form" => [$selectField],
-            "opponent" => null,
-            "player" => null,
+            'form' => [$selectField],
+            'opponent' => null,
+            'player' => null,
             'messages' => $messages,
-            "centerImageUrl" => ['/images/round'.$wins.'.png'],
-            "turn" => 'player',
-            "healthPotionCount" => null,
-            "pokeballCount" => null
+            'centerImageUrl' => ['/images/round'.$wins.'.png'],
+            'turn' => 'player',
+            'healthPotionCount' => null,
+            'pokeballCount' => null
         ]);
     }
 
@@ -108,14 +109,14 @@ class TournamentController extends AbstractController
         $data = $tournamentHandler->handleSelectPokemon($pokemon);
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => null,
-            "player" => null,
+            'form' => $data['form'],
+            'opponent' => null,
+            'player' => null,
             'messages' => $data['messages'],
-            "centerImageUrl" => $data['centerImageUrl'],
-            "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'centerImageUrl' => $data['centerImageUrl'],
+            'turn' => 'player',
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -135,14 +136,14 @@ class TournamentController extends AbstractController
         $data = $tournamentHandler->handleAttack();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
-            "turn" => $data['turn'],
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'centerImageUrl' => null,
+            'turn' => $data['turn'],
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -162,14 +163,14 @@ class TournamentController extends AbstractController
         $data = $tournamentHandler->handleHeal();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
-            "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'centerImageUrl' => null,
+            'turn' => 'player',
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -189,14 +190,14 @@ class TournamentController extends AbstractController
         $data = $tournamentHandler->handleThrowPokeball();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'form' => $data['form'],
+            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
-            "turn" => $data['turn'],
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'centerImageUrl' => null,
+            'turn' => $data['turn'],
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -216,14 +217,14 @@ class TournamentController extends AbstractController
         $data = $tournamentHandler->handleLeave();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'form' => $data['form'],
+            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
-            "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'centerImageUrl' => null,
+            'turn' => 'player',
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -243,14 +244,14 @@ class TournamentController extends AbstractController
         $data = $tournamentHandler->handleNext();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            "player" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'form' => $data['form'],
+            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
-            "centerImageUrl" => isset($data['centerImageUrl']) ? $data['centerImageUrl'] : null,
-            "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'centerImageUrl' => isset($data['centerImageUrl']) ? $data['centerImageUrl'] : null,
+            'turn' => 'player',
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -271,14 +272,14 @@ class TournamentController extends AbstractController
         $round = $this->getUser()->getConsecutiveWin() % 3;
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => null,
-            "player" => null,
+            'form' => $data['form'],
+            'opponent' => null,
+            'player' => null,
             'messages' => $data['messages'],
-            "centerImageUrl" => ['/images/round'.$round.'.png'],
-            "turn" => 'player',
-            "pokeballCount" => null,
-            "healthPotionCount" => null
+            'centerImageUrl' => ['/images/round'.$round.'.png'],
+            'turn' => 'player',
+            'pokeballCount' => null,
+            'healthPotionCount' => null
         ]);
     }
 }

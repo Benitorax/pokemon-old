@@ -21,7 +21,7 @@ class AdventureController extends AbstractController
         $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('adventure/index.html.twig', [
-            "csrfToken" => $csrfToken
+            'csrfToken' => $csrfToken
         ]);
     }
 
@@ -32,26 +32,26 @@ class AdventureController extends AbstractController
     {
         if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
             $messages = [
-                "messages" => ["You need at least one pokemon to go on adventure"],
-                "textColor" => "text-white"
+                'messages' => ['You need at least one pokemon to go on adventure'],
+                'textColor' => 'text-white'
             ];
-            return $this->json(["messages" => $messages]);
+            return $this->json(['messages' => $messages]);
         }
         $travelButton = $formManager->createTravelButton();
         $messages = [
-            "messages" => ["Let's go for adventure!", "You might run into some awesome pokemons!"],
-            "textColor" => "text-white"
+            'messages' => ['Let\'s go for adventure!', 'You might run into some awesome pokemons!'],
+            'textColor' => 'text-white'
         ];
 
         return $this->json([
-            "form" => [$travelButton],
-            "opponent" => null,
-            "player" => null,
+            'form' => [$travelButton],
+            'opponent' => null,
+            'player' => null,
             'messages' => $messages,
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => 'player',
-            "healthPotionCount" => null,
-            "pokeballCount" => null
+            'healthPotionCount' => null,
+            'pokeballCount' => null
         ]);
     }
 
@@ -71,14 +71,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleTravel();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => null,
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => null,
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => 'player',
-            "healthPotionCount" => null,
-            "pokeballCount" => null
+            'healthPotionCount' => null,
+            'pokeballCount' => null
         ]);
     }
 
@@ -98,14 +98,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleSelectPokemon($pokemon);
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -125,14 +125,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleAttack();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => $data['turn'],
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -152,14 +152,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleHeal();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -179,14 +179,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleThrowPokeball();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'form' => $data['form'],
+            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
-            "centerImageUrl" => $data['centerImageUrl'],
+            'centerImageUrl' => $data['centerImageUrl'],
             "turn" => $data['turn'],
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -206,14 +206,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleLeave();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            "player" => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'form' => $data['form'],
+            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 
@@ -233,14 +233,14 @@ class AdventureController extends AbstractController
         $data = $adventureHandler->handleNext();
 
         return $this->json([
-            "form" => $data['form'],
-            "opponent" => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
-            "player" => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
+            'form' => $data['form'],
+            'opponent' => $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()),
+            'player' => $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()),
             'messages' => $data['messages'],
-            "centerImageUrl" => null,
+            'centerImageUrl' => null,
             "turn" => 'player',
-            "pokeballCount" => $this->getUser()->getPokeball(),
-            "healthPotionCount" => $this->getUser()->getHealthPotion()
+            'pokeballCount' => $this->getUser()->getPokeball(),
+            'healthPotionCount' => $this->getUser()->getHealthPotion()
         ]);
     }
 }

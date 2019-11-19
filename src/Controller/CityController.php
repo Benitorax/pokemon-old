@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CityController extends AbstractController
 {
     /**
-     * @Route("/city/", name="city")
+     * @Route("/city/", name="city", methods={"GET","POST"})
      */
     public function index(Request $request, CityHandler $cityHandler)
     {

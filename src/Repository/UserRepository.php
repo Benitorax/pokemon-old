@@ -47,6 +47,14 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findAllNotActivated()
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isActivated = false')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOneIsActivatedByEmail($email)
     {
         return $this->createQueryBuilder('u')

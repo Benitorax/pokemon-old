@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class AppController extends AbstractController
 {
     /**
-     * @Route("/", name="app_redirect_index")
+     * @Route("/", name="app_redirect_index", methods={"GET"})
      */
     public function redirectIndex()
     {
@@ -26,7 +26,7 @@ class AppController extends AbstractController
     }
     
     /**
-     * @Route("/index/", name="app_index")
+     * @Route("/index/", name="app_index", methods={"GET"})
      */
     public function index()
     {
@@ -35,7 +35,7 @@ class AppController extends AbstractController
     }
 
     /**
-     * @Route("/account/", name="app_account")
+     * @Route("/account/", name="app_account", methods={"GET"})
      */
     public function showAccount()
     {
@@ -44,7 +44,7 @@ class AppController extends AbstractController
     }
 
     /**
-     * @Route("/account/password", name="app_modify_password")
+     * @Route("/account/password", name="app_modify_password", methods={"GET","POST"})
      */
     public function modifyPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, ObjectManager $manager)
     {
@@ -75,7 +75,7 @@ class AppController extends AbstractController
     }
 
     /**
-     * @Route("/account/delete", name="app_account_delete")
+     * @Route("/account/delete", name="app_account_delete", methods={"GET","POST"})
      */
     public function deleteAccount(Request $request, ObjectManager $manager, TokenStorageInterface $tokenStorage)
     {
@@ -98,7 +98,7 @@ class AppController extends AbstractController
     }
 
     /**
-     * @Route("/contact/", name="app_contact")
+     * @Route("/contact/", name="app_contact", methods={"GET","POST"})
      */
     public function sendMessageToAdmin(Request $request, ContactMessageManager $messageManager, CustomMailer $mailer)
     {

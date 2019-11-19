@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Not activated users{% endblock %}
+
+{% block body %}
+    <div>
+        <h1 class="my-3">Not activated users</h1>
+        <hr/>
+        <div>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Created</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <th>{{ user.username }}</th>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.createdAt|date('Y/m/s') }}</td>
+                            <td><a href="{{ path('admin_user_delete', {id: user.id, csrfToken: csrf_token(csrfToken)}) }}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <p><a href="{{ path('admin_users_not_activated_delete') }}">Delete all accounts created at least 1 month ago</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

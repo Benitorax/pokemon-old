@@ -65,17 +65,17 @@
                     <a href="{{ path('pokemon_exchange_edit', {id: ex.id}) }}"><button class="mr-5 btn btn-warning">Modify</button></a>
                     {% if app.user is same as(ex.trainer1) %}
                         {% if ex.answer1 is same as('Accepted') %}
-                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Withdraw</button></a>
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Withdraw</button></a>
                         {% elseif ex.answer1 is same as('None') %}
-                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
-                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Refuse</button></a>
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Refuse</button></a>
                         {% endif %}
                     {% elseif app.user is same as(ex.trainer2) %}
                         {% if ex.answer2 is same as('Accepted') %}
-                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Withdraw</button></a>
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Withdraw</button></a>
                         {% elseif ex.answer2 is same as('None') %}
-                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
-                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id}) }}"><button class="btn btn-danger">Refuse</button></a>
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
+                            <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Refuse</button></a>
                         {% endif %}
                     {% endif %}
                 </div>
