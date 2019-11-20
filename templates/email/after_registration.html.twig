@@ -6,7 +6,5 @@
     <h3 class="mt-3">Hello {{username}},</h3>
 
     <p>Congrats for your registration, you need to click on this link below to activate your account:</p>
-    <a href='{{ url('app_email_confirm', {'token': token}) }}'>{{ url('app_email_confirm', {'token': token}) }}</a>
-    <p>Yours sincerely,</p>
-    <p class="text-success font-weight-bold">PokeCompany</p>
+    <p><a href='{{ url('app_email_confirm', {'token': token}) }}'>{{ url('app_email_confirm', {'token': token}) }}</a></p>
 {% endblock %}
