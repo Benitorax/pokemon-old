@@ -10,7 +10,10 @@ export function getNullData() {
         form: null,
         opponent: null,
         player: null,
-        messages: null,
+        messages: {
+            messages: ['Loading...'],
+            textColor: 'text-white'
+        },
         centerImageUrl: null,
         turn: null,
         pokeballCount: null,

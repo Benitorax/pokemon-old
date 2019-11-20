@@ -8,7 +8,7 @@ import { api_get, api_post } from './battle_api';
 import { isInvalidCommand } from './booster';
 
 export function Battle(props) {
-    const [data, setData] = useState(getNullData());
+    const [data, setData] = useState(null);
     function updateData($data) {
         setData($prevData => Object.assign({}, $prevData, $data));
     }
@@ -19,6 +19,7 @@ export function Battle(props) {
         })
         .catch(function (error) {
             console.log('error', error);
+            updateData(getServerErrorData());
         });
     }, []);
 

@@ -32,7 +32,6 @@ class BattleManager extends AbstractBattleManager
         $playerTeam->setTrainer($this->user);
 
         $habitat = $this->pokeApiManager->getRandomHabitat();
-        //$this->persistAndFlush($habitat);
 
         $opponentTeam = $this->createTournamentOpponentTeam($habitat);
         $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'tournament');

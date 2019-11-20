@@ -39,7 +39,7 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/battle", name="tournament_battle", methods={"GET"})
      */
-    public function battle(TournamentHandler $tournamentHandler, BattleTeamRepository $battleTeamRepository, PokemonRepository $pokemonRepository)
+    public function battle(TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository)
     {
         $user = $this->getUser();
         $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($user);
@@ -50,7 +50,6 @@ class TournamentController extends AbstractController
         }
         
         $tournamentHandler->clear();
-        $tournamentHandler->createBattle();
 
         return $this->render('tournament/battle.html.twig', [
             'csrfToken' => $csrfToken
@@ -60,15 +59,10 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/start", name="tournament_start", methods={"GET"})
      */
-    public function start(PokemonRepository $pokemonRepository, BattleFormManager $formManager)
+    public function start(TournamentHandler $tournamentHandler, BattleFormManager $formManager)
     {
-        if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
-            $messages = [
-                'messages' => ['You need at least one pokemon to go on adventure.'],
-                'textColor' => 'text-white'
-            ];
-            return $this->json(['messages' => $messages]);
-        }
+        $tournamentHandler->createBattle();
+
         $selectField = $formManager->createSelectPokemonFieldForTournament();
         $wins = $this->getUser()->getConsecutiveWin() % 3;
         $messages = [

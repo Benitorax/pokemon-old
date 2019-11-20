@@ -10,7 +10,7 @@ class TournamentHandler extends AdventureHandler
 {    
     public function createBattle() 
     {
-        $this->battleManager->createTournamentBattle();
+        return $this->battleManager->createTournamentBattle();
     }
 
     public function handleSelectPokemon(Pokemon $pokemon) 

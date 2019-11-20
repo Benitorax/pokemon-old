@@ -93,6 +93,11 @@ class User implements UserInterface
      */
     private $championCount = 0;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $currentGameId;
+
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
@@ -362,6 +367,18 @@ class User implements UserInterface
     public function increaseChampionCount(): self
     {
         $this->championCount += 1;
+
+        return $this;
+    }
+
+    public function getCurrentGameId(): ?string
+    {
+        return $this->currentGameId;
+    }
+
+    public function setCurrentGameId(?string $currentGameId): self
+    {
+        $this->currentGameId = $currentGameId;
 
         return $this;
     }
