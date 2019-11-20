@@ -1,7 +1,9 @@
 # Pokemon Application
-<p>This application fetchs some data from <a href="https://pokeapi.co">https://pokeapi.co</a> needed like the name, image, evolution and habitat of pokemons.</p>
+<p>This application fetchs some data from <a href="https://pokeapi.co">https://pokeapi.co</a> like the name, image, evolution and habitat of pokemons.</p>
 <p>It only includes the first generation, so the first 151 pokemons, from Bulbasaur to Mew.</p>
-<p>Trainers in tournament are auto generated. Users can interact each other only by exchanging pokemon. They can also leave messages in contact page that only admin users can read.</p>
+<p>Trainers in tournament are auto generated. Users can interact each other only by exchanging pokemon. They can also leave messages in contact page that only admin users can read.<br/>
+Admin users can also delete accounts which have not been activated.</p>
+<p>The application use React for the battle pages (adventure and tournament).</p>
 
 ## Database and email configuration
 <p>
@@ -10,15 +12,24 @@
   If you don't config an email address, you need to check your emails in the profiler to activate the account you register.
 </p>
 
-<p>Then, create the database:<br>
-  <code>php bin/console doctrine:database:create</code><br>
-  <code>php bin/console doctrine:schema:create</code><br>
-  <code>php bin/console doctrine:schema:update --force</code>
-  <br><br>
+<p>To install dependecies:<br/>
+  <code>composer install</code><br/>
+  <br/>
+  Then, create the database:<br/>
+  <code>php bin/console doctrine:database:create</code><br/>
+  <code>php bin/console doctrine:schema:create</code><br/>
+  <code>php bin/console doctrine:schema:update --force</code><br/>
+  <br/>
+  To install packages:<br/>
+  <code>npm install</code><br/>
+  <br/>
+  To build the assets for CSS, Javascript and React:<br/>
+  <code>npm run dev</code><br/>
+  <br/>
   To launch the server:<br>
   <code>composer require --dev symfony/web-server-bundle</code><br>
-  <code>php bin/console server:start</code>
-  <br><br>
+  <code>php bin/console server:start</code><br/>
+  <br/>
   If you have Symfony CLI Tool, you can launch the server with:<br>
   <code>symfony server:start</code>
 </p>
@@ -32,7 +43,7 @@
   <li>log in</li>
   <li>modify your password</li>
   <li>capture pokemons</li>
-  <li>buy items (pokeballs, health potions)</li>
+  <li>buy items (pokeballs, healing potions)</li>
   <li>restore your pokemons in the infirmary</li>
   <li>participate in tournament (you need 3 pokemons in good shape)</li>
   <li>earn more money by winning a battle or the tournament</li>
@@ -56,7 +67,7 @@
 <ul>
   <li>be easier to capture if damaged</li>
   <li>fight another pokemon</li>
-  <li>be healed with health potion or infirmary service</li>
+  <li>be healed with healing potion or infirmary service</li>
   <li>faint when lose all health points</li>
   <li>be restored at the infirmary service</li>
   <li>level up after a victory</li>

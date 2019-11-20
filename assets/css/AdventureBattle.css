@@ -1,0 +1,248 @@
+.pokemon-bounce {
+    animation: bounce 0.35s cubic-bezier(0.240, 0.575, 0.780, 1) infinite alternate;
+}
+
+:screen {
+    --width: 0px;
+    --height: 0px;
+    --half-width: 0;
+    --half-height: 0;
+}
+
+@keyframes bounce {
+    from {transform: translateY(2px);}
+    to {transform: translateY(-2px);}
+}
+
+.pokemon-attack-opponent {
+    animation: attack-opponent 0.7s ease-in-out;
+}
+
+@keyframes attack-opponent {
+    from {transform: translate(0, 0);}
+    35% {transform: translate(calc(
+        160px - var(--width)
+    ), 90px);}
+    50% {transform: translate(calc(
+        (160px - var(--width)) / 2
+    ), 60px);}
+    65% {transform: translate(calc(
+        160px - var(--width)
+    ), 90px);}
+    to {transform: translate(0, 0);}
+}
+
+.pokemon-attack-player {
+    animation: attack-player 1s ease-in-out;
+}
+
+@keyframes attack-player {
+    from {transform: translate(0, 0);}
+    35% {transform: translate(calc(
+        var(--width) - 160px
+    ), -90px);}
+    50% {transform: translate(calc(
+        (var(--width) - 160px) / 2
+    ), -60px);}
+    65% {transform: translate(calc(
+        var(--width) - 160px
+    ), -90px);}
+    to {transform: translate(0, 0);}
+}
+
+.pokemon-sleep {
+    filter: brightness(60%)
+}
+
+.pokeball {
+    animation: pokeball-launch 1s ease-in-out;
+}
+
+@keyframes pokeball-launch {
+    from { 
+        transform: scale(1) translate(
+            calc(150px - var(--half-width)), 
+            calc(-100px + var(--half-height))
+        ) rotate(-330deg); 
+    }
+    to { 
+        transform: scale(0.5) translate(
+            calc(30px + var(--half-width)), 
+            calc(50px - var(--half-height))
+        ) rotate(30deg); 
+    }
+}
+
+.healing-potion {
+    animation: potion 1s ease-in-out;
+}
+
+@keyframes potion {
+    from { transform: scale(1) translate(60px, -20px); }
+    10% { transform: scale(0.7) translate(60px, -80px); }
+    35% { transform: scale(0.5) translate(-90px, -100px); }
+    40% { transform: scale(0.5) translate(-90px, -100px) rotate(-11deg); }
+    60% { transform: scale(0.5) translate(-90px, -90px) rotate(10deg); }
+    80% { transform: scale(0.5) translate(-90px, -100px) rotate(-9deg); }
+    to { transform: scale(0) translate(10px, -90px) rotate(8deg); }
+}
+
+.ash-support {
+    animation: k-ash-move 1s ease-out;
+}
+
+@keyframes k-ash-move {
+    from { transform: rotate(-15deg) translate(
+        var(--half-width), calc(100px - var(--height))
+    ); }
+    40% { transform: translate(
+        0, calc(40px - var(--height))
+    ); }
+    60% { transform: translate(
+        0, calc(40px - var(--height))
+    ); }
+    to { transform: rotate(-15deg) translate(
+        calc(50px - var(--half-width)), calc(-20px - var(--height))
+    ); }
+}
+
+.ash-crazy {
+    animation: k-ash-crazy 1s ease-out;
+}
+
+@keyframes k-ash-crazy {
+    from { transform: rotate(0deg) translate(
+        var(--half-width), calc(0px - var(--height))
+    ); }
+    20% { transform: rotate(30deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    40% { transform: rotate(90deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    60% { transform: rotate(90deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    80% { transform: rotate(30deg) translate(
+        calc(200px - var(--half-width)), calc(200px - var(--height))
+    ); }
+    to { transform: rotate(0deg) translate(
+        calc(50px - var(--half-width)), calc(0px - var(--height))
+    ); }
+}
+
+.ash-reverse {
+    animation: k-ash-reverse 1s linear;
+}
+
+@keyframes k-ash-reverse {
+    from { transform: rotate(-180deg) translate(
+        var(--half-width), calc(350px - var(--half-height))
+    ); }
+    20% { transform: rotate(-180deg) translate(
+        calc(300px - var(--half-width)), calc(250px - var(--half-height))
+    ); }
+    40% { transform: rotate(-180deg) translate(
+        calc(200px - var(--half-width)), calc(300px - var(--half-height))
+    ); }
+    60% { transform: rotate(-180deg) translate(
+        calc(150px - var(--half-width)), calc(250px - var(--half-height))
+    ); }
+    80% { transform: rotate(-180deg) translate(
+        calc(100px - var(--half-width)), calc(300px - var(--half-height))
+    ); }
+    to { transform: rotate(-180deg) translate(
+        calc(0px - var(--half-width)), calc(350px - var(--half-height))
+    ); }
+}
+
+.cheerleader1 {
+    animation: k-cheerleader1 1s ease;
+}
+
+@keyframes k-cheerleader1 {
+    from { transform: rotate(0deg) translate(
+        calc(270px - var(--half-width)), calc(40px - var(--height))
+    ); }
+    20% { transform: rotate(-1deg) translate(
+        calc(240px - var(--half-width)), calc(50px - var(--height))
+    ); }
+    40% { transform: rotate(0deg) translate(
+        calc(225px - var(--half-width)), calc(30px - var(--height))
+    ); }
+    60% { transform: rotate(1deg) translate(
+        calc(195px - var(--half-width)), calc(50px - var(--height))
+    ); }
+    80% { transform: rotate(0deg) translate(
+        calc(180px - var(--half-width)), calc(30px - var(--height))
+    ); }
+    to { transform: rotate(-1deg) translate(
+        calc(160px - var(--half-width)), calc(40px - var(--height))
+    ); }
+}
+
+.cheerleader2 {
+    animation: k-cheerleader2 1s ease-in;
+}
+
+@keyframes k-cheerleader2 {
+    from { transform: rotate(0deg) translate(
+        calc(180px - var(--half-width)), calc(90px - var(--height))
+    ); }
+    20% { transform: rotate(-1deg) translate(
+        calc(195px - var(--half-width)), calc(10px - var(--height))
+    ); }
+    40% { transform: rotate(0deg) translate(
+        calc(210px - var(--half-width)), calc(-10px - var(--height))
+    ); }
+    60% { transform: rotate(1deg) translate(
+        calc(225px - var(--half-width)), calc(50px - var(--height))
+    ); }
+    80% { transform: rotate(0deg) translate(
+        calc(240px - var(--half-width)), calc(-10px - var(--height))
+    ); }
+    to { transform: rotate(-1deg) translate(
+        calc(260px - var(--half-width)), calc(0px - var(--height))
+    ); }
+}
+
+.crowd-move {
+    animation: k-crowd 1s linear;
+}
+
+@keyframes k-crowd {
+    from { transform: rotate(3deg) translate(
+        0, calc(-30px - var(--half-height))
+    ); }
+    20% { transform: rotate(1deg) translate(
+        0, calc(0px - var(--half-height))
+    ); }
+    40% { transform: rotate(-3deg) translate(
+        0, calc(-30px - var(--half-height))
+    ); }
+    60% { transform: rotate(0deg) translate(
+        0, calc(0px - var(--half-height))
+    ); }
+    80% { transform: rotate(3deg) translate(
+        0, calc(-30px - var(--half-height))
+    ); }
+    to { transform: rotate(-1deg) translate(
+        0, calc(0px - var(--half-height))
+    ); }
+}
+
+.battle-text-success {
+    color: #99ff99 !important;
+}
+
+.battle-text-danger {
+    color: #ff6666 !important;
+}
+
+.battle-text-info {
+    color: #66ffff !important;
+}
+
+.bg-battle-message {
+    background-color: #00001f;
+}

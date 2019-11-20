@@ -30,7 +30,7 @@ class CityHandler
         $form = $form->getData();
         $isValidated = $this->validatePurchaseMoney($form);
 
-        if(!$isValidated || ($form['pokeball'] == 0 && $form['healthPotion'] == 0)) {
+        if(!$isValidated || ($form['pokeball'] == 0 && $form['healingPotion'] == 0)) {
             $this->session->add('danger', 'Select the number of items you would like to buy.');
             return;
         }
@@ -39,15 +39,15 @@ class CityHandler
             $this->user->addPokeball($pokeballNumber);
             $this->user->decreasePokedollar($pokeballNumber*self::POKEBALL_PRICE);
 
-            $pokeballMessage = sprintf("You have now %s pokeballs (+%d)", $this->user->getPokeball(), $pokeballNumber);
+            $pokeballMessage = sprintf("Now you have %s pokeballs (+%d)", $this->user->getPokeball(), $pokeballNumber);
             $this->session->add('success', $pokeballMessage);
         }
 
-        if(is_int($hpNumber = $form['healthPotion']) && $form['healthPotion'] != 0) {
-            $this->user->addHealthPotion($hpNumber);
+        if(is_int($hpNumber = $form['healingPotion']) && $form['healingPotion'] != 0) {
+            $this->user->addHealingPotion($hpNumber);
             $this->user->decreasePokedollar($hpNumber*self::HEALTH_POTION_PRICE);
 
-            $hpMessage = sprintf("You have now %s health potions (+%d)", $this->user->getHealthPotion(), $hpNumber);
+            $hpMessage = sprintf("Now you have %s healing potions (+%d)", $this->user->getHealingPotion(), $hpNumber);
             $this->session->add('success', $hpMessage);
         }
 
@@ -59,7 +59,7 @@ class CityHandler
         $request = $form->getClickedButton()->getName();
 
         if($request === 'restorePokemon') {
-            $this->restorePokemon();
+            $this->restorePokemonIfAllowed();
 
         } elseif($request === 'donatePokemon') {
             if($pokemonId = $form->getData()['selectPokemon']) {
@@ -70,20 +70,27 @@ class CityHandler
         }
     }
 
-    public function restorePokemon() {
+    public function restorePokemonIfAllowed() {
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
-        foreach($pokemons as $pokemon) {
-            $pokemon->setHealthPoint(100);
-            $pokemon->setIsSleep(false);
+        if(count($pokemons) >= 3 && $this->user->getPokedollar() < self::RESTORE_POKEMON_PRICE) {
+            $this->session->add('danger', 'You don\'t have enough money to restore pokemons!');
+            return;
         }
-        
+
         if(count($pokemons) >= 3) {
             $this->user->decreasePokedollar(self::RESTORE_POKEMON_PRICE);
         }
 
+        $this->restorePokemon($pokemons);
         $this->manager->flush();
-
         $this->session->add('success', 'Your pokemons are now in good shape.');
+    }
+
+    private function restorePokemon($pokemons) {
+        foreach($pokemons as $pokemon) {
+            $pokemon->setHealthPoint(100);
+            $pokemon->setIsSleep(false);
+        }   
     }
 
     public function donatePokemon($pokemonId) {
@@ -103,7 +110,7 @@ class CityHandler
     public function validatePurchaseMoney($data) {
         $money = $this->user->getPokedollar();
         $amount = $data['pokeball'] * self::POKEBALL_PRICE +
-                  $data['healthPotion'] * self::HEALTH_POTION_PRICE;
+                  $data['healingPotion'] * self::HEALTH_POTION_PRICE;
         
         $isValidated = $money >= $amount;
         if(!$isValidated) {

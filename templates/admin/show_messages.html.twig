@@ -4,9 +4,9 @@
 
 {% block body %}
     <div>
-        <h1>{{title}} sent by users:</h1>
+        <h1 class="my-3">{{title}} sent by users:</h1>
         {% if app.request.get('_route') == 'admin_messages_new' %}
-            <p><a href="{{ path('admin_messages_archive') }}">Archive messages</a></p>
+            <p><a href="{{ path('admin_messages_archived') }}">Archive messages</a></p>
         {% else %}
             <p><a href="{{ path('admin_messages_new') }}">New messages</a></p>
         {% endif %}
@@ -16,7 +16,7 @@
                 <div class="card-header">
                     From {{message.author.username}}, the {{message.createdAt|date('m/d/Y')}}
                     {% if app.request.get('_route') == 'admin_messages_new' %}
-                        <a class="ml-5"href='{{ path('admin_messages_read', {id: message.id}) }}'>
+                        <a class="ml-5"href='{{ path('admin_messages_archive', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
                             <button type="button" class="btn btn-sm btn-secondary">Archive</button>
                         </a>
                     {% endif %}

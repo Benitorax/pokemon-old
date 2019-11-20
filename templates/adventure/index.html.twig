@@ -3,47 +3,19 @@
 {% block title %}Adventure{% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
-    <div class="col-sm-5">
-        <div class="row">
-            <div class="col-sm-12 p-3 mb-2 border border-secondary rounded-lg text-white bg-dark{% if textColor is defined %} {{textColor}}{% endif %}" style="min-height: 90px;">
-                {% for message in messages %}
-                    <div class="text-center">{{ message|raw }}</div>
-                {% else %}
-                    <div class="text-center">Let's go for adventure!<br/>You might run into some awesome pokemons!</div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="row">
-            <div style="min-height: 300px;" class="col-sm-12 mb-2 border border-secondary rounded-lg">
-                <div class="mt-2">
-                    {% if opponent %}
-                        <div class="text-right"><strong>{{ opponent.currentFighter.name|capitalize }}</strong></div>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: {{ opponent.currentFighter.healthPoint }}%" aria-valuenow="{{ opponent.currentFighter.healthPoint }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="mr-4"><img class="float-right" src="{{ opponent.currentFighter.spriteFrontUrl }}"></div>
-                    {% endif %}
-                </div><br><br><br><br>
-                {% if centerImageUrl is defined %}
-                    <div class="row">
-                        <img class="mx-auto" src="{{ centerImageUrl }}">
-                    </div>
-                {% endif %}
-                <div class="mb-3">
-                    {% if player and player.currentFighter %}
-                        <div class="ml-4"><img src="{{ player.currentFighter.spriteBackUrl }}"></div>
-                        <div class="text-left"><strong>{{ player.currentFighter.name|capitalize }}</strong></div>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: {{ player.currentFighter.healthPoint }}%" aria-valuenow="{{ player.currentFighter.healthPoint }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        {{ form_start(form, {attr: {class: 'adventure-form form-inline justify-content-center'} }) }}
-        {{ form_widget(form, {attr: {class: 'row'} }) }}
-        {{ form_end(form) }}
+    <div id="r-battle" class="row justify-content-center"></div>
+    <div>
+        <span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
     </div>
-</div>
-{% endblock %}
+{% endblock body %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('adventure_battle') }}
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {{ encore_entry_script_tags('adventure_battle') }}
+{% endblock javascripts %}

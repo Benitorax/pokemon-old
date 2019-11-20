@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
+{% import "trainer/_showBadge.html.twig" as showBadge %}
 
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-    <h1 class="text-secondary text-center">{{ user.username }}</h1>
+    <h1 class="my-3 text-secondary text-center">{{ user.username }}</h1>
     <div class="row justify-content-center">
         {% if user is not same as(app.user) %}
             <a href="{{ path('pokemon_exchange_create', {id:user.id}) }}"><span class="btn btn-sm btn-outline-dark">Do you want to exchange pokemons with this trainer?<span></a>
         {% endif %}
     </div>
+    {{ showBadge.showBadge(user.championCount) }}
     <table class="my-5 table">
         <thead>
             <tr class="table-primary">
@@ -22,7 +24,7 @@
                 <td class="text-center">{{ user.createdAt|date('m/d/Y') }}</td>
             </tr>
             <tr>
-                <th class="text-center" scope="row">Champion</th>
+                <th class="text-center" scope="row">Trophies</th>
                 <td class="text-center">{{ user.championCount }}</td>
             </tr>
             <tr>
@@ -34,15 +36,15 @@
                 <td class="text-center">{{ user.pokeball }}</td>
             </tr>
             <tr>
-                <th class="text-center" scope="row">Health potions</th>
-                <td class="text-center">{{ user.healthPotion }}</td>
+                <th class="text-center" scope="row">Healing potions</th>
+                <td class="text-center">{{ user.healingPotion }}</td>
             </tr>
         </tbody>
     </table>
     <table class="mt-5 table">
         <thead>
             <tr class="table-primary">
-                <th class="text-center" scope="col">Total: {{ user.pokemons|length }}</th>
+                <th class="text-center" scope="col">Nb: {{ user.pokemons|length }}</th>
                 <th class="text-center" scope="col">Pokemon</th>
                 <th class="text-center" scope="col">Picture</th>
                 <th class="text-center" scope="col">Level</th>

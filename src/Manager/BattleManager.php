@@ -8,6 +8,9 @@ use App\Manager\AbstractBattleManager;
 
 class BattleManager extends AbstractBattleManager
 {
+    const POKEMON_HP_FULL = 1;
+    const NO_HP_POTION = 2;
+
     public function createAdventureBattle()
     {
         $playerTeam = new BattleTeam();
@@ -29,7 +32,6 @@ class BattleManager extends AbstractBattleManager
         $playerTeam->setTrainer($this->user);
 
         $habitat = $this->pokeApiManager->getRandomHabitat();
-        //$this->persistAndFlush($habitat);
 
         $opponentTeam = $this->createTournamentOpponentTeam($habitat);
         $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'tournament');
@@ -131,10 +133,15 @@ class BattleManager extends AbstractBattleManager
     }
 
     public function manageAttackOpponent() {
-        $this->getCurrentBattle()->setTurn('opponent');
+        $battle = $this->getCurrentBattle();
+        $battle->setTurn('opponent');
         $opponentFighter = $this->getOpponentFighter();
         $playerLevel = $this->getPlayerFighter()->getLevel();
-        $damage = round(rand(5,20) * (100 + $playerLevel) / 100);
+        $min = 5; $max = 20;
+        if($battle->getType() === 'tournament') {
+            $min = 10; $max = 25;
+        }
+        $damage = intval(round(rand($min,$max) * (100 + $playerLevel) / 100));
         $opponentFighter->decreaseHealthPoint($damage);
         $this->manager->flush();
 
@@ -191,7 +198,8 @@ class BattleManager extends AbstractBattleManager
                 'name' => $name,
                 'newName' => $newPokemon->getName(),
                 'increasedLevel' => $newPokemon->getLevel() - $level,
-                'newLevel' => $newPokemon->getLevel()
+                'newLevel' => $newPokemon->getLevel(),
+                'SpriteFrontUrl' => $newPokemon->getSpriteFrontUrl()
             ];
         }
 
@@ -206,14 +214,19 @@ class BattleManager extends AbstractBattleManager
 
     public function manageHealPlayerFighter()
     {
-        if($this->getPlayerFighter()->getTrainer()->getHealthPotion() == 0) {
-            return false;
+        if($this->getPlayerFighter()->getHealthPoint() === 100) {
+            return self::POKEMON_HP_FULL;
         }
+
+        if($this->getPlayerFighter()->getTrainer()->getHealingPotion() == 0) {
+            return self::NO_HP_POTION;
+        }
+
         $pokemon = $this->getPlayerFighter();
         $healthPoint = $pokemon->getHealthPoint();
-        $pokemon->increaseHealthPoint(rand(40,60));
+        $pokemon->increaseHealthPoint(rand(50,70));
         $healthPointRange = $pokemon->getHealthPoint() - $healthPoint;
-        $pokemon->getTrainer()->useHealthPotion();
+        $pokemon->getTrainer()->useHealingPotion();
         $this->getPlayerTeam()->increaseHealCount();
         $this->manager->flush();
 
@@ -222,11 +235,16 @@ class BattleManager extends AbstractBattleManager
 
     public function manageDamagePlayerFighter()
     {
-        $this->getCurrentBattle()->setTurn('player');
+        $battle = $this->getCurrentBattle();
+        $battle->setTurn('player');
         $playerFighter = $this->getPlayerFighter();
         $opponentLevel = $this->getOpponentFighter()->getLevel();
         $hp = $playerFighter->getHealthPoint();
-        $damage = intval(round(rand(5,20) * (150 - $opponentLevel) / 100));
+        $min = 5; $max = 20;
+        if($battle->getType() === 'tournament') {
+            $min = 10; $max = 25;
+        }
+        $damage = intval(round(rand($min,$max) * (150 - $opponentLevel) / 100));
         $playerFighter->decreaseHealthPoint($damage);
         $newHp = $playerFighter->getHealthPoint();
         $this->manager->flush();

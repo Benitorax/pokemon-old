@@ -1,15 +1,16 @@
 {% extends 'base.html.twig' %}
+{% import "trainer/_showBadge.html.twig" as showBadge %}
 
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-  <h1 class="text-secondary">Profile: {{ user.username }}</h1>
-
-  <table class="mt-5 table">
+  <h1 class="my-3 text-secondary">Profile: {{ user.username }}</h1>
+  {{ showBadge.showBadge(user.championCount) }}
+  <table class="table">
     <thead>
       <tr class="table-primary">
         <th scope="col">Infos</th>
-        <th scope="col">Value</th>
+        <th scope="col">Count</th>
       </tr>
     </thead>
     <tbody>
@@ -18,24 +19,24 @@
         <td>{{ user.pokedollar }}</td>
       </tr>
       <tr>
-        <th scope="row">Champion count</th>
+        <th scope="row">Trophies</th>
         <td>{{ user.championCount }}</td>
       </tr>
       <tr>
-        <th scope="row">Pokemons count</th>
+        <th scope="row">Pokemons</th>
         <td>{{ user.pokemons|length }}</td>
       </tr>
       <tr>
-        <th scope="row">Pokeballs count</th>
+        <th scope="row">Pokeballs</th>
         <td>{{ user.pokeball }}</td>
       </tr>
       <tr>
-        <th scope="row">Health potions count</th>
-        <td>{{ user.healthPotion }}</td>
+        <th scope="row">Healing potions</th>
+        <td>{{ user.healingPotion }}</td>
       </tr>
     </tbody>
   </table>
-  <p>
+  <div>
     <a href="{{ path('trainer_pokemons', {id: user.id}) }}">List of your pokemons</a>
-  </p>
+  </div>
 {% endblock %}

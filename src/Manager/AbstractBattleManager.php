@@ -17,6 +17,17 @@ abstract class AbstractBattleManager
     protected $pokeApiManager;
     protected $user;
 
+    private $battle;
+
+    private $playerTeam;
+    private $playerFighter;
+    private $lastPlayerPokemon;
+
+    private $opponentTrainer;
+    private $opponentTeam;
+    private $opponentFighter;
+
+
     public function __construct(
         ObjectManager $manager, 
         PokeApiManager $pokeApiManager,
@@ -30,21 +41,30 @@ abstract class AbstractBattleManager
 
     public function getCurrentBattle()
     {
-        return $this->manager->getRepository(Battle::class)->findOneByTrainer($this->user);
+        if($this->battle instanceof Battle) {
+            return $this->battle;
+        }
+        return $this->battle = $this->manager->getRepository(Battle::class)->findOneByTrainer($this->user);
     }
 
     public function getUser() {
-        return $this->getPlayerTeam()->getTrainer();
+        return $this->user;
     }
 
     public function getPlayerTeam()
     {
-        return $this->getCurrentBattle()->getPlayerTeam();
+        if($this->playerTeam instanceof BattleTeam) {
+            return $this->playerTeam;
+        }
+        return $this->playerTeam = $this->getCurrentBattle()->getPlayerTeam();
     }
 
     public function getOpponentTeam()
     {
-        return $this->getCurrentBattle()->getOpponentTeam();
+        if($this->opponentTeam instanceof BattleTeam) {
+            return $this->opponentTeam;
+        }
+        return $this->opponentTeam = $this->getCurrentBattle()->getOpponentTeam();
     }
 
     public function persistAndFlush(...$objects)
@@ -84,7 +104,7 @@ abstract class AbstractBattleManager
              ->setCreatedAt(new \DateTime('now'));
     }
 
-    public function createTournamentOpponent(string $name = 'unknown') {
+    public function createTournamentOpponent() {
         $user = new User();
         $trainer = (new Trainer)->getRandomTrainer();
         return $user->setUsername($trainer['username'])
@@ -94,22 +114,30 @@ abstract class AbstractBattleManager
     }
 
     public function getPlayerFighter() {
-        return $this->getPlayerTeam()->getCurrentFighter();
+        if($this->playerFighter instanceof Pokemon) {
+            return $this->playerFighter;
+        }
+        return $this->playerFighter = $this->getPlayerTeam()->getCurrentFighter();
     }
 
     public function getOpponentFighter() {
-        return $this->getOpponentTeam()->getCurrentFighter();
+        if($this->opponentFighter instanceof Pokemon) {
+            return $this->opponentFighter;
+        }
+        return $this->opponentFighter = $this->getOpponentTeam()->getCurrentFighter();
     }
 
     public function getOpponentTrainer() {
-        return $this->getOpponentTeam()->getTrainer();
+        if($this->opponentTrainer instanceof User) {
+            return $this->opponentTrainer;
+        }
+        return $this->opponentTrainer = $this->getOpponentTeam()->getTrainer();
     }
 
     public function getLastPlayerPokemon() {
-        return $this->getPlayerTeam()->getPokemons()->last();
-    }
-
-    public function getLastOpponentPokemon() {
-        return $this->getOpponentTeam()->getPokemons()->last();
+        if($this->lastPlayerPokemon instanceof Pokemon) {
+            return $this->lastPlayerPokemon;
+        }
+        return $this->lastPlayerPokemon = $this->getPlayerTeam()->getPokemons()->last();
     }
 }
