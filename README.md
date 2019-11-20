@@ -1,5 +1,5 @@
 # Pokemon Application
-<p>This application fetchs some data from <a href="https://pokeapi.co">https://pokeapi.co</a> needed like the name, image, evolution and habitat of pokemons.</p>
+<p>This application fetchs some data from <a href="https://pokeapi.co">https://pokeapi.co</a> like the name, image, evolution and habitat of pokemons.</p>
 <p>It only includes the first generation, so the first 151 pokemons, from Bulbasaur to Mew.</p>
 <p>Trainers in tournament are auto generated. Users can interact each other only by exchanging pokemon. They can also leave messages in contact page that only admin users can read.<br/>
 Admin users can also delete accounts which have not been activated.</p>
