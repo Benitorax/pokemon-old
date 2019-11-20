@@ -6,6 +6,7 @@ use App\Handler\AdventureHandler;
 use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,10 +16,12 @@ class AdventureController extends AbstractController
     /**
      * @Route("/adventure/", name="adventure", methods={"GET"})
      */
-    public function index(AdventureHandler $adventureHandler)
+    public function index(AdventureHandler $adventureHandler, ObjectManager $manager)
     {
         $adventureHandler->clear();
-        $csrfToken = $this->getUser()->getId()->toString();
+        $csrfToken = \uniqid();
+        $this->getUser()->setCurrentGameId($csrfToken);
+        $manager->flush();
 
         return $this->render('adventure/index.html.twig', [
             'csrfToken' => $csrfToken
@@ -64,7 +67,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -91,7 +94,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
         $pokemon = $pokemonRepository->find($data->pokemonId);
@@ -118,7 +121,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -145,7 +148,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -172,7 +175,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -199,7 +202,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -226,7 +229,7 @@ class AdventureController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 

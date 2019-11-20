@@ -7,6 +7,7 @@ use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
 use App\Repository\BattleTeamRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,11 +40,13 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/battle", name="tournament_battle", methods={"GET"})
      */
-    public function battle(TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository)
+    public function battle(TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository, ObjectManager $manager)
     {
         $user = $this->getUser();
         $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($user);
-        $csrfToken = $user->getId()->toString();
+        $csrfToken = \uniqid();
+        $user->setCurrentGameId($csrfToken);
+        $manager->flush();
 
         if($pokemonsCount < 3) {
             return $this->redirectToRoute('tournament');
@@ -91,7 +94,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
         $pokemon = $pokemonRepository->find($data->pokemonId);
@@ -118,7 +121,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -145,7 +148,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -172,7 +175,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -199,7 +202,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -226,7 +229,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -253,7 +256,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
