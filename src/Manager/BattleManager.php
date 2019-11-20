@@ -133,10 +133,15 @@ class BattleManager extends AbstractBattleManager
     }
 
     public function manageAttackOpponent() {
-        $this->getCurrentBattle()->setTurn('opponent');
+        $battle = $this->getCurrentBattle();
+        $battle->setTurn('opponent');
         $opponentFighter = $this->getOpponentFighter();
         $playerLevel = $this->getPlayerFighter()->getLevel();
-        $damage = round(rand(5,20) * (100 + $playerLevel) / 100);
+        $min = 5; $max = 20;
+        if($battle->getType() === 'tournament') {
+            $min = 10; $max = 25;
+        }
+        $damage = intval(round(rand($min,$max) * (100 + $playerLevel) / 100));
         $opponentFighter->decreaseHealthPoint($damage);
         $this->manager->flush();
 
@@ -219,7 +224,7 @@ class BattleManager extends AbstractBattleManager
 
         $pokemon = $this->getPlayerFighter();
         $healthPoint = $pokemon->getHealthPoint();
-        $pokemon->increaseHealthPoint(rand(40,60));
+        $pokemon->increaseHealthPoint(rand(50,70));
         $healthPointRange = $pokemon->getHealthPoint() - $healthPoint;
         $pokemon->getTrainer()->useHealingPotion();
         $this->getPlayerTeam()->increaseHealCount();
@@ -230,11 +235,16 @@ class BattleManager extends AbstractBattleManager
 
     public function manageDamagePlayerFighter()
     {
-        $this->getCurrentBattle()->setTurn('player');
+        $battle = $this->getCurrentBattle();
+        $battle->setTurn('player');
         $playerFighter = $this->getPlayerFighter();
         $opponentLevel = $this->getOpponentFighter()->getLevel();
         $hp = $playerFighter->getHealthPoint();
-        $damage = intval(round(rand(5,20) * (150 - $opponentLevel) / 100));
+        $min = 5; $max = 20;
+        if($battle->getType() === 'tournament') {
+            $min = 10; $max = 25;
+        }
+        $damage = intval(round(rand($min,$max) * (150 - $opponentLevel) / 100));
         $playerFighter->decreaseHealthPoint($damage);
         $newHp = $playerFighter->getHealthPoint();
         $this->manager->flush();
