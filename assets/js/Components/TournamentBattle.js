@@ -21,7 +21,6 @@ export function TournamentBattle() {
 
     function checkExecutedCommand(command, turn) {
         if('selectPokemon' === command) {
-            console.log('come here');
             showImageOnScreen('ash', 'ash-support');
         } else if(
             (command === 'next' && turn === 'opponent') || ['attack', 'heal'].includes(command)
