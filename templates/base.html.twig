@@ -27,9 +27,6 @@
                         <li class="nav-item{% if app.request.get('_route') == 'tournament' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('tournament') }}">Tournament</a>
                         </li>
-                        <li class="nav-item{% if app.request.get('_route') == 'trainer_profile' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('trainer_profile') }}">Profile</a>
-                        </li>
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_list' %} active{% endif %}">
                             <a class="nav-link" href="{{ path('trainer_list') }}">Trainers</a>
                         </li>
@@ -54,6 +51,8 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         {% if is_granted('ROLE_USER') %}
+                            <a class="dropdown-item" href="{{ path('trainer_profile') }}">Profile</a>
+                            <a class="dropdown-item" href="{{ path('trainer_pokemons', {id: app.user.id}) }}">Pokemons</a>
                             <a class="dropdown-item" href="{{ path('app_account') }}">Account</a>
                             <a class="dropdown-item" href="{{ path('app_contact') }}">Contact</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
