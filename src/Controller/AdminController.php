@@ -19,6 +19,8 @@ class AdminController extends AbstractController
      */
     public function showNewMessages(ContactMessageRepository $messageRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $messages = $messageRepository->findNewMessages();
         $csrfToken = $this->getUser()->getId()->toString();
 
@@ -34,6 +36,8 @@ class AdminController extends AbstractController
      */
     public function showArchivedMessages(ContactMessageRepository $messageRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $messages = $messageRepository->findReadMessages();
         $csrfToken = $this->getUser()->getId()->toString();
 
@@ -49,6 +53,8 @@ class AdminController extends AbstractController
      */
     public function archiveMessage(ContactMessage $message, ObjectManager $manager, $csrfToken)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
@@ -65,6 +71,8 @@ class AdminController extends AbstractController
      */
     public function showNotActivatedUsers(UserRepository $userRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $csrfToken = $this->getUser()->getId()->toString();
 
         $users = $userRepository->findAllNotActivated();
@@ -85,6 +93,8 @@ class AdminController extends AbstractController
      */
     public function deleteAllNotActivatedUsers(ObjectManager $manager, UserRepository $userRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $users = $userRepository->findAllNotActivated();
         $onlyRealUsers = [];
         foreach($users as $user) {
@@ -93,13 +103,17 @@ class AdminController extends AbstractController
             }
         }
 
+        if(count($onlyRealUsers) === 0) {
+            $this->addFlash('danger', 'No accounts have been created one month ago.');
+            return $this->redirectToRoute('admin_users_not_activated');    
+        }
+
         foreach($onlyRealUsers as $user) {
             $manager->remove($user);
             $manager->flush();
         }
         
-        $this->addFlash('success', 'All accounts created from 1 month ago have been deleted with success.');
-
+        $this->addFlash('success', 'All accounts created one month ago have been deleted with success.');
         return $this->redirectToRoute('admin_users_not_activated');
     }
 
@@ -108,6 +122,8 @@ class AdminController extends AbstractController
      */
     public function deleteUser(User $user, ObjectManager $manager, $csrfToken)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
