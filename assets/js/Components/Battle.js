@@ -1,4 +1,3 @@
-import { render } from 'react-dom';
 import React, { useState, useEffect } from 'react';
 import { Message } from './Message/Message';
 import { BattleScreen } from './BattleScreen/BattleScreen';
@@ -8,7 +7,7 @@ import { api_get, api_post } from './battle_api';
 import { isInvalidCommand } from './booster';
 
 export function Battle(props) {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState(getNullData());
     function updateData($data) {
         setData($prevData => Object.assign({}, $prevData, $data));
     }
@@ -43,6 +42,10 @@ export function Battle(props) {
             updateData(getServerErrorData());
         });
     }
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
 
     return (
         <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 mt-3">

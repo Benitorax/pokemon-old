@@ -14,7 +14,7 @@ export function getNullData() {
             messages: ['Loading...'],
             textColor: 'text-white'
         },
-        centerImageUrl: null,
+        centerImageUrl: ['/images/pikachu.png'],
         turn: null,
         pokeballCount: null,
         healingPotionCount: null
