@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Console\Command\Command;
@@ -29,32 +30,18 @@ class UserNotActivatedDeleteCommand extends Command
     {
         $this
             ->setDescription('Delete not activated users.')
-            ->addArgument('magicWord', InputArgument::OPTIONAL, 'Say hi')
-            ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all not activated.')
-            ->setHelp('This command delete not activated users created one month ago. To delete all not activated users, add the option --all')
+            ->addArgument('email', InputArgument::OPTIONAL, 'Delete one user if an email is add')
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all not activated account.')
+            ->setHelp('This command delete not activated users created one month ago. To delete all not activated users, add the option --all. Finally, you can also delete one user with argument email.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $magicWord = strtolower($input->getArgument('magicWord'));
+        $email = strtolower($input->getArgument('email'));
 
-        //---------------- WTF Part -----------------------------------
-        if($magicWord) 
-        {
-            if(in_array($magicWord, ['hi', 'hello', 'bonjour', 'good morning'])) {
-                $io->text(['Hello, nice to meet you!', 'Have a good day!']);
-            
-            } else if (in_array($magicWord, ['please', 'thanks'])) {
-                $io->text('You\'re welcome!');
-            
-            } else {
-                $io->text(['...', 'The weather is beautiful.']);
-            }
-            $io->newLine(1);
-        }
-        //---------------- End WTF Part ---------------------------------
+
 
         $users = $this->userRepository->findAllNotActivated();
         $onlyRealUsers = [];
@@ -65,6 +52,19 @@ class UserNotActivatedDeleteCommand extends Command
                 $tableBody[] = [$user->getUsername(), $user->getEmail(), $user->getCreatedAt()->format('Y/m/d \\a\\t h:i:s')];
             }
         }
+        //---------------- WTF Part -----------------------------------
+        if($email) 
+        {
+            $user = $this->userRepository->findOneBy(['email' => $email]);
+            if($user instanceof User) {
+                $this->removeAndFlush($user);
+                $io->success('The user has been delete with success');
+            } else {
+                $io->caution('No not activated account with email '.$email .' was found.');
+            }
+            return 0;
+        }
+        //---------------- End WTF Part ---------------------------------
         $io->table(
             ['Username', 'Email', 'Created At'],
             $tableBody
@@ -80,8 +80,7 @@ class UserNotActivatedDeleteCommand extends Command
 
         if ($input->getOption('all')) {
             foreach($onlyRealUsers as $user) {
-                $this->manager->remove($user);
-                $this->manager->flush();
+                $this->removeAndFlush($user);
             }
             
             $io->success('All this users have been deleted with success.');
@@ -102,13 +101,17 @@ class UserNotActivatedDeleteCommand extends Command
             }
 
             foreach($oldUsers as $user) {
-                $this->manager->remove($user);
-                $this->manager->flush();
+                $this->removeAndFlush($user);
             }
             
             $io->success($usersCount. ' users have been deleted with success.');
         }
         
         return 0;
+    }
+
+    private function removeAndFlush($user) {
+        $this->manager->remove($user);
+        $this->manager->flush();
     }
 }

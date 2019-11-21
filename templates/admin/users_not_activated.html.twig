@@ -21,7 +21,7 @@
                         <tr>
                             <th>{{ user.username }}</th>
                             <td>{{ user.email }}</td>
-                            <td>{{ user.createdAt|date('Y/m/s') }}</td>
+                            <td>{{ user.createdAt|date('Y/m/d \\a\\t H:i:s') }}</td>
                             <td><a href="{{ path('admin_user_delete', {id: user.id, csrfToken: csrf_token(csrfToken)}) }}">Delete</a></td>
                         </tr>
                     {% endfor %}

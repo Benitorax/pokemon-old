@@ -32,9 +32,9 @@
                         </td>
                         <td class="text-center table-secondary">
                             {%- if ex.updatedAt is not null -%}
-                                Updated the {{ ex.updatedAt|date('m/d/Y \\a\\t H:i') }}
+                                Updated the {{ ex.updatedAt|date('Y/m/d \\a\\t H:i:s') }}
                             {%- else -%}
-                                Created the {{ ex.createdAt|date('m/d/Y \\a\\t H:i:s') }}
+                                Created the {{ ex.createdAt|date('Y/m/d \\a\\t H:i:s') }}
                             {%- endif -%}
                         </td>
                         <td colspan="2" class="text-center font-weight-bold">
