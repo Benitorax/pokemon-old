@@ -1,28 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pokemon exchanges in progress{% endblock %}
+{% block title %}Pokemon exchanges still in progress{% endblock %}
 
 {% block body %}
-    <h3 class="text-secondary my-3">Pokemon exchanges in progress</h3>
+    <h4 class="text-secondary my-3">Pokemon exchanges still in progress</h4>
 
     {% for ex in pokemonExchanges %}
         <div class="my-3 card border border-info">
             <div class="card-body">
                 <table class="table table-light">
-                    <thead class="table-info">
+                    <thead class="bg-primary text-white">
                         </tr>
-                            <th>Status</th>
-                            <td class="text-center align-middle table-secondary font-weight-bold">{{ex.status}}</td>
+                            <th class="align-middle">Status</th>
+                            <td class="text-center align-middle bg-light text-dark font-weight-bold">{{ex.status}}</td>
                         </tr>
                         <tr>
-                            <th>
+                            <th class="align-middle">
                                 {%- if ex.updatedAt is not null -%}
                                     Updated
                                 {%- else -%}
                                     Created
                                 {%- endif -%}
                             </th>
-                            <td class="text-center table-secondary">
+                            <td class="text-center bg-light text-dark">
                                 {%- if ex.updatedAt is not null -%}
                                     {{ ex.updatedAt|date('Y/m/d \\a\\t H:i') }}
                                 {%- else -%}
@@ -34,20 +34,24 @@
                     <tbody>
                         <tr>
                             <th>Offerer</th>
-                            <td class="text-center">{{ ex.trainer1.username }}</td>
+                            <td class="align-middle text-center text-success">{{ ex.trainer1.username }}</td>
                         </tr>
                         <tr>
                             <th>Proposed</th>
                             <td class="text-center font-weight-bold text-primary">{{ ex.pokemon1.name }} (level: {{ ex.pokemon1.level }})</td>
                         </tr>
+                        <tr>
                             <th>Response</th>
-                            <td colspan="2" class="text-center font-weight-bold">
-                                {% if ex.answer1 is not same as('None') %}{{ ex.answer1 }}{% endif %}
+                            <td colspan="2" class="text-center">
+                                {% if ex.answer1 is not same as('None') %}{{ ex.answer1 }}{% else %}-{% endif %}
                             </td>
-
+                        </tr>
+                        <tr class="bg-light">
+                            <td colspan="2"></td>
+                        </tr>
                         <tr>
                             <th>Recipient</th>
-                            <td class="text-center">{{ ex.trainer2.username }}</td>
+                            <td class="align-middle text-center text-success">{{ ex.trainer2.username }}</td>
                         </tr>
                         <tr>
                             <th>Requested</th>
@@ -55,26 +59,26 @@
                         </tr>
                         <tr>
                             <th>Response</th>
-                            <td colspan="2" class="text-center font-weight-bold">
-                                {% if ex.answer2 is not same as('None') %}{{ ex.answer2 }}{% endif %}
+                            <td colspan="2" class="text-center">
+                                {% if ex.answer2 is not same as('None') %}{{ ex.answer2 }}{% else %}-{% endif %}
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="row justify-content-center">
-                    <a href="{{ path('pokemon_exchange_edit', {id: ex.id}) }}"><button class="mr-5 btn btn-warning">Modify</button></a>
+                <div class="row justify-content-around">
+                    <a href="{{ path('pokemon_exchange_edit', {id: ex.id}) }}"><button class="btn btn-warning">Modify</button></a>
                     {% if app.user is same as(ex.trainer1) %}
                         {% if ex.answer1 is same as('Accepted') %}
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Withdraw</button></a>
                         {% elseif ex.answer1 is same as('None') %}
-                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-success">Accept</button></a>
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Refuse</button></a>
                         {% endif %}
                     {% elseif app.user is same as(ex.trainer2) %}
                         {% if ex.answer2 is same as('Accepted') %}
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Withdraw</button></a>
                         {% elseif ex.answer2 is same as('None') %}
-                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="ml-5 btn btn-success">Accept</button></a>
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-success">Accept</button></a>
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Refuse</button></a>
                         {% endif %}
                     {% endif %}

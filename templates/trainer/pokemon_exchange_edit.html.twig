@@ -7,6 +7,13 @@
     <h3 class="text-secondary">Exchange pokemon</h3>
 
     {{ form_start(pokemonExchangeForm) }}
-    {{ form_widget(pokemonExchangeForm) }}
+    {{ form_row(pokemonExchangeForm.trainer1Show) }}
+    {{ form_row(pokemonExchangeForm.pokemon1) }}
+    <div class="my-5"></div>
+    {{ form_row(pokemonExchangeForm.trainer2Show) }}
+    {{ form_row(pokemonExchangeForm.pokemon2) }}
+    <div class="my-5">
+        {{ form_row(pokemonExchangeForm.submit) }}
+    </div>
     {{ form_end(pokemonExchangeForm) }}
 {% endblock %}

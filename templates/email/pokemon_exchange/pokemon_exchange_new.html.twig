@@ -6,39 +6,61 @@
     <h3 class="mt-3">Hello {{username}},</h3>
 
     <p>You have received a request for pokemons exchange from {{ ex.trainer1.username }} the {{ ex.createdAt|date('Y/m/d \\a\\t H:i:s') }}.</p>
-    <div class="card border border-info">
+    <div class="my-3 card border border-info">
         <div class="card-body">
             <table class="table table-light">
-                <thead class="table-info">
-                    <tr>
-                        <th class="text-center">Offerer</th>
-                        <th class="text-center">Proposed</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Recipient</th>
-                        <th class="text-center">Requested</th>
+                <thead class="bg-primary text-white">
                     </tr>
+                        <th class="align-middle">Status</th>
+                        <td class="text-center align-middle bg-light text-dark font-weight-bold">{{ex.status}}</td>
+                    </tr>
+                    <tr>
+                        <th class="align-middle">
+                            {%- if ex.updatedAt is not null -%}
+                                Updated
+                            {%- else -%}
+                                Created
+                            {%- endif -%}
+                        </th>
+                        <td class="text-center bg-light text-dark">
+                            {%- if ex.updatedAt is not null -%}
+                                {{ ex.updatedAt|date('Y/m/d \\a\\t H:i') }}
+                            {%- else -%}
+                                {{ ex.createdAt|date('Y/m/d \\a\\t H:i:s') }}
+                            {%- endif -%}
+                        </td>
+                    <tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-center">{{ ex.trainer1.username }}</td>
+                        <th>Offerer</th>
+                        <td class="align-middle text-center text-success">{{ ex.trainer1.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Proposed</th>
                         <td class="text-center font-weight-bold text-primary">{{ ex.pokemon1.name }} (level: {{ ex.pokemon1.level }})</td>
-                        <td class="text-center align-middle table-secondary font-weight-bold">{{ex.status}}</td>
-                        <td class="text-center">{{ ex.trainer2.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Response</th>
+                        <td colspan="2" class="text-center">
+                            {% if ex.answer1 is not same as('None') %}{{ ex.answer1 }}{% else %}-{% endif %}
+                        </td>
+                    </tr>
+                    <tr class="bg-light">
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <th>Recipient</th>
+                        <td class="align-middle text-center text-success">{{ ex.trainer2.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Requested</th>
                         <td class="text-center font-weight-bold text-primary">{{ ex.pokemon2.name }} (level: {{ ex.pokemon2.level }})</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="text-center font-weight-bold">
-                            Response: {% if ex.answer1 is not same as('None') %}{{ ex.answer1 }}{% endif %}
-                        </td>
-                        <td class="text-center table-secondary">
-                            {%- if ex.updatedAt is not null -%}
-                                Updated the {{ ex.updatedAt|date('Y/m/d \\a\\t H:i') }}
-                            {%- else -%}
-                                Created the {{ ex.createdAt|date('Y/m/d \\a\\t H:i:s') }}
-                            {%- endif -%}
-                        </td>
-                        <td colspan="2" class="text-center font-weight-bold">
-                            Response: {% if ex.answer2 is not same as('None') %}{{ ex.answer2 }}{% endif %}
+                        <th>Response</th>
+                        <td colspan="2" class="text-center">
+                            {% if ex.answer2 is not same as('None') %}{{ ex.answer2 }}{% else %}-{% endif %}
                         </td>
                     </tr>
                 </tbody>

@@ -61,7 +61,7 @@ class TrainerController extends AbstractController
     }
 
     /**
-     * @Route("/trainer/{id}/exchange/create", name="pokemon_exchange_create", methods={"POST"})
+     * @Route("/trainer/{id}/exchange/create", name="pokemon_exchange_create", methods={"GET","POST"})
      */
     public function createPokemonExchange(User $trader, Request $request, PokemonExchangeManager $pokExManager)
     {
@@ -99,7 +99,7 @@ class TrainerController extends AbstractController
     }
 
     /**
-     * @Route("/exchange/{id}", name="pokemon_exchange_edit", methods={"POST"})
+     * @Route("/exchange/{id}", name="pokemon_exchange_edit", methods={"GET","POST"})
      */
     public function editPokemonExchange(PokemonExchange $pokemonExchange, Request $request, PokemonExchangeManager $pokExManager) 
     {

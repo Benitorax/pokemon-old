@@ -7,15 +7,15 @@
 {% form_theme deleteAccountForm 'bootstrap_4_layout.html.twig' %}
 
 {% block body %}
-    <div class="card border-dark">
+    <div class="card my-3 border-dark">
         <div class="card-header bg-warning">
             <h3 class="my-3">Are you sure to delete your account?</h3>
         </div>
         <div class="card-body bg-light">
             {{ form_start(deleteAccountForm) }}
             <div class="row justify-content-center">
-                <div class="mr-5">{{ form_widget(deleteAccountForm) }}</div>
-                <div class="ml-5">
+                <div class="mr-auto">{{ form_widget(deleteAccountForm) }}</div>
+                <div class="ml-auto">
                     <a href="{{ path('app_account') }}"><button type="button" class="btn btn-secondary btn-lg">No, go back</button>
                 </div>
             {{ form_end(deleteAccountForm) }}

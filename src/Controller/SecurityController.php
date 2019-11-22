@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/email_confirm/", name="app_email_confirm")
+     * @Route("/email_confirm/", name="app_email_confirm", methods={"GET"})
      */
     public function confirmEmailAddress(Request $request, UserRepository $userRepository, ObjectManager $manager) {
         $token = $request->query->get('token');
@@ -85,7 +85,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/password/forgotten/", name="app_password_forgotten")
+     * @Route("/password/forgotten/", name="app_password_forgotten", methods={"GET", "POST"})
      */
     public function passwordForgotten(Request $request, UserRepository $userRepository, CustomMailer $mailer) {
         $emailForm = $this->createForm(CheckEmailType::class);
@@ -109,7 +109,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/password/reset/", name="app_password_reset")
+     * @Route("/password/reset/", name="app_password_reset", methods={"GET", "POST"})
      */
     public function resetPasswordForgotten(Request $request, UserRepository $userRepository, UserHandler $userHandler, ObjectManager $manager, CustomMailer $mailer) {
         $token = $request->query->get('token');
