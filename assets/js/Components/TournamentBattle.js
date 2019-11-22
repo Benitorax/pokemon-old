@@ -23,7 +23,10 @@ export function TournamentBattle() {
         if('selectPokemon' === command) {
             showImageOnScreen('ash', 'ash-support');
         } else if(
-            (command === 'next' && turn === 'opponent') || ['attack', 'heal'].includes(command)
+            (
+                (command === 'next' && turn === 'opponent') || 
+                ['attack', 'heal'].includes(command)
+            ) && Math.random() > 0.70
         ) {
             let className = [
                 ['ash', 'ash-support'], 

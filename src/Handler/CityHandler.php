@@ -72,7 +72,7 @@ class CityHandler
 
     public function restorePokemonIfAllowed() {
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
-        if(count($pokemons) >= 3 && $this->user->getPokedollar() < self::RESTORE_POKEMON_PRICE) {
+        if(count($pokemons) > 3 && $this->user->getPokedollar() < self::RESTORE_POKEMON_PRICE) {
             $this->session->add('danger', 'You don\'t have enough money to restore pokemons!');
             return;
         }
