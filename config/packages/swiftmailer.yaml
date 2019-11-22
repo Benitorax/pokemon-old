@@ -1,10 +1,4 @@
 swiftmailer:
-    # url: '%env(MAILER_URL)%'
+    url: '%env(MAILER_URL)%'
     spool: { type: 'memory' }
     # disable_delivery: true
-    transport: smtp
-    auth_mode: login
-    port: 587
-    host: ssl0.ovh.net
-    username: '%env(MAILER_USERNAME)%'
-    password: '%env(MAILER_PASSWORD)%'

@@ -26,7 +26,7 @@ class AppController extends AbstractController
     }
     
     /**
-     * @Route("/index/", name="app_index", methods={"GET"})
+     * @Route("/index", name="app_index", methods={"GET"})
      */
     public function index()
     {
@@ -35,7 +35,7 @@ class AppController extends AbstractController
     }
 
     /**
-     * @Route("/account/", name="app_account", methods={"GET"})
+     * @Route("/account", name="app_account", methods={"GET"})
      */
     public function showAccount()
     {
