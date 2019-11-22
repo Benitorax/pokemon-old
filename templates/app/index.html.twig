@@ -5,12 +5,12 @@
 {% block body %}
     <div class="row">
         <div class="jumbotron my-3 w-100 bg-light">
-            <h1 class="display-4 text-success"><strong>Pokemon Island!</strong></h1>
+            <h1 class="display-5 text-success"><strong>Pokemon Island!</strong></h1>
             <hr class="my-4">
             <div class="lead my-3">
                 {% if is_granted('ROLE_USER') %}
-                     <p><a class="btn btn-dark btn-lg" href="{{ path('adventure') }}">Check your profile</a></p>
-                    <p><a class="btn btn-primary btn-lg" href="{{ path('adventure') }}">Let's go for adventure!</a></p>
+                     <p><a class="btn btn-primary btn-lg" href="{{ path('adventure') }}">Check your profile</a></p>
+                    <p><a class="btn btn-warning btn-lg" href="{{ path('adventure') }}">Let's go for adventure!</a></p>
                     <p><a class="btn btn-warning btn-lg" href="{{ path('tournament') }}">Challenge yourself in tournament!</a></p>
                     <p><a class="btn btn-info btn-lg" href="{{ path('city') }}">Visit the city</a></p>
                     <p><a class="btn btn-secondary btn-lg" href="{{ path('trainer_list') }}">See all the trainers</a></p>

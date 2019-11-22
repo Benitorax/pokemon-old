@@ -4,7 +4,7 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-  <h1 class="my-3 text-secondary">Profile: {{ user.username }}</h1>
+  <h3 class="my-3 text-secondary">Profile: {{ user.username }}</h3>
   {{ showBadge.showBadge(user.championCount) }}
   <table class="table">
     <thead>

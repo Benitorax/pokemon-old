@@ -1,0 +1,31 @@
+.navbar .btn-primary {
+    border: none;
+    color: white !important
+}
+.navbar .btn-secondary {
+    border: none;
+    color: white !important
+}
+.navbar .btn-warning {
+    border: none;
+    color: black !important
+}
+.navbar .btn-info {
+    border: none;
+    color: white !important
+}
+.navbar .btn-danger {
+    border: none;
+    color: white !important
+}
+.navbar .btn-success {
+    border: none;
+    color: white !important
+}
+.navbar .btn-dark {
+    border: none;
+    color: white !important
+}
+.navbar .active .btn {
+    color: rgb(147, 233, 255) !important
+}

@@ -29,8 +29,10 @@ export function AdventureBattle() {
     return <Battle startUrl={startUrl} imageObject={imageObject} showImage={showImage} onExecutedCommand={checkExecutedCommand}/>;
 }
 
-const battleNode = document.getElementById('r-battle');
-render(
-    <AdventureBattle/>, 
-    battleNode
-);
+(function() {
+    const battleNode = document.getElementById('r-battle');
+    render(
+        <AdventureBattle/>, 
+        battleNode
+    );
+})();

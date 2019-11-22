@@ -17,7 +17,6 @@ export function Battle(props) {
             updateData(response.data);
         })
         .catch(function (error) {
-            console.log('error', error);
             updateData(getServerErrorData());
         });
     }, []);
@@ -34,18 +33,12 @@ export function Battle(props) {
         props.onExecutedCommand(command, data.turn);
 
         api_post(dataForApi.url, dataForApi).then(function (response) {     
-            console.log(response.data);
             updateData(response.data);
         })
         .catch(function (error) {
-            console.log('error', error);
             updateData(getServerErrorData());
         });
     }
-
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
 
     return (
         <div className="col-sm-10 col-md-8 col-lg-6 col-xl-5 mt-3">

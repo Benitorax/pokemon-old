@@ -12,48 +12,52 @@
     <body>
         <header>
             <nav class="navbar navbar-expand-lg navbar-dark bg-success text-white">
-                <a class="navbar-brand" href="{{ path('app_index') }}"><img class="w-25 img-fluid" src="{{ asset('images/pokemon-logo.svg') }}"></a>
+                <a class="navbar-brand p-0 mr-5" href="{{ path('app_index') }}"><img class="img-fluid" src="{{ asset('images/pokemon-logo.png') }}"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                     <li class="nav-item{% if app.request.get('_route') == 'app_index' %} active{% endif %}">
-                        <a class="nav-link" href="{{ path('app_index') }}">Home <span class="sr-only">(current)</span></a>
+                        <a class="btn btn-success nav-link" href="{{ path('app_index') }}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     {% if is_granted('ROLE_USER') %}
                         <li class="nav-item{% if app.request.get('_route') == 'adventure' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('adventure') }}">Adventure</a>
+                            <a class="btn btn-warning nav-link" href="{{ path('adventure') }}">Adventure</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'tournament' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('tournament') }}">Tournament</a>
-                        </li>
-                        <li class="nav-item{% if app.request.get('_route') == 'trainer_list' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('trainer_list') }}">Trainers</a>
-                        </li>
-                        <li class="nav-item{% if app.request.get('_route') == 'pokemon_exchange_list' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
+                            <a class="btn btn-warning nav-link" href="{{ path('tournament') }}">Tournament</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'city' %} active{% endif %}">
-                            <a class="nav-link" href="{{ path('city') }}">City</a>
+                            <a class="btn btn-warning nav-link" href="{{ path('city') }}">City</a>
+                        </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'trainer_profile' %} active{% endif %}">
+                            <a class="btn btn-primary nav-link" href="{{ path('trainer_profile') }}">Profile</a>
+                        </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'trainer_pokemons' %} active{% endif %}">
+                            <a class="btn btn-primary nav-link" href="{{ path('trainer_pokemons', {id: app.user.id}) }}">Pokemons</a>
+                        </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'trainer_list' %} active{% endif %}">
+                            <a class="btn btn-secondary nav-link" href="{{ path('trainer_list') }}">Trainers</a>
+                        </li>
+                        <li class="nav-item{% if app.request.get('_route') == 'pokemon_exchange_list' %} active{% endif %}">
+                            <a class="btn btn-secondary nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
                         </li>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li class="nav-item{% if app.request.get('_route') == 'admin_messages_new' %} active{% endif %}">
-                                <a class="nav-link" href="{{ path('admin_messages_new') }}">Messages</a>
+                                <a class="btn btn-danger nav-link" href="{{ path('admin_messages_new') }}">Messages</a>
                             </li>
                             <li class="nav-item{% if app.request.get('_route') == 'admin_users_not_activated' %} active{% endif %}">
-                                <a class="nav-link" href="{{ path('admin_users_not_activated') }}">Accounts</a>
+                                <a class="btn btn-danger nav-link" href="{{ path('admin_users_not_activated') }}">Accounts</a>
                             </li>
                         {% endif %}
                     {% endif %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="btn btn-dark nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if is_granted('ROLE_USER') %}{{app.user.username}}{% else %}Account{% endif %}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         {% if is_granted('ROLE_USER') %}
-                            <a class="dropdown-item" href="{{ path('trainer_profile') }}">Profile</a>
-                            <a class="dropdown-item" href="{{ path('trainer_pokemons', {id: app.user.id}) }}">Pokemons</a>
                             <a class="dropdown-item" href="{{ path('app_account') }}">Account</a>
                             <a class="dropdown-item" href="{{ path('app_contact') }}">Contact</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
