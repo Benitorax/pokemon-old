@@ -8,15 +8,19 @@ import { api_get } from './Components/battle_api';
 (function() {
     var exchangeElement = document.getElementById('js-exchange');
 
-    api_get('/exchange/count').then(function(response) {
-        if(response.data.exchangeCount > 0) {
-            var newSpan = document.createElement("span");
-            var newContent = document.createTextNode(response.data.exchangeCount);
-            newSpan.appendChild(newContent);
-            newSpan.className = "badge badge-light mx-1";
-            exchangeElement.appendChild(newSpan);
-        }
-    }).catch(function(error) {
+    function fetchExchangeCount() {
+        api_get('/exchange/count').then(function(response) {
+            if(response.data.exchangeCount > 0) {
+                var newSpan = document.createElement("span");
+                var newContent = document.createTextNode(response.data.exchangeCount);
+                newSpan.appendChild(newContent);
+                newSpan.className = "badge badge-light mx-1";
+                exchangeElement.appendChild(newSpan);
+            }
+        }).catch(function(error) {});
+    }
 
-    });
+    if(exchangeElement !== null) {
+        fetchExchangeCount();
+    }
 })();
