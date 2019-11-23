@@ -1,7 +1,8 @@
 # Pokemon Application
 <p>This application fetchs some data from <a href="https://pokeapi.co">https://pokeapi.co</a> like the name, image, evolution and habitat of pokemons.</p>
 <p>It only includes the first generation, so the first 151 pokemons, from Bulbasaur to Mew.</p>
-<p>Trainers in tournament are auto generated. Users can interact each other only by exchanging pokemon. They can also leave messages in contact page that only admin users can read.<br/>
+<p>It unlock new features or increase the difficulty by progressing as the authorization to participate in the tournament after obtaining 3 pokemons or the infirmary service that becomes paid from 4 pokemons obtained.</p>
+<p>Trainers in tournament are auto generated. Users can only interact by exchanging pokemons. They can also leave messages in the contact page that only the admin users can read.<br/>
 Admin users can also delete accounts which have not been activated.</p>
 <p>The application use React for the battle pages (adventure and tournament).</p>
 
@@ -73,4 +74,12 @@ Admin users can also delete accounts which have not been activated.</p>
   <li>level up after a victory</li>
   <li>do more damage when its level is higher</li>
   <li>evolve</li>
+</ul>
+<br/>
+<p>An admin user can:</p>
+<ul>
+  <li>play like every users</li>
+  <li>read messages sent by others users in contact page</li>
+  <li>check and delete inactivated users</li>
+  <li>check and delete any user (causing problems)</li>
 </ul>
