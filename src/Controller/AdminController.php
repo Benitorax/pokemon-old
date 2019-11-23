@@ -84,15 +84,15 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/user/not-activated", name="admin_users_not_activated", methods={"GET"})
+     * @Route("/admin/user/inactivated", name="admin_users_not_activated", methods={"GET"})
      */
-    public function showNotActivatedUsers(UserRepository $userRepository)
+    public function showInactivatedUsers(UserRepository $userRepository)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $csrfToken = $this->getUser()->getId()->toString();
 
-        $users = $userRepository->findAllNotActivated();
+        $users = $userRepository->findAllInactivated();
         $onlyRealUsers = [];
         foreach($users as $user) {
             if(is_int(strpos($user->getEmail(), '@'))) {
@@ -108,11 +108,11 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/expired-1-month/delete", name="admin_users_not_activated_delete", methods={"GET"})
      */
-    public function deleteAllNotActivatedUsers(ObjectManager $manager, UserRepository $userRepository)
+    public function deleteAllInactivatedUsers(ObjectManager $manager, UserRepository $userRepository)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $users = $userRepository->findAllNotActivated();
+        $users = $userRepository->findAllInactivated();
         $onlyRealUsers = [];
         foreach($users as $user) {
             if(is_int(strpos($user->getEmail(), '@')) && $user->getCreatedAt() < new \DateTime('- 1 month')) {

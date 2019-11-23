@@ -47,7 +47,7 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findAllNotActivated()
+    public function findAllInactivated()
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.isActivated = false')

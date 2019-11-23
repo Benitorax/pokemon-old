@@ -12,9 +12,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class UserNotActivatedDeleteCommand extends Command
+class UserInactivatedDeleteCommand extends Command
 {
-    protected static $defaultName = 'app:user-not-activated-delete';
+    protected static $defaultName = 'app:user-inactivated-delete';
     private $userRepository;
     private $manager;
 
@@ -29,10 +29,10 @@ class UserNotActivatedDeleteCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Delete not activated users.')
+            ->setDescription('Delete inactivated users.')
             ->addArgument('email', InputArgument::OPTIONAL, 'Delete one user if an email is add')
-            ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all not activated account.')
-            ->setHelp('This command delete not activated users created one month ago. To delete all not activated users, add the option --all. Finally, you can also delete one user with argument email.')
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Delete all inactivated account.')
+            ->setHelp('This command delete inactivated users created one month ago. To delete all inactivated users, add the option --all. Finally, you can also delete one user with argument email.')
         ;
     }
 
@@ -43,7 +43,7 @@ class UserNotActivatedDeleteCommand extends Command
 
 
 
-        $users = $this->userRepository->findAllNotActivated();
+        $users = $this->userRepository->findAllInactivated();
         $onlyRealUsers = [];
         $tableBody = [];
         foreach($users as $user) {
@@ -60,7 +60,7 @@ class UserNotActivatedDeleteCommand extends Command
                 $this->removeAndFlush($user);
                 $io->success('The user has been delete with success');
             } else {
-                $io->caution('No not activated account with email '.$email .' was found.');
+                $io->caution('No inactivated account with email '.$email .' was found.');
             }
             return 0;
         }
@@ -71,7 +71,7 @@ class UserNotActivatedDeleteCommand extends Command
         );
 
         $usersCount = count($onlyRealUsers);
-        $io->text('There are '.$usersCount.' users accounts which have not been activated.');
+        $io->text('There are '.$usersCount.' account(s) which have not been activated.');
 
         if($usersCount === 0) {
             $io->caution('No users have been deleted.');
@@ -93,7 +93,7 @@ class UserNotActivatedDeleteCommand extends Command
                 }
             }
             $usersCount = count($oldUsers);
-            $io->text('And belong them, '.$usersCount.' are created at least one month ago.');
+            $io->text('And there are '.$usersCount.' account(s) created at least one month ago.');
     
             if($usersCount === 0) {
                 $io->caution('No users have been deleted.');

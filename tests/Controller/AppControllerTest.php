@@ -48,7 +48,7 @@ class AppControllerTest extends CustomWebTestCase
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'sacha@mail.com']);
         $this->assertSame(false, $user->getIsActivated());
         
-        // Assert user not activated
+        // Assert user inactivated
         $client->request('GET', '/login');
         $client->submitForm('Sign in', [
             'email' => 'sacha@mail.com',
