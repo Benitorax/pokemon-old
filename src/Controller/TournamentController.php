@@ -6,7 +6,6 @@ use App\Handler\TournamentHandler;
 use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
-use App\Repository\BattleTeamRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -88,7 +87,7 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/select-pokemon", name="tournament_pokemon_select", methods={"POST"})
      */
-    public function selectPokemon(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser, PokemonRepository $pokemonRepository)
+    public function selectPokemon(Request $request, TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository)
     {
         $data = $request->getContent();
         /** stdclass */
@@ -250,7 +249,7 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/restore-pokemons", name="tournament_pokemons_restore", methods={"POST"})
      */
-    public function restorePokemons(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
+    public function restorePokemons(Request $request, TournamentHandler $tournamentHandler)
     {
         $data = $request->getContent();
         /** stdclass */

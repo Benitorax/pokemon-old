@@ -29,6 +29,7 @@ class SecurityController extends AbstractController
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -46,18 +47,26 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_register", methods={"GET", "POST"})
      */
-    public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer, UserRepository $userRepository)
+    public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer, UserRepository $userRepository, \ReCaptcha\ReCaptcha $reCaptcha)
     {
         $registerUserDTO = new RegisterUserDTO($userRepository);
         $form = $this->createForm(RegisterType::class, $registerUserDTO);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userHandler->handle($form->getData());
-            $mailer->sendMailAfterRegistration($user);
-            $this->addFlash('success','Congrats, you have been registered with success! You will receive an email to confirm your address.');
+            $gRecaptchaResponse = $request->get('g-recaptcha-response');
+            $response = $reCaptcha->verify($gRecaptchaResponse);
 
-            return $this->redirectToRoute('app_index');
+            if($response->getScore() > 0.5) {
+                $user = $userHandler->handle($form->getData());
+                $mailer->sendMailAfterRegistration($user);
+                $this->addFlash('success','Congrats, you have been registered with success! You will receive an email to confirm your address.');
+    
+                return $this->redirectToRoute('app_index');
+
+            } else {
+                $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
+            }
         }
 
         return $this->render('security/register.html.twig', [
@@ -78,7 +87,7 @@ class SecurityController extends AbstractController
             $manager->flush();
             $this->addFlash('success', 'Thank you, your account is now activated.');
         } else {
-            $this->addFlash('danger', 'Your account has been deleted for expiration, you need to register again');
+            $this->addFlash('danger', 'Your account has been deleted, you need to register again');
         }
 
         return $this->redirectToRoute('app_index');

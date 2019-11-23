@@ -7,6 +7,7 @@
         <h3 class="my-3">Do you want to leave us a message?</h3>
         {{ form_start(contactForm) }}
         {{ form_widget(contactForm) }}
+            <input id="g-recaptcha" data-action="contact" name="g-recaptcha-response" hidden value=""></input>
         {{ form_end(contactForm) }}
     </div>
 {% endblock %}

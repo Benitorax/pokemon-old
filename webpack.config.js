@@ -27,6 +27,8 @@ Encore
     .addEntry('adventure_battle', './assets/js/Components/AdventureBattle.js')
     .addEntry('tournament_battle', './assets/js/Components/TournamentBattle.js')
     .addEntry('city', './assets/js/city.js')
+    .addEntry('reCaptcha', './assets/js/reCaptcha.js')
+
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 

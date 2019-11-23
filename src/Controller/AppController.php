@@ -79,6 +79,8 @@ class AppController extends AbstractController
      */
     public function deleteAccount(Request $request, ObjectManager $manager, TokenStorageInterface $tokenStorage)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
         $deleteAccountForm = $this->createForm(DeleteAccountType::class);
         $deleteAccountForm->handleRequest($request);
 
@@ -100,16 +102,23 @@ class AppController extends AbstractController
     /**
      * @Route("/contact", name="app_contact", methods={"GET","POST"})
      */
-    public function sendMessageToAdmin(Request $request, ContactMessageManager $messageManager, CustomMailer $mailer)
+    public function sendMessageToAdmin(Request $request, ContactMessageManager $messageManager, CustomMailer $mailer, \ReCaptcha\ReCaptcha $reCaptcha)
     {
         $contactForm = $this->createForm(ContactMessageType::class);
         $contactForm->handleRequest($request);
         if($contactForm->isSubmitted() && $contactForm->isValid()) {
-            $message = $messageManager->createContactMessage($contactForm->getData());
-            $this->addFlash('success', 'Your message has been sent.');
-            $mailer->sendMailToAdminForNewMessage($message);
+            $gRecaptchaResponse = $request->get('g-recaptcha-response');
+            $response = $reCaptcha->verify($gRecaptchaResponse);
 
-            return $this->redirectToRoute('app_index');
+            if($response->getScore() > 0.5) {
+                $message = $messageManager->createContactMessage($contactForm->getData());
+                $this->addFlash('success', 'Your message has been sent.');
+                $mailer->sendMailToAdminForNewMessage($message);
+
+                return $this->redirectToRoute('app_index');
+            } else {
+                $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
+            }
         }
 
         return $this->render('app/contact.html.twig', [

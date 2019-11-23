@@ -12,6 +12,7 @@
         'attr': {'class': 'register-form'}
     }) }}
     {{ form_widget(form) }}
+        <input id="g-recaptcha" data-action="register" name="g-recaptcha-response" hidden value=""></input>
     {{ form_end(form) }}
 </div>
 {% endblock %}
