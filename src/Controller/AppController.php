@@ -98,7 +98,7 @@ class AppController extends AbstractController
     }
 
     /**
-     * @Route("/contact/", name="app_contact", methods={"GET","POST"})
+     * @Route("/contact", name="app_contact", methods={"GET","POST"})
      */
     public function sendMessageToAdmin(Request $request, ContactMessageManager $messageManager, CustomMailer $mailer)
     {
@@ -114,6 +114,17 @@ class AppController extends AbstractController
 
         return $this->render('app/contact.html.twig', [
             'contactForm' => $contactForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/privacy-policy", name="app_privacy_policy", methods={"GET"})
+     */
+    public function showPrivacyPolicy($companyName, $websiteUrl)
+    {
+        return $this->render('app/privacy_policy.html.twig', [
+            'companyName' => $companyName,
+            'websiteUrl' => $websiteUrl
         ]);
     }
 }
