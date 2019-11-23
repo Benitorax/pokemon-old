@@ -67,6 +67,23 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/admin/users/activated", name="admin_users_activated", methods={"GET"})
+     */
+    public function showActivatedUsers(UserRepository $userRepository)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $csrfToken = $this->getUser()->getId()->toString();
+
+        $users = $userRepository->findAllActivated();
+
+        return $this->render('admin/users_activated.html.twig', [
+            'users' => $users,
+            "csrfToken" => $csrfToken
+        ]);
+    }
+
+    /**
      * @Route("/admin/user/not-activated", name="admin_users_not_activated", methods={"GET"})
      */
     public function showNotActivatedUsers(UserRepository $userRepository)

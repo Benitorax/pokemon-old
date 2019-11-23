@@ -45,11 +45,15 @@
                             <a id="js-exchange" class="btn btn-secondary nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
                         </li>
                         {% if is_granted('ROLE_ADMIN') %}
-                            <li class="nav-item{% if app.request.get('_route') == 'admin_messages_new' %} active{% endif %}">
-                                <a class="btn btn-danger nav-link" href="{{ path('admin_messages_new') }}">Messages</a>
-                            </li>
-                            <li class="nav-item{% if app.request.get('_route') == 'admin_users_not_activated' %} active{% endif %}">
-                                <a class="btn btn-danger nav-link" href="{{ path('admin_users_not_activated') }}">Accounts</a>
+                            <li class="nav-item dropdown">
+                                <a class="btn btn-danger nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="{{ path('admin_messages_new') }}">Messages</a>
+                                    <a class="dropdown-item" href="{{ path('admin_users_activated') }}">Users</a>
+                                    <a class="dropdown-item" href="{{ path('admin_users_not_activated') }}">NA Users</a>
+                                </div>
                             </li>
                         {% endif %}
                     {% endif %}
