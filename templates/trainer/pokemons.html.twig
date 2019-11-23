@@ -17,16 +17,21 @@
     </thead>
     <tbody>
       {% for pokemon in pokemons %}
+        {% set hp = pokemon.healthPoint %}
         <tr >
           <td class="text-center align-middle"><strong>{{ loop.index }}</strong></td>
           <td class="text-center align-middle">
             <p class="text-primary">
-              <strong>{{ pokemon.name }}</strong> {% if pokemon.isSleep %}<span class="text-danger">(Sleeping)</span>{% endif %}
+              <strong>{{ pokemon.name }}</strong>
+              {% if hp == 100 -%}<span class="text-success">(healthy)</span>
+              {% elseif hp in range(56, 99) -%}<span class="text-info">(good)</span>
+              {% elseif hp in range(1,55) -%}<span class="text-warning">(bad)</span>
+              {% elseif hp == 0 -%}<span class="text-danger">(K.O)</span>{%- endif -%}
             </p>
           </td>
           <td class="text-center align-middle"><img class="mw-10" src="{{ pokemon.spriteFrontUrl }}"></td>
           <td class="text-center align-middle text-primary"><strong>{{ pokemon.level }}</strong></td>
-          <td class="text-center align-middle"><strong>{{ pokemon.habitat.name|capitalize }}</strong></td>
+          <td class="text-center align-middle">{{ pokemon.habitat.name|capitalize }}</td>
         </tr>
       {% endfor %}
     </tbody>
