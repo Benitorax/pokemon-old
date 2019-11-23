@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\ContactMessage;
+use App\Manager\BattleManager;
+use App\Repository\BattleTeamRepository;
 use App\Repository\UserRepository;
 use App\Repository\ContactMessageRepository;
+use App\Repository\PokemonExchangeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -135,14 +138,39 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/user/{id}/delete/{csrfToken}", name="admin_user_delete", methods={"GET"})
+     * @Route("/admin/user/inactivated/{id}/delete/{csrfToken}", name="admin_user_inactivated_delete", methods={"GET"})
      */
-    public function deleteUser(User $user, ObjectManager $manager, $csrfToken)
+    public function deleteInactivatedUser(User $user, ObjectManager $manager, $csrfToken)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
+        }
+
+        $manager->remove($user);
+        $manager->flush();
+        $this->addFlash('success', 'The account has been deleted with success.');
+
+        return $this->redirectToRoute('admin_users_not_activated');
+    }
+
+    /**
+     * @Route("/admin/user/{id}/delete/{csrfToken}", name="admin_user_delete", methods={"GET"})
+     */
+    public function deleteUser(User $user, ObjectManager $manager, $csrfToken, PokemonExchangeRepository $pokExRepository, BattleManager $battleManager)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            throw new AccessDeniedException('Forbidden.');
+        }
+
+        $battleManager->clearLastBattleOfTrainer($user);
+
+        $pokExs = $pokExRepository->findAllByTrainer($user);
+        foreach($pokExs as $pokEx) {
+            $manager->remove($pokEx);
         }
 
         $manager->remove($user);

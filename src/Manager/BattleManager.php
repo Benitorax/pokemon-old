@@ -2,8 +2,10 @@
 
 namespace App\Manager;
 
-use App\Entity\BattleTeam;
+use App\Entity\User;
+use App\Entity\Battle;
 use App\Entity\Pokemon;
+use App\Entity\BattleTeam;
 use App\Manager\AbstractBattleManager;
 
 class BattleManager extends AbstractBattleManager
@@ -301,5 +303,27 @@ class BattleManager extends AbstractBattleManager
             $pokemon->setIsSleep(false);
         }
         $this->manager->flush();
+    }
+
+    public function clearLastBattleOfTrainer(User $user)
+    {
+        if($battle = $this->manager->getRepository(Battle::class)->findOneByTrainer($user))
+        {
+            $playerTeam = $battle->getPlayerTeam();
+            $playerPokemons = $playerTeam->getPokemons();
+            foreach($playerPokemons as $pokemon) {
+                $pokemon->setBattleTeam(null);
+            }
+
+            $opponentTeam = $battle->getOpponentTeam();
+            $opponent = $opponentTeam->getTrainer();
+            $opponentPokemons = $opponentTeam->getPokemons()->toArray();        
+            foreach($opponentPokemons as $oPokemon) {
+                $oPokemon->setBattleTeam(null);
+            }
+
+            $this->removeAndFlush($battle);
+            $this->removeAndFlush($opponent);
+        }
     }
 }
