@@ -9,6 +9,7 @@ use App\Manager\PokemonExchangeManager;
 use App\Repository\PokemonExchangeRepository;
 use App\Repository\UserRepository;
 use App\Repository\PokemonRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,11 +91,26 @@ class TrainerController extends AbstractController
     public function listPokemonExchange(PokemonExchangeRepository $pokExRepository) 
     {
         $pokemonExchanges = $pokExRepository->findAllByTrainer($this->getUser());
+
         $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('trainer/pokemon_exchange_list.html.twig', [
             'pokemonExchanges' => $pokemonExchanges,
             'csrfToken' => $csrfToken
+        ]);
+    }
+    
+    /**
+     * @Route("/exchange/count", name="pokemon_exchange_count", methods={"GET"})
+     */
+    public function getPokemonsExchangeCount(PokemonExchangeRepository $pokExRepository)
+    {
+        $user = $this->getUser();
+        $pokemonExchanges = $pokExRepository->findAllByTrainer($user);
+        $exchangeCount = count($pokemonExchanges);
+
+        return $this->json([
+            'exchangeCount' => $exchangeCount
         ]);
     }
 

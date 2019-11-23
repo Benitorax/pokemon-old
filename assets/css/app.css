@@ -1,31 +1,31 @@
 .navbar .btn-primary {
-    border: none;
+    border: #5cb85c 1px solid;
     color: white !important
 }
 .navbar .btn-secondary {
-    border: none;
+    border: #5cb85c 1px solid;
     color: white !important
 }
 .navbar .btn-warning {
-    border: none;
+    border: #5cb85c 1px solid;
     color: black !important
 }
 .navbar .btn-info {
-    border: none;
+    border: #5cb85c 1px solid;
     color: white !important
 }
 .navbar .btn-danger {
-    border: none;
+    border: #5cb85c 1px solid;
     color: white !important
 }
 .navbar .btn-success {
-    border: none;
+    border: #5cb85c 1px solid;
     color: white !important
 }
 .navbar .btn-dark {
-    border: none;
+    border: #5cb85c 1px solid;
     color: white !important
 }
 .navbar .active .btn {
-    color:#36fffc !important
+    color:rgb(141, 252, 146) !important
 }

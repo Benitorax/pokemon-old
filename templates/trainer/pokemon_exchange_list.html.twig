@@ -71,19 +71,27 @@
                         {% if ex.answer1 is same as('Accepted') %}
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Withdraw</button></a>
                         {% elseif ex.answer1 is same as('None') %}
-                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-success">Accept</button></a>
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Refuse</button></a>
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-success">Accept</button></a>
                         {% endif %}
                     {% elseif app.user is same as(ex.trainer2) %}
                         {% if ex.answer2 is same as('Accepted') %}
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Withdraw</button></a>
                         {% elseif ex.answer2 is same as('None') %}
-                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-success">Accept</button></a>
                             <a href="{{ path('pokemon_exchange_delete', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-danger">Refuse</button></a>
+                            <a href="{{ path('pokemon_exchange_accept', {id: ex.id, csrfToken: csrf_token(csrfToken)}) }}"><button class="btn btn-success">Accept</button></a>
                         {% endif %}
                     {% endif %}
                 </div>
             </div>
         </div>
+    {% else %}
+        <div class="my-5">
+            <p>Currently none.</p>
+            <p>If you want to trade pokemons, check the trainers and their pokemons by <a href="{{ path('trainer_list') }}">clicking here</a>.</p>
+        </div>
     {% endfor %}
+    <div class="my-5 text-muted">
+        <p>Exchanges in progress can be removed if you, or the other trainer, no longer have the pokemon you are trading.</p>
+    </div>
 {% endblock %}

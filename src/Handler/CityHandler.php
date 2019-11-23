@@ -1,6 +1,7 @@
 <?php
 namespace App\Handler;
 
+use App\Manager\PokemonExchangeManager;
 use App\Repository\PokemonRepository;
 use App\Security\CustomSession;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -12,17 +13,23 @@ class CityHandler
     private $pokemonRepository;
     private $manager;
     private $session;
+    private $pokExManager;
 
     const POKEBALL_PRICE = 10;
     const HEALTH_POTION_PRICE = 15;
     const RESTORE_POKEMON_PRICE = 30;
 
-    public function __construct(Security $security, PokemonRepository $pokemonRepository, ObjectManager $manager, CustomSession $session) 
+    public function __construct(Security $security, 
+                                PokemonRepository $pokemonRepository, 
+                                ObjectManager $manager, 
+                                CustomSession $session,
+                                PokemonExchangeManager $pokExManager) 
     {
         $this->user = $security->getUser();
         $this->pokemonRepository = $pokemonRepository;
         $this->manager = $manager;
         $this->session = $session;
+        $this->pokExManager = $pokExManager;
     }
 
     public function handleShopForm($form)
@@ -39,7 +46,7 @@ class CityHandler
             $this->user->addPokeball($pokeballNumber);
             $this->user->decreasePokedollar($pokeballNumber*self::POKEBALL_PRICE);
 
-            $pokeballMessage = sprintf("Now you have %s pokeballs (+%d)", $this->user->getPokeball(), $pokeballNumber);
+            $pokeballMessage = sprintf("You have %s pokeballs (+%d)", $this->user->getPokeball(), $pokeballNumber);
             $this->session->add('success', $pokeballMessage);
         }
 
@@ -47,7 +54,7 @@ class CityHandler
             $this->user->addHealingPotion($hpNumber);
             $this->user->decreasePokedollar($hpNumber*self::HEALTH_POTION_PRICE);
 
-            $hpMessage = sprintf("Now you have %s healing potions (+%d)", $this->user->getHealingPotion(), $hpNumber);
+            $hpMessage = sprintf("You have %s healing potions (+%d)", $this->user->getHealingPotion(), $hpNumber);
             $this->session->add('success', $hpMessage);
         }
 
@@ -100,6 +107,7 @@ class CityHandler
         if(count($pokemons) <= 1) {
             $this->session->add('danger', "You can't donate your only pokemon.");
         } elseif(in_array($donatedPokemon, $pokemons)) {
+            $this->pokExManager->removeInvalidPokemonExchangeWithPokemon($donatedPokemon);
             $this->user->removePokemon($donatedPokemon);
             $this->manager->remove($donatedPokemon);
             $this->manager->flush();

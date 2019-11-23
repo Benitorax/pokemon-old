@@ -7,7 +7,7 @@
     <h3 class="my-3 text-secondary text-center">{{ user.username }}</h3>
     <div class="row justify-content-center">
         {% if user is not same as(app.user) %}
-            <a href="{{ path('pokemon_exchange_create', {id:user.id}) }}"><span class="btn btn-sm btn-outline-dark">Do you want to exchange pokemons with this trainer?<span></a>
+            <a href="{{ path('pokemon_exchange_create', {id:user.id}) }}"><span class="btn btn-info text-uppercase">Exchange pokemon with this trainer<span></a>
         {% endif %}
     </div>
     {{ showBadge.showBadge(user.championCount) }}
@@ -26,10 +26,6 @@
             <tr>
                 <th class="text-center" scope="row">Trophies</th>
                 <td class="text-center">{{ user.championCount }}</td>
-            </tr>
-            <tr>
-                <th class="text-center" scope="row">Pokedollars</th>
-                <td class="text-center">{{ user.pokedollar }}</td>
             </tr>
             <tr>
                 <th class="text-center" scope="row">Pokeballs</th>
@@ -67,6 +63,6 @@
         </tbody>
     </table>
     <p>
-        <a href="{{ path('trainer_list') }}"><span class="btn btn-sm btn-secondary">Go back to trainer's list</span></a>
+        <a href="{{ path('trainer_list') }}"><span class="btn btn-secondary">Go back to the list of trainers</span></a>
     </p>
 {% endblock %}

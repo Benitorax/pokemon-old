@@ -1,6 +1,7 @@
 <?php
 namespace App\Manager;
 
+use App\Entity\Pokemon;
 use App\Entity\PokemonExchange;
 use App\Mailer\CustomMailer;
 use App\Repository\PokemonExchangeRepository;
@@ -11,11 +12,13 @@ class PokemonExchangeManager
 {
     private $manager;
     private $mailer;
+    private $pokExRepository;
 
-    public function __construct(ObjectManager $manager, CustomMailer $mailer)
+    public function __construct(ObjectManager $manager, CustomMailer $mailer, PokemonExchangeRepository $pokExRepository)
     {
         $this->manager = $manager;
         $this->mailer = $mailer;
+        $this->pokExRepository = $pokExRepository;
     }
 
     public function createPokemonExchange(PokemonExchange $pokemonExchange) 
@@ -70,9 +73,51 @@ class PokemonExchangeManager
 
             $pokemonExchange->getTrainer2()->addPokemon($pokemonExchange->getPokemon1());
             $pokemonExchange->getTrainer1()->addPokemon($pokemonExchange->getPokemon2());
+            $this->removeInvalidPokemonExchange($pokemonExchange);
         }
-        $this->manager->remove($pokemonExchange);
-        $this->manager->flush();    
+        // $this->manager->remove($pokemonExchange);
+        // $this->manager->flush();    
+    }
+    
+    private function removeInvalidPokemonExchange(PokemonExchange $pokemonExchange) {
+        $pokemon1 = $pokemonExchange->getPokemon1();
+        $pokemon2 = $pokemonExchange->getPokemon2();
+
+        $pokemonExchanges = $this->pokExRepository->findAll();
+        $pokemonExchangesToDelete = [];
+        
+        foreach($pokemonExchanges as $pokemonExchange) {
+            $pokemonsArray = [$pokemonExchange->getPokemon1(), $pokemonExchange->getPokemon2()];
+
+            if( in_array($pokemon1, $pokemonsArray) || in_array($pokemon2, $pokemonsArray)) {
+                $pokemonExchangesToDelete[] = $pokemonExchange;
+            }
+        }
+
+        foreach($pokemonExchangesToDelete as $pokemonExchange) {
+            $this->manager->remove($pokemonExchange);
+        }
+
+        $this->manager->flush();
+    }
+
+    public function removeInvalidPokemonExchangeWithPokemon(Pokemon $pokemon) {
+        $pokemonExchanges = $this->pokExRepository->findAll();
+        $pokemonExchangesToDelete = [];
+        
+        foreach($pokemonExchanges as $pokemonExchange) {
+            $pokemonsArray = [$pokemonExchange->getPokemon1(), $pokemonExchange->getPokemon2()];
+
+            if( in_array($pokemon, $pokemonsArray)) {
+                $pokemonExchangesToDelete[] = $pokemonExchange;
+            }
+        }
+
+        foreach($pokemonExchangesToDelete as $pokemonExchange) {
+            $this->manager->remove($pokemonExchange);
+        }
+
+        $this->manager->flush();
     }
 
     public function deletePokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user)
