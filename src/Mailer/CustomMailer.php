@@ -1,7 +1,6 @@
 <?php
 namespace App\Mailer;
 
-use DateTime;
 use Ramsey\Uuid\Uuid;
 use \Twig\Environment;
 use App\Entity\ContactMessage;

@@ -7,6 +7,7 @@ use App\Handler\UserHandler;
 use App\Entity\ContactMessage;
 use App\Repository\UserRepository;
 use App\Repository\ContactMessageRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,7 +33,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/messages/archive", name="admin_messages_archived", methods={"GET"})
+     * @Route("/admin/messages/archived", name="admin_messages_archived", methods={"GET"})
      */
     public function showArchivedMessages(ContactMessageRepository $messageRepository)
     {
@@ -43,10 +44,24 @@ class AdminController extends AbstractController
 
         return $this->render('admin/show_messages.html.twig', [
             'messages' => $messages,
-            'title' => 'Archives messages',
+            'title' => 'Archived messages',
             'csrfToken' => $csrfToken
         ]);
     }
+
+    /**
+     * @Route("/admin/messages/new/count", name="admin_message_new_count", methods={"GET"})
+     */
+    public function getNewContactMessageCount(ContactMessageRepository $contactMessageRepository)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $newContactMessageCount = count($contactMessageRepository->findNewMessages());
+
+        return $this->json([
+            'count' => $newContactMessageCount
+        ]);
+    }  
 
     /**
      * @Route("/admin/messages/{id}/archive/{csrfToken}", name="admin_messages_archive", methods={"GET"})
@@ -64,6 +79,28 @@ class AdminController extends AbstractController
         $this->addFlash('success', 'The message has been archived.');
 
         return $this->redirectToRoute('admin_messages_new');
+    }
+
+    /**
+     * @Route("/admin/messages/{id}/delete/{csrfToken}", name="admin_messages_delete", methods={"GET"})
+     */
+    public function deleteMessage(Request $request, ContactMessage $message, ObjectManager $manager, $csrfToken)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+            throw new AccessDeniedException('Forbidden.');
+        }
+        $isRead = $message->getIsRead();
+        $manager->remove($message);
+        $manager->flush();
+        $this->addFlash('success', 'The message has been deleted.');
+
+        if($isRead) {
+            return $this->redirectToRoute('admin_messages_archived');
+        } else {
+            return $this->redirectToRoute('admin_messages_new');
+        }
     }
 
     /**
@@ -167,5 +204,5 @@ class AdminController extends AbstractController
         $this->addFlash('success', 'The account has been deleted with success.');
 
         return $this->redirectToRoute('admin_users_not_activated');
-    }
+    }  
 }

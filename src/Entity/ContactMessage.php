@@ -23,8 +23,8 @@ class ContactMessage
      * @Assert\Length(
      *      min = 5,
      *      max = 50,
-     *      minMessage = "Your first name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     *      minMessage = "Your object name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your object name cannot be longer than {{ limit }} characters"
      * )
      */
     private $object;
@@ -35,17 +35,11 @@ class ContactMessage
      * @Assert\Length(
      *      min = 10,
      *      max = 400,
-     *      minMessage = "Your first name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     *      minMessage = "Your content name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your content name cannot be longer than {{ limit }} characters"
      * )
      */
-    private $body;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $author;
+    private $content;
 
     /**
      * @ORM\Column(type="datetime")
@@ -56,6 +50,16 @@ class ContactMessage
      * @ORM\Column(type="boolean")
      */
     private $isRead = false;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $authorName;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $authorEmail;
 
     public function getId(): ?int
     {
@@ -74,26 +78,14 @@ class ContactMessage
         return $this;
     }
 
-    public function getBody(): ?string
+    public function getContent(): ?string
     {
-        return $this->body;
+        return $this->content;
     }
 
-    public function setBody(string $body): self
+    public function setContent(string $content): self
     {
-        $this->body = $body;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?User
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(?User $author): self
-    {
-        $this->author = $author;
+        $this->content = $content;
 
         return $this;
     }
@@ -118,6 +110,30 @@ class ContactMessage
     public function setIsRead(bool $isRead): self
     {
         $this->isRead = $isRead;
+
+        return $this;
+    }
+
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    public function setAuthorName(string $authorName): self
+    {
+        $this->authorName = $authorName;
+
+        return $this;
+    }
+
+    public function getAuthorEmail(): ?string
+    {
+        return $this->authorEmail;
+    }
+
+    public function setAuthorEmail(string $authorEmail): self
+    {
+        $this->authorEmail = $authorEmail;
 
         return $this;
     }

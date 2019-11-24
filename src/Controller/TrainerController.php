@@ -110,7 +110,7 @@ class TrainerController extends AbstractController
         $exchangeCount = count($pokemonExchanges);
 
         return $this->json([
-            'exchangeCount' => $exchangeCount
+            'count' => $exchangeCount
         ]);
     }
 

@@ -43,14 +43,14 @@
                             <a class="btn btn-success nav-link" href="{{ path('trainer_list') }}">Trainers</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'pokemon_exchange_list' %} active{% endif %}">
-                            <a id="js-exchange" class="btn btn-success nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
+                            <a class="btn btn-success nav-link" href="{{ path('pokemon_exchange_list') }}" id="js-exchange" >Exchange</a>
                         </li>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li class="nav-item dropdown">
-                                <a class="btn btn-danger nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="btn btn-danger nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Admin
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
                                     <a class="dropdown-item" href="{{ path('admin_messages_new') }}">Messages</a>
                                     <a class="dropdown-item" href="{{ path('admin_users_activated') }}">Users</a>
                                     <a class="dropdown-item" href="{{ path('admin_users_not_activated') }}">Inactivated</a>
@@ -123,6 +123,9 @@
             {{ encore_entry_script_tags('reCaptcha') }}
             {% if is_granted('ROLE_USER') %}
                 {{ encore_entry_script_tags('app') }}
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                {{ encore_entry_script_tags('admin') }}
             {% endif %}
         {% endblock %}
     </body>

@@ -21,7 +21,8 @@ class ContactMessageManager
 
     public function createContactMessage(ContactMessage $message)
     {
-        $message->setAuthor($this->user)
+        $message->setAuthorName($this->user->getUsername())
+                ->setAuthorEmail($this->user->getEmail())
                 ->setCreatedAt(new \DateTime('now'));
         $this->manager->persist($message);
         $this->manager->flush();
