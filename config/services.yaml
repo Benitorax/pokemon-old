@@ -6,6 +6,10 @@
 parameters:
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
+twig:
+    globals:
+        company_name: '%env(COMPANY_NAME)%'
+
 services:
     # default configuration for services in *this* file
     _defaults:

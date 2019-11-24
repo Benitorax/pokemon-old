@@ -7,6 +7,7 @@
     <div>
         <span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
     </div>
+    <input id="g-recaptcha" data-action="tournament-battle" name="g-recaptcha-response" hidden value=""></input>
 {% endblock %}
 
 {% block stylesheets %}
