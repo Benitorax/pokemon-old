@@ -18,8 +18,8 @@ class ContactMessageType extends AbstractType
             ->add('object', TextType::class, [
                 'attr' => ['class' => ''],
             ])
-            ->add('body', TextareaType::class, [
-                'attr' => ['class' => ''],
+            ->add('content', TextareaType::class, [
+                'attr' => ['class' => 'message-content'],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Submit',

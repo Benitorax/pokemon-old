@@ -31,3 +31,7 @@
 }
 
 .grecaptcha-badge { visibility: hidden; }
+
+.message-content {
+    min-height: 250px;
+}

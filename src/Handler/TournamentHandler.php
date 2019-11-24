@@ -247,11 +247,11 @@ class TournamentHandler extends AdventureHandler
             $user->increaseConsecutiveWin();
             $datas = $this->battleManager->manageLevelUpForTournament();
             if(is_int($user->getConsecutiveWin() / 3)) {
-                $user->increasePokedollar(500);
+                $user->increasePokedollar(700);
                 $user->increaseChampionCount();
                 $badgeNumber = $user->getChampionCount() % 8;
                 $centerImageUrlArray[] = '/images/badge'.$badgeNumber.'.png';
-                $messages[] = 'Congrats! You won the final and earn 500$!';
+                $messages[] = 'Congrats! You won the final and earn 700$!';
             } else {
                 $user->increasePokedollar(300);
                 $messages[] = 'Congrats! You won the battle and earn 300$!';
