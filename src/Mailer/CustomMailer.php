@@ -16,12 +16,16 @@ class CustomMailer
     private $twig;
     private $manager;
     private $userRepository;
+    private $websiteUrl;
 
-    public function __construct(\Swift_Mailer $mailer, Environment $twig, ObjectManager $manager, UserRepository $userRepository) {
+    public function __construct(\Swift_Mailer $mailer, Environment $twig, 
+                                ObjectManager $manager, UserRepository $userRepository,
+                                string $websiteUrl) {
         $this->mailer = $mailer;
         $this->twig = $twig;
         $this->manager = $manager;
         $this->userRepository = $userRepository;
+        $this->websiteUrl = $websiteUrl;
     }
 
     public function sendMailAfterRegistration(UserInterface $user)
@@ -59,7 +63,7 @@ class CustomMailer
     public function prepareMessage(string $template, string $subject, UserInterface $user)
     {
         return (new \Swift_Message($subject))
-            ->setFrom('contact@pokemon.com')
+            ->setFrom('no-reply@'. strval($this->websiteUrl))
             ->setTo($user->getEmail())
             ->setBody(
                 $this->twig->render(
