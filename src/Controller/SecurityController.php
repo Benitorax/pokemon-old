@@ -96,19 +96,26 @@ class SecurityController extends AbstractController
     /**
      * @Route("/password/forgotten/", name="app_password_forgotten", methods={"GET", "POST"})
      */
-    public function passwordForgotten(Request $request, UserRepository $userRepository, CustomMailer $mailer) {
+    public function passwordForgotten(Request $request, UserRepository $userRepository, CustomMailer $mailer, \ReCaptcha\ReCaptcha $reCaptcha) {
         $emailForm = $this->createForm(CheckEmailType::class);
         $emailForm->handleRequest($request);
 
         if($emailForm->isSubmitted() && $emailForm->isValid()) {
-            $email = $emailForm->getData()['email'];
-            $user = $userRepository->findOneIsActivatedByEmail($email); 
-            if($user) {
-                $mailer->sendMailToResetPassword($user);
-                $this->addFlash('success', 'You will receive an email to reset your password.');
-                return $this->redirectToRoute('app_login');
+            $gRecaptchaResponse = $request->get('g-recaptcha-response');
+            $response = $reCaptcha->verify($gRecaptchaResponse);
+
+            if($response->getScore() > 0.5) {
+                $email = $emailForm->getData()['email'];
+                $user = $userRepository->findOneIsActivatedByEmail($email); 
+                if($user) {
+                    $mailer->sendMailToResetPassword($user);
+                    $this->addFlash('success', 'You will receive an email to reset your password.');
+                    return $this->redirectToRoute('app_login');
+                } else {
+                    $this->addFlash('danger', 'This email is not registered.');    
+                }
             } else {
-                $this->addFlash('danger', 'This email is not registered.');    
+                $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
             }
         }
 
