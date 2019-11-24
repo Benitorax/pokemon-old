@@ -3,16 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Handler\UserHandler;
 use App\Entity\ContactMessage;
-use App\Manager\BattleManager;
-use App\Repository\BattleTeamRepository;
 use App\Repository\UserRepository;
 use App\Repository\ContactMessageRepository;
-use App\Repository\PokemonExchangeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminController extends AbstractController
@@ -158,7 +155,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/{id}/delete/{csrfToken}", name="admin_user_delete", methods={"GET"})
      */
-    public function deleteUser(User $user, ObjectManager $manager, $csrfToken, PokemonExchangeRepository $pokExRepository, BattleManager $battleManager)
+    public function deleteUser(User $user, $csrfToken, UserHandler $userHandler)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -166,15 +163,7 @@ class AdminController extends AbstractController
             throw new AccessDeniedException('Forbidden.');
         }
 
-        $battleManager->clearLastBattleOfTrainer($user);
-
-        $pokExs = $pokExRepository->findAllByTrainer($user);
-        foreach($pokExs as $pokEx) {
-            $manager->remove($pokEx);
-        }
-
-        $manager->remove($user);
-        $manager->flush();
+        $userHandler->deleteUser($user);
         $this->addFlash('success', 'The account has been deleted with success.');
 
         return $this->redirectToRoute('admin_users_not_activated');

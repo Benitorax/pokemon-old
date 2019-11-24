@@ -13,14 +13,14 @@
         </div>
         <div class="card-body bg-light">
             {{ form_start(deleteAccountForm) }}
-            <div class="row justify-content-center">
-                <div class="mr-auto">{{ form_widget(deleteAccountForm) }}</div>
-                <div class="ml-auto">
-                    <a href="{{ path('app_account') }}"><button type="button" class="btn btn-secondary btn-lg">No, go back</button>
+                <div class="row justify-content-center">
+                    <div class="mr-auto">{{ form_widget(deleteAccountForm) }}</div>
+                    <div class="ml-auto">
+                        <a href="{{ path('app_account') }}"><button type="button" class="btn btn-secondary btn-lg">No, go back</button>
+                    </div>
                 </div>
+                <input id="g-recaptcha" data-action="account_delete" name="g-recaptcha-response" hidden value=""></input>
             {{ form_end(deleteAccountForm) }}
-            </div>
         </div>
     </div>
-    <input id="g-recaptcha" data-action="account_delete" name="g-recaptcha-response" hidden value=""></input>
 {% endblock %}

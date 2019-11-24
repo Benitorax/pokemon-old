@@ -5,25 +5,28 @@ namespace App\Handler;
 use App\Entity\User;
 use App\Entity\RegisterUserDTO;
 use App\Api\PokeApi\PokeApiManager;
+use App\Manager\BattleManager;
+use App\Repository\PokemonExchangeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserHandler
 {
     private $manager;
-
     private $encoder;
-
     private $pokeApiManager;
+    private $pokExRepository;
+    private $battleManager;
 
-    public function __construct(
-        ObjectManager $manager,
-        UserPasswordEncoderInterface $encoder, 
-        PokeApiManager $pokeApiManager)
+    public function __construct(ObjectManager $manager, UserPasswordEncoderInterface $encoder, 
+                                PokeApiManager $pokeApiManager, PokemonExchangeRepository $pokExRepository,
+                                BattleManager $battleManager)
     {
         $this->manager = $manager;
         $this->encoder = $encoder;
         $this->pokeApiManager = $pokeApiManager;
+        $this->pokExRepository = $pokExRepository;
+        $this->battleManager = $battleManager;
     }
     
     public function handle($data) 
@@ -60,6 +63,18 @@ class UserHandler
             $user,
             $newPassword
         ));
+        $this->manager->flush();
+    }
+
+    public function deleteUser($user) {
+        $this->battleManager->clearLastBattleOfTrainer($user);
+
+        $pokExs = $this->pokExRepository->findAllByTrainer($user);
+        foreach($pokExs as $pokEx) {
+            $this->manager->remove($pokEx);
+        }
+
+        $this->manager->remove($user);
         $this->manager->flush();
     }
 }

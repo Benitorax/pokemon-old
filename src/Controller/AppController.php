@@ -6,6 +6,7 @@ use App\Form\DeleteAccountType;
 use App\Form\ModifyPasswordType;
 use App\Entity\ModifyPasswordDTO;
 use App\Form\ContactMessageType;
+use App\Handler\UserHandler;
 use App\Mailer\CustomMailer;
 use App\Manager\ContactMessageManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +70,7 @@ class AppController extends AbstractController
     /**
      * @Route("/account/delete", name="app_account_delete", methods={"GET","POST"})
      */
-    public function deleteAccount(Request $request, ObjectManager $manager, TokenStorageInterface $tokenStorage)
+    public function deleteAccount(Request $request, UserHandler $userHandler, TokenStorageInterface $tokenStorage, \ReCaptcha\ReCaptcha $reCaptcha)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
@@ -77,13 +78,20 @@ class AppController extends AbstractController
         $deleteAccountForm->handleRequest($request);
 
         if($deleteAccountForm->isSubmitted() && $deleteAccountForm->isValid()) {
-            $manager->remove($this->getUser());
-            $manager->flush();
-            $tokenStorage->setToken(null);
-            $request->getSession()->invalidate();
-            $this->addFlash('success', 'Your account has been deleted.');
+            $gRecaptchaResponse = $request->get('g-recaptcha-response');
+            $response = $reCaptcha->verify($gRecaptchaResponse);
 
-            return $this->redirectToRoute('app_index');
+            if($response->getScore() > 0.5) {
+                $userHandler->deleteUser($this->getUser());
+                $tokenStorage->setToken(null);
+                $request->getSession()->invalidate();
+                $this->addFlash('success', 'Your account has been deleted.');
+
+                return $this->redirectToRoute('app_index');
+            
+            } else {
+                $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
+            }
         }
 
         return $this->render('app/delete_account.html.twig', [
@@ -108,6 +116,7 @@ class AppController extends AbstractController
                 $mailer->sendMailToAdminForNewMessage($message);
 
                 return $this->redirectToRoute('app_index');
+
             } else {
                 $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
             }
