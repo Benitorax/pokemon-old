@@ -29,3 +29,5 @@
 .navbar .active .btn {
     color:rgb(141, 252, 146) !important
 }
+
+.grecaptcha-badge { visibility: hidden; }
