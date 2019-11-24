@@ -240,13 +240,13 @@ class BattleManager extends AbstractBattleManager
         $battle = $this->getCurrentBattle();
         $battle->setTurn('player');
         $playerFighter = $this->getPlayerFighter();
-        $opponentLevel = $this->getOpponentFighter()->getLevel();
+        $playerLevel = $playerFighter->getLevel();
         $hp = $playerFighter->getHealthPoint();
         $min = 5; $max = 20;
         if($battle->getType() === 'tournament') {
             $min = 10; $max = 25;
         }
-        $damage = intval(round(rand($min,$max) * (150 - $opponentLevel) / 100));
+        $damage = intval(round(rand($min,$max) * (160 - $playerLevel) / 100));
         $playerFighter->decreaseHealthPoint($damage);
         $newHp = $playerFighter->getHealthPoint();
         $this->manager->flush();
@@ -256,8 +256,10 @@ class BattleManager extends AbstractBattleManager
 
     public function manageChangeFighterOfTeam(BattleTeam $battleTeam)
     {
-        $pokemons = $battleTeam->getPokemons();
         $isAllSleep = true;
+
+        $pokemons = $battleTeam->getPokemons();
+
         foreach($pokemons as $pokemon) {
             if(!$pokemon->getIsSleep()) {
                 $battleTeam->setCurrentFighter($pokemon);

@@ -26,8 +26,8 @@ class TournamentHandler extends AdventureHandler
         $messages[] = 'You have selected <strong>'. $this->battleManager->getLastPlayerPokemon()->getName() .'</strong>!';
         $centerImageUrl = null;
         
-        if($pokemonsCount == 0) { $messages[] = 'Choose the 2nd pokemon to fight.'; } 
-        elseif($pokemonsCount == 1) { $messages[] = 'Finally, choose the 3rd pokemon.'; } 
+        if($pokemonsCount == 0) { $messages[] = 'Choose the 1st substitute.'; } 
+        elseif($pokemonsCount == 1) { $messages[] = 'Finally, choose the 2nd substitute.'; } 
         elseif($pokemonsCount == 2) { 
             $this->battleManager->startBattle();
             $messages[] = '<strong>'. $this->battleManager->getOpponentTrainer()->getUsername() .'</strong> will be your opponent!';
