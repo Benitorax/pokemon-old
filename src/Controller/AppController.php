@@ -16,17 +16,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AppController extends AbstractController
-{
+{  
     /**
-     * @Route("/", name="app_redirect_index", methods={"GET"})
-     */
-    public function redirectIndex()
-    {
-        return $this->redirectToRoute('app_index');
-    }
-    
-    /**
-     * @Route("/index", name="app_index", methods={"GET"})
+     * @Route("/", name="app_index", methods={"GET"})
      */
     public function index()
     {

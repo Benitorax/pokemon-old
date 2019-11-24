@@ -31,7 +31,7 @@
                             <a class="btn btn-warning nav-link" href="{{ path('tournament') }}">Tournament</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'city' %} active{% endif %}">
-                            <a class="btn btn-warning nav-link" href="{{ path('city') }}">City</a>
+                            <a class="btn btn-info nav-link" href="{{ path('city') }}">City</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_profile' %} active{% endif %}">
                             <a class="btn btn-primary nav-link" href="{{ path('trainer_profile') }}">Profile</a>
@@ -40,10 +40,10 @@
                             <a class="btn btn-primary nav-link" href="{{ path('trainer_pokemons', {id: app.user.id}) }}">Pokemons</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'trainer_list' %} active{% endif %}">
-                            <a class="btn btn-secondary nav-link" href="{{ path('trainer_list') }}">Trainers</a>
+                            <a class="btn btn-success nav-link" href="{{ path('trainer_list') }}">Trainers</a>
                         </li>
                         <li class="nav-item{% if app.request.get('_route') == 'pokemon_exchange_list' %} active{% endif %}">
-                            <a id="js-exchange" class="btn btn-secondary nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
+                            <a id="js-exchange" class="btn btn-success nav-link" href="{{ path('pokemon_exchange_list') }}">Exchange</a>
                         </li>
                         {% if is_granted('ROLE_ADMIN') %}
                             <li class="nav-item dropdown">

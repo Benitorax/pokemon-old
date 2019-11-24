@@ -36,6 +36,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/$, roles: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER], requires_channel: https }
         - { path: ^/email_confirm/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
         - { path: ^/password/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
         - { path: ^/index, roles: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER], requires_channel: https }
