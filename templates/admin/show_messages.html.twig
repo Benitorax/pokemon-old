@@ -6,7 +6,7 @@
     <div>
         <h3 class="my-3">{{title}} sent by users:</h3>
         {% if app.request.get('_route') == 'admin_messages_new' %}
-            <p><a href="{{ path('admin_messages_archived') }}">Archive messages</a></p>
+            <p><a href="{{ path('admin_messages_archived') }}">Archived messages</a></p>
         {% else %}
             <p><a href="{{ path('admin_messages_new') }}">New messages</a></p>
         {% endif %}

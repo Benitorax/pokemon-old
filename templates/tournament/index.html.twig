@@ -12,7 +12,12 @@
                 <div class="row my-3 justify-content-center">
                     <a href="{{ path('tournament_battle') }}"><button class="btn btn-primary">{{ buttonMessage }}</button></a>
                 </div>
+            {% else %}
+                <div class="rounded text-center py-3 my-3 border border-warning text-warning bg-light font-weight-bold">
+                    You don't have 3 pokemons with full HP.
+                </div>
             {% endif %}
+            <hr/>
             <div class="mx-auto">
                 <h1 class="my-3">Welcome to the tournament!</h1>        
 
@@ -22,12 +27,16 @@
                 <p>Overcome 3 battles in a row to win <span class="text-warning font-weight-bold">the tournament</span>!</p>
                 <p>Note: thanks to warming up, pokemons can sometimes inflict a little more damage than usual.</p>
             </div>
+            {% if isAllowed is same as(true) %}
+                <div class="row my-3 justify-content-center">
+                    <a href="{{ path('tournament_battle') }}"><button class="btn btn-primary">{{ buttonMessage }}</button></a>
+                </div>
+            {% else %}
+                <div class="rounded text-center py-3 my-3 border border-warning text-warning bg-light font-weight-bold">
+                    You don't have 3 pokemons with full HP.
+                </div>
+            {% endif %}
         </div>
     </div>
-    {% if isAllowed is same as(true) %}
-        <div class="row my-2 justify-content-center">
-            <a href="{{ path('tournament_battle') }}"><button class="btn btn-primary">{{ buttonMessage }}</button></a>
-        </div>
-    {% endif %}
     <input id="g-recaptcha" data-action="tournament_index" name="g-recaptcha-response" hidden value=""></input>
 {% endblock %}
