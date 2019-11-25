@@ -15,7 +15,7 @@ class RegisterUserDTO implements UserInterface
      *      min = 3,
      *      max = 40,
      *      minMessage = "Your username must be at least {{ limit }} characters long",
-     *      maxMessage = "Your usernamename cannot be longer than {{ limit }} characters"
+     *      maxMessage = "Your username cannot be longer than {{ limit }} characters"
      * )
      */
     private $username;
@@ -34,8 +34,8 @@ class RegisterUserDTO implements UserInterface
      * @Assert\Length(
      *      min = 6,
      *      max = 40,
-     *      minMessage = "Your username must be at least {{ limit }} characters long",
-     *      maxMessage = "Your usernamename cannot be longer than {{ limit }} characters"
+     *      minMessage = "Your password must be at least {{ limit }} characters long",
+     *      maxMessage = "Your password cannot be longer than {{ limit }} characters"
      * )
 
      */
@@ -137,11 +137,20 @@ class RegisterUserDTO implements UserInterface
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        $emails = $this->userRepository->findAllEmails();
-        if (in_array($this->getEmail(), $emails)) {
-            $context->buildViolation('This email is already used.')
+        $data = $this->userRepository->findAllEmailAndUsername();
+        
+        foreach($data['email'] as $email) {
+            if(strtolower($email) === strtolower($this->getEmail())) {
+                $context->buildViolation('This email is already used.')
                 ->atPath('email')
-                ->addViolation();
+                ->addViolation();            }
+        }
+
+        foreach($data['username'] as $username) {
+            if(strtolower($username) === strtolower($this->getUsername())) {
+                $context->buildViolation('This username is already used.')
+                ->atPath('username')
+                ->addViolation();            }
         }
     }
 }

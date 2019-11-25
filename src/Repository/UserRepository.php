@@ -86,17 +86,24 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllEmails()
+    public function findAllEmailAndUsername()
     {
-        $arrayResult =  $this->createQueryBuilder('u')
-            ->select('u.email')
+        $resultArray =  $this->createQueryBuilder('u')
+            ->select('u.email, u.username')
             ->getQuery()
             ->getScalarResult();
 
-        $data=[];
-        foreach($arrayResult as $key => $result) {
-            $data[] = $result['email'];
+        $emailArray = [];
+        $usernameArray = [];
+
+        foreach($resultArray as $result) {
+            $emailArray[] = $result['email'];
+            $usernameArray[] = $result['username'];
         }
-        return $data;
+
+        return [
+            'email' => $emailArray,
+            'username' => $usernameArray
+        ];
     }
 }
