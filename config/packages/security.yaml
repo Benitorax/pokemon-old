@@ -9,7 +9,7 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -25,8 +25,13 @@ security:
                 target: app_index
             remember_me:
                 secret:   '%kernel.secret%'
-                lifetime: 604800 # 1 week in seconds
+                lifetime: 31556952
+            # 31556952 # 1 year in seconds
+            # 2592000 # 30 days in seconds
+            # 604800 # 1 week in seconds
                 path: /
+                samesite: strict
+                secure: true
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
