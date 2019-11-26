@@ -7,6 +7,19 @@
 {% block body %}
     <h3 class="my-3 text-info">Welcome to the city!</h3>
     <h4 class="text-secondary">Visit the services that you might need.</h4>
+    {% if   infirmaryForm.restorePokemon.vars.label is same as("Pay 30 $") and 
+            pokemonFullHPCount < 3 and
+            app.user.pokedollar < 10 %}
+        <div class="card border border-secondary w-100 my-3">
+            <div class="card-header text-white bg-secondary">
+                <h5>Trainers' association</h5>
+            </div>
+            <div class="card-body">
+                <p>Looks like you're lacking money. The association wants to help you with 50 $.</p>
+                <a href="{{ path('city_association_trainer_help') }}" class="btn btn-success text-white">Take the money</a>
+            </div>
+        </div>
+    {% endif %}
     <div class="card border border-primary w-100 my-3">
         <div class="card-header text-white bg-primary">
             <h5>Shop</h5>
@@ -33,7 +46,7 @@
             {{ form_end(shopForm) }}
         </div>
     </div>
-    <div class="card border border-success w-100">
+    <div class="card border border-success w-100 my-3">
         <div class="card-header text-white bg-success">
             <h5>Infirmary</h5>
         </div>
