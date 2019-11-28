@@ -9,7 +9,7 @@
     <h4 class="text-secondary">Visit the services that you might need.</h4>
     {% if   infirmaryForm.restorePokemon.vars.label is same as("Pay 30 $") and 
             pokemonFullHPCount < 3 and
-            app.user.pokedollar < 10 %}
+            app.user.pokedollar < 30 %}
         <div class="card border border-secondary w-100 my-3">
             <div class="card-header text-white bg-secondary">
                 <h5>Trainers' association</h5>

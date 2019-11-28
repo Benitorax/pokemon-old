@@ -35,7 +35,7 @@ class AdventureController extends AbstractController
     {
         if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
             $messages = [
-                'messages' => ['You need at least one pokemon to go on adventure'],
+                'messages' => ['You need at least one pokemon to go on adventure', 'You can take care of them in the city.'],
                 'textColor' => 'text-white'
             ];
             return $this->json(['messages' => $messages]);
@@ -61,8 +61,20 @@ class AdventureController extends AbstractController
     /**
      * @Route("/adventure/travel", name="adventure_travel", methods={"POST"})
      */
-    public function travel(Request $request, AdventureHandler $adventureHandler, PokemonSerializer $pokemonSerialiser)
+    public function travel(Request $request, PokemonRepository $pokemonRepository, AdventureHandler $adventureHandler, PokemonSerializer $pokemonSerialiser)
     {
+        if(count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
+            $messages = [
+                'messages' => ['You need at least one pokemon to go on adventure.', 'You can take care of them in the city.'],
+                'textColor' => 'text-white'
+            ];
+            return $this->json([
+                'opponent' => null,
+                'player' => null,
+                'messages' => $messages  
+            ]);
+        }
+        
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);

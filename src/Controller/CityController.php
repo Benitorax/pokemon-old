@@ -54,7 +54,7 @@ class CityController extends AbstractController
         $pokemons = $user->getPokemons();
         $fullHPPokemons = $pokemonRepository->findAllFullHPByTrainer($user);
 
-        if(count($pokemons) > 3 && count($fullHPPokemons) < 3 && $pokedollar < 10) {
+        if(count($pokemons) > 3 && count($fullHPPokemons) < 3 && $pokedollar < 30) {
             $user->increasePokedollar(50);
             $manager->flush();
             $this->addFlash('success', "The trainer's association gives you 50 $.");
