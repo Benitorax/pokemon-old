@@ -14,15 +14,21 @@
         {% for message in messages %}
             <div class="card mb-3" style="">
                 <div class="card-header">
-                    From {{message.authorName}} ({{message.authorEmail}}), the {{message.createdAt|date('m/d/Y')}}
-                    {% if app.request.get('_route') == 'admin_messages_new' %}
-                        <a class="ml-5"href='{{ path('admin_messages_archive', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
-                            <button type="button" class="btn btn-sm btn-secondary">Archive</button>
-                        </a>
-                    {% endif %}
-                    <a class="ml-5"href='{{ path('admin_messages_delete', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
-                        <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                    </a>
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-2">
+                            From <strong>{{message.authorName}}</strong> ({{message.authorEmail}}), the {{message.createdAt|date('Y/m/d \\a\\t H:i:s')}}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {% if app.request.get('_route') == 'admin_messages_new' %}
+                                <a class="ml-5"href='{{ path('admin_messages_archive', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
+                                    <button type="button" class="btn btn-sm btn-secondary">Archive</button>
+                                </a>
+                            {% endif %}
+                            <a class="ml-5"href='{{ path('admin_messages_delete', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
+                                <button type="button" class="btn btn-sm btn-danger">Delete</button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">{{message.object}}</h5>

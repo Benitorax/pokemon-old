@@ -23,8 +23,8 @@
         <td>{{ user.championCount }}</td>
       </tr>
       <tr>
-        <th scope="row">Pokemons</th>
-        <td>{{ user.pokemons|length }}</td>
+          <th scope="row">Pokemons</th>
+          <td>{{ user.pokemons|length }}</td>
       </tr>
       <tr>
         <th scope="row">Pokeballs</th>
@@ -37,7 +37,7 @@
     </tbody>
   </table>
   <div>
-    <a href="{{ path('trainer_pokemons', {id: user.id}) }}">List of your pokemons</a>
+    <a class="btn btn-primary my-3" href="{{ path('trainer_pokemons', {id: user.id}) }}">Check your pokemons</a>
   </div>
   <input id="g-recaptcha" data-action="profile" name="g-recaptcha-response" hidden value=""></input>
 {% endblock %}
