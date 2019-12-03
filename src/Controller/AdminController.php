@@ -64,11 +64,12 @@ class AdminController extends AbstractController
     }  
 
     /**
-     * @Route("/admin/messages/{id}/archive/{csrfToken}", name="admin_messages_archive", methods={"GET"})
+     * @Route("/admin/messages/{id}/archive", name="admin_messages_archive", methods={"POST"})
      */
-    public function archiveMessage(ContactMessage $message, ObjectManager $manager, $csrfToken)
+    public function archiveMessage(Request $request, ContactMessage $message, ObjectManager $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $csrfToken = $request->request->get('token');
 
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
@@ -82,11 +83,12 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/messages/{id}/delete/{csrfToken}", name="admin_messages_delete", methods={"GET"})
+     * @Route("/admin/messages/{id}/delete", name="admin_messages_delete", methods={"POST"})
      */
-    public function deleteMessage(Request $request, ContactMessage $message, ObjectManager $manager, $csrfToken)
+    public function deleteMessage(Request $request, ContactMessage $message, ObjectManager $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $csrfToken = $request->request->get('token');
 
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');

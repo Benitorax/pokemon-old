@@ -19,14 +19,18 @@
                             From <strong>{{message.authorName}}</strong> ({{message.authorEmail}}), the {{message.createdAt|date('Y/m/d \\a\\t H:i:s')}}
                         </div>
                         <div class="col-12 col-md-6">
-                            {% if app.request.get('_route') == 'admin_messages_new' %}
-                                <a class="ml-5"href='{{ path('admin_messages_archive', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
-                                    <button type="button" class="btn btn-sm btn-secondary">Archive</button>
-                                </a>
-                            {% endif %}
-                            <a class="ml-5"href='{{ path('admin_messages_delete', {id: message.id, csrfToken: csrf_token(csrfToken)}) }}'>
-                                <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                            </a>
+                            <div class="row">
+                                {% if app.request.get('_route') == 'admin_messages_new' %}
+                                    <form class="col-auto" method="POST" action="{{ path('admin_messages_archive', {id: message.id}) }}">
+                                        <input type="hidden" name="token" value="{{ csrf_token(csrfToken) }}"/>
+                                        <button type="submit" class="btn btn-sm btn-secondary">Archive</button>
+                                    </form>
+                                {% endif %}
+                                <form class="col-auto" method="POST" action="{{ path('admin_messages_delete', {id: message.id}) }}">
+                                    <input type="hidden" name="token" value="{{ csrf_token(csrfToken) }}"/>
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
