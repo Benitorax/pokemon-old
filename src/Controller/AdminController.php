@@ -174,11 +174,12 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/user/inactivated/{id}/delete/{csrfToken}", name="admin_user_inactivated_delete", methods={"GET"})
+     * @Route("/admin/user/inactivated/{id}/delete", name="admin_user_inactivated_delete", methods={"POST"})
      */
-    public function deleteInactivatedUser(User $user, ObjectManager $manager, $csrfToken)
+    public function deleteInactivatedUser(Request $request, User $user, ObjectManager $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $csrfToken = $request->request->get('token');
 
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
@@ -192,11 +193,12 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/user/{id}/delete/{csrfToken}", name="admin_user_delete", methods={"GET"})
+     * @Route("/admin/user/{id}/delete}", name="admin_user_delete", methods={"POST"})
      */
-    public function deleteUser(User $user, $csrfToken, UserHandler $userHandler)
+    public function deleteUser(Request $request, User $user, UserHandler $userHandler)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $csrfToken = $request->request->get('token');
 
         if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
@@ -205,6 +207,6 @@ class AdminController extends AbstractController
         $userHandler->deleteUser($user);
         $this->addFlash('success', 'The account has been deleted with success.');
 
-        return $this->redirectToRoute('admin_users_not_activated');
+        return $this->redirectToRoute('admin_users_activated');
     }  
 }
