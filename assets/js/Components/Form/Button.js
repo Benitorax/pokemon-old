@@ -15,7 +15,7 @@ export function Button(props) {
     }
 
     return (
-        <div>
+        <div class="mb-2">
             <button type="submit" id={ info.name } name={ info.name } className={ info.className }  onClick={ handleClick }>
                 { info.buttonText }
             </button>

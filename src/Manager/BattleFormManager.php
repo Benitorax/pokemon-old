@@ -47,7 +47,7 @@ class BattleFormManager
     }
 
     public function createThrowPokeballButton() {
-        return $this->generateButton('throwPokeball', 'adventure_pokeball_throw', 'Throw pokeball', 'btn btn-outline-success');
+        return $this->generateButton('throwPokeball', 'adventure_pokeball_throw', 'Capture', 'btn btn-outline-success');
     }
 
     public function createLeaveButton() {
