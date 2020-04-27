@@ -32,7 +32,11 @@ Admin users can also delete accounts which have not been activated.</p>
   <code>php bin/console server:start</code><br/>
   <br/>
   If you have Symfony CLI Tool, you can launch the server with:<br>
-  <code>symfony server:start</code>
+  <code>symfony server:start</code><br/>
+  <br/>
+  Finally you have to register this site on Recaptcha's admin panel and fill this lines in .env file:<br>
+  <code>GOOGLE_RECAPTCHA_SITE_KEY=</code><br/>
+  <code>GOOGLE_RECAPTCHA_SECRET=</code>
 </p>
 
 ## Application
