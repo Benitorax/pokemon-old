@@ -9,7 +9,7 @@ use App\Entity\BattleTeam;
 use App\Api\PokeApi\PokeApiManager;
 use App\Entity\Trainer;
 use Symfony\Component\Security\Core\Security;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractBattleManager
 {
@@ -29,7 +29,7 @@ abstract class AbstractBattleManager
 
 
     public function __construct(
-        ObjectManager $manager, 
+        EntityManagerInterface $manager, 
         PokeApiManager $pokeApiManager,
         Security $security
     )

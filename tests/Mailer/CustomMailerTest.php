@@ -7,7 +7,7 @@ use App\Entity\PokemonExchange;
 use App\Entity\User;
 use App\Mailer\CustomMailer;
 use App\Repository\UserRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 
@@ -17,7 +17,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
 
@@ -44,7 +44,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
 
@@ -72,7 +72,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
 
@@ -95,7 +95,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
 
@@ -120,7 +120,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
         $user = (new User())
@@ -143,7 +143,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
         $user = (new User())
@@ -167,7 +167,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
         $user = (new User())
@@ -191,7 +191,7 @@ class CustomMailerTest extends TestCase
     {
         $mailer = $this->createMock(\Swift_Mailer::class);
         $twig = $this->createMock(Environment::class);
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
         $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
         $user = (new User())

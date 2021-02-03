@@ -6,7 +6,7 @@ use App\Handler\AdventureHandler;
 use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +16,7 @@ class AdventureController extends AbstractController
     /**
      * @Route("/adventure/", name="adventure", methods={"GET"})
      */
-    public function index(AdventureHandler $adventureHandler, ObjectManager $manager)
+    public function index(AdventureHandler $adventureHandler, EntityManagerInterface $manager)
     {
         $adventureHandler->clear();
         $csrfToken = \uniqid();

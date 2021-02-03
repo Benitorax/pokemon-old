@@ -10,7 +10,7 @@ use App\Mailer\CustomMailer;
 use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -77,7 +77,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/email_confirm/", name="app_email_confirm", methods={"GET"})
      */
-    public function confirmEmailAddress(Request $request, UserRepository $userRepository, ObjectManager $manager) {
+    public function confirmEmailAddress(Request $request, UserRepository $userRepository, EntityManagerInterface $manager) {
         $token = $request->query->get('token');
         $user = $userRepository->findOneBy(['token' => $token]);
         if($user) {
@@ -127,7 +127,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/password/reset/", name="app_password_reset", methods={"GET", "POST"})
      */
-    public function resetPasswordForgotten(Request $request, UserRepository $userRepository, UserHandler $userHandler, ObjectManager $manager, CustomMailer $mailer) {
+    public function resetPasswordForgotten(Request $request, UserRepository $userRepository, UserHandler $userHandler, EntityManagerInterface $manager, CustomMailer $mailer) {
         $token = $request->query->get('token');
         
         if(!$token) { throw new \ErrorException('This page does\'t exist.'); }

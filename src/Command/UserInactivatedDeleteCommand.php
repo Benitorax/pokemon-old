@@ -4,7 +4,7 @@ namespace App\Command;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +18,7 @@ class UserInactivatedDeleteCommand extends Command
     private $userRepository;
     private $manager;
 
-    public function __construct(UserRepository $userRepository, ObjectManager $manager)
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $manager)
     {
         $this->userRepository = $userRepository;
         $this->manager = $manager;

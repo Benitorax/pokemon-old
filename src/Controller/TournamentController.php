@@ -6,7 +6,7 @@ use App\Handler\TournamentHandler;
 use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,7 +39,7 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/battle", name="tournament_battle", methods={"GET"})
      */
-    public function battle(TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository, ObjectManager $manager)
+    public function battle(TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository, EntityManagerInterface $manager)
     {
         $user = $this->getUser();
         $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($user);

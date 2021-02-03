@@ -10,7 +10,7 @@ use App\Handler\UserHandler;
 use App\Mailer\CustomMailer;
 use App\Manager\ContactMessageManager;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -39,7 +39,7 @@ class AppController extends AbstractController
     /**
      * @Route("/account/password", name="app_modify_password", methods={"GET","POST"})
      */
-    public function modifyPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, ObjectManager $manager)
+    public function modifyPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $manager)
     {
         $passwordForm = $this->createForm(ModifyPasswordType::class);
         $passwordForm->handleRequest($request);

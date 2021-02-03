@@ -5,7 +5,7 @@ use App\Entity\Pokemon;
 use App\Entity\PokemonExchange;
 use App\Mailer\CustomMailer;
 use App\Repository\PokemonExchangeRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class PokemonExchangeManager
@@ -14,7 +14,7 @@ class PokemonExchangeManager
     private $mailer;
     private $pokExRepository;
 
-    public function __construct(ObjectManager $manager, CustomMailer $mailer, PokemonExchangeRepository $pokExRepository)
+    public function __construct(EntityManagerInterface $manager, CustomMailer $mailer, PokemonExchangeRepository $pokExRepository)
     {
         $this->manager = $manager;
         $this->mailer = $mailer;

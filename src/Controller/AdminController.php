@@ -8,7 +8,7 @@ use App\Entity\ContactMessage;
 use App\Repository\UserRepository;
 use App\Repository\ContactMessageRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -66,7 +66,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/{id}/archive", name="admin_messages_archive", methods={"POST"})
      */
-    public function archiveMessage(Request $request, ContactMessage $message, ObjectManager $manager)
+    public function archiveMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');
@@ -85,7 +85,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/{id}/delete", name="admin_messages_delete", methods={"POST"})
      */
-    public function deleteMessage(Request $request, ContactMessage $message, ObjectManager $manager)
+    public function deleteMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');
@@ -147,7 +147,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/expired-1-month/delete", name="admin_users_not_activated_delete", methods={"GET"})
      */
-    public function deleteAllInactivatedUsers(ObjectManager $manager, UserRepository $userRepository)
+    public function deleteAllInactivatedUsers(EntityManagerInterface $manager, UserRepository $userRepository)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -176,7 +176,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/inactivated/{id}/delete", name="admin_user_inactivated_delete", methods={"POST"})
      */
-    public function deleteInactivatedUser(Request $request, User $user, ObjectManager $manager)
+    public function deleteInactivatedUser(Request $request, User $user, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');

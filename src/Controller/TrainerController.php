@@ -9,7 +9,7 @@ use App\Manager\PokemonExchangeManager;
 use App\Repository\PokemonExchangeRepository;
 use App\Repository\UserRepository;
 use App\Repository\PokemonRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

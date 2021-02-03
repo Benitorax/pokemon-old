@@ -1,41 +1,45 @@
 <?php
 namespace App\Doctrine;
 
+use Doctrine\ORM\Mapping\NamingStrategy;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 
-class AppNamingStrategy extends UnderscoreNamingStrategy
+class AppNamingStrategy implements NamingStrategy
 {
-    private $case;
-
-    /**
-     * Underscore naming strategy construct.
-     *
-     * @param integer $case CASE_LOWER | CASE_UPPER
-     */
-    public function __construct($case = CASE_LOWER)
+    public function classToTableName($className)
     {
-        $this->case = $case;
-    }
-    
-    public function classToTableName($className): string
-    {
-        if (strpos($className, '\\') !== false) {
-            $className = 'pokemon_' . substr($className, strrpos($className, '\\') + 1);
-        } else {
-            $className = 'pokemon_' . $className;
-        }
-    
-        return $this->underscore($className);
+        return 'pokemon_' . substr($className, strrpos($className, '\\') + 1);
     }
 
-    private function underscore($string)
+    public function propertyToColumnName($propertyName, $className = null)
     {
-        $string = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $string);
+        return $propertyName;
+    }
 
-        if ($this->case === CASE_UPPER) {
-            return strtoupper($string);
-        }
+    public function embeddedFieldToColumnName($propertyName, $embeddedColumnName, $className = null, $embeddedClassName = null)
+    {
+        return $propertyName.'_'.$embeddedColumnName;
+    }
 
-        return strtolower($string);
+    public function referenceColumnName()
+    {
+        return 'id';
+    }
+
+    public function joinColumnName($propertyName, $className = null)
+    {
+        return $propertyName . '_' . $this->referenceColumnName();
+    }
+
+    public function joinTableName($sourceEntity, $targetEntity, $propertyName = null)
+    {
+        return strtolower($this->classToTableName($sourceEntity) . '_' .
+                $this->classToTableName($targetEntity));
+    }
+
+    public function joinKeyColumnName($entityName, $referencedColumnName = null)
+    {
+        return strtolower($this->classToTableName($entityName) . '_' .
+                ($referencedColumnName ?: $this->referenceColumnName()));
     }
 }

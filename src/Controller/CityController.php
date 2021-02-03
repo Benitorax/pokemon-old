@@ -6,7 +6,7 @@ use App\Form\InfirmaryType;
 use App\Form\ShopType;
 use App\Handler\CityHandler;
 use App\Repository\PokemonRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,7 +47,7 @@ class CityController extends AbstractController
     /**
      * @Route("/city/association-trainer/help", name="city_association_trainer_help", methods={"GET"})
      */
-    public function trainerAssociationHelp(ObjectManager $manager, PokemonRepository $pokemonRepository)
+    public function trainerAssociationHelp(EntityManagerInterface $manager, PokemonRepository $pokemonRepository)
     {
         $user = $this->getUser();
         $pokedollar = $user->getPokedollar();

@@ -8,14 +8,13 @@ use App\Mailer\CustomMailer;
 use App\Entity\PokemonExchange;
 use PHPUnit\Framework\TestCase;
 use App\Manager\PokemonExchangeManager;
-use App\Repository\PokemonExchangeRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PokemonExchangeManagerTest extends TestCase
 {
     public function testCreatePokemonExchange()
     {
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
         
@@ -46,7 +45,7 @@ class PokemonExchangeManagerTest extends TestCase
 
     public function testEditPokemonExchange()
     {
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
         
@@ -81,7 +80,7 @@ class PokemonExchangeManagerTest extends TestCase
 
     public function testAcceptPokemonExchange()
     {
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
         
@@ -112,7 +111,7 @@ class PokemonExchangeManagerTest extends TestCase
 
     public function testDeletePokemonExchange()
     {
-        $manager = $this->createMock(ObjectManager::class);
+        $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
         

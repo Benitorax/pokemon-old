@@ -4,7 +4,7 @@ namespace App\Handler;
 use App\Manager\PokemonExchangeManager;
 use App\Repository\PokemonRepository;
 use App\Security\CustomSession;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
 class CityHandler
@@ -21,7 +21,7 @@ class CityHandler
 
     public function __construct(Security $security, 
                                 PokemonRepository $pokemonRepository, 
-                                ObjectManager $manager, 
+                                EntityManagerInterface $manager, 
                                 CustomSession $session,
                                 PokemonExchangeManager $pokExManager) 
     {
@@ -122,7 +122,7 @@ class CityHandler
         
         $isValidated = $money >= $amount;
         if(!$isValidated) {
-            $errorMessage = sprintf("You don't have enough money to purchase (bill: %d $)", $amount);
+            $errorMessage = sprintf("You need enough money to purchase (bill: %d $)", $amount);
             $this->session->add('danger', $errorMessage);
         } 
 

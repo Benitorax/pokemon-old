@@ -3,7 +3,7 @@ namespace App\Manager;
 
 use App\Entity\ContactMessage;
 use App\Repository\ContactMessageRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
 class ContactMessageManager
@@ -12,7 +12,7 @@ class ContactMessageManager
     private $messageRepository;
     private $user;
 
-    public function __construct(ObjectManager $manager, ContactMessageRepository $messageRepository, Security $security)
+    public function __construct(EntityManagerInterface $manager, ContactMessageRepository $messageRepository, Security $security)
     {
         $this->manager = $manager;
         $this->messageRepository = $messageRepository;

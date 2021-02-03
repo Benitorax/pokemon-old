@@ -56,7 +56,7 @@ class Battle
      */
     private $isEnd = false;
 
-    public function getId(): ?Uuid
+    public function getId(): ?\Ramsey\Uuid\Lazy\LazyUuidFromString
     {
         return $this->id;
     }

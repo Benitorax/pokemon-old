@@ -5,7 +5,7 @@ namespace App\Handler;
 use App\Entity\Pokemon;
 use App\Manager\BattleManager;
 use App\Manager\BattleFormManager;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class AdventureHandler
 {
@@ -13,7 +13,7 @@ class AdventureHandler
     protected $manager;
     protected $battleFormManager;
 
-    public function __construct(BattleManager $battleManager, ObjectManager $manager, BattleFormManager $battleFormManager)
+    public function __construct(BattleManager $battleManager, EntityManagerInterface $manager, BattleFormManager $battleFormManager)
     {
         $this->battleManager = $battleManager;
         $this->manager = $manager;

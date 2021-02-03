@@ -7,7 +7,7 @@ use App\Entity\RegisterUserDTO;
 use App\Api\PokeApi\PokeApiManager;
 use App\Manager\BattleManager;
 use App\Repository\PokemonExchangeRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserHandler
@@ -18,7 +18,7 @@ class UserHandler
     private $pokExRepository;
     private $battleManager;
 
-    public function __construct(ObjectManager $manager, UserPasswordEncoderInterface $encoder, 
+    public function __construct(EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, 
                                 PokeApiManager $pokeApiManager, PokemonExchangeRepository $pokExRepository,
                                 BattleManager $battleManager)
     {

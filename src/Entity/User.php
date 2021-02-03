@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -103,7 +102,7 @@ class User implements UserInterface
         $this->pokemons = new ArrayCollection();
     }
 
-    public function getId(): ?Uuid
+    public function getId(): ?\Ramsey\Uuid\Lazy\LazyUuidFromString
     {
         return $this->id;
     }

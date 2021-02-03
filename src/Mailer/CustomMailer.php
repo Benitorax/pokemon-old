@@ -6,7 +6,7 @@ use \Twig\Environment;
 use App\Entity\ContactMessage;
 use App\Entity\PokemonExchange;
 use App\Repository\UserRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class CustomMailer
@@ -18,7 +18,7 @@ class CustomMailer
     private $websiteUrl;
 
     public function __construct(\Swift_Mailer $mailer, Environment $twig, 
-                                ObjectManager $manager, UserRepository $userRepository,
+                                EntityManagerInterface $manager, UserRepository $userRepository,
                                 string $websiteUrl) {
         $this->mailer = $mailer;
         $this->twig = $twig;
