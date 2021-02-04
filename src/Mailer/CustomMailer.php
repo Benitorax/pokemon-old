@@ -1,12 +1,16 @@
 <?php
 namespace App\Mailer;
 
+use App\Entity\User;
 use Ramsey\Uuid\Uuid;
 use \Twig\Environment;
 use App\Entity\ContactMessage;
 use App\Entity\PokemonExchange;
 use App\Repository\UserRepository;
+use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class CustomMailer
@@ -15,16 +19,14 @@ class CustomMailer
     private $twig;
     private $manager;
     private $userRepository;
-    private $websiteUrl;
 
-    public function __construct(\Swift_Mailer $mailer, Environment $twig, 
-                                EntityManagerInterface $manager, UserRepository $userRepository,
-                                string $websiteUrl) {
+    public function __construct(MailerInterface $mailer, Environment $twig, 
+                                EntityManagerInterface $manager, UserRepository $userRepository
+    ) {
         $this->mailer = $mailer;
         $this->twig = $twig;
         $this->manager = $manager;
         $this->userRepository = $userRepository;
-        $this->websiteUrl = $websiteUrl;
     }
 
     public function sendMailAfterRegistration(UserInterface $user)
@@ -59,41 +61,31 @@ class CustomMailer
         }
     }
 
-    public function prepareMessage(string $template, string $subject, UserInterface $user)
+    public function prepareMessage(string $template, string $subject, User $user)
     {
-        return (new \Swift_Message($subject))
-            ->setFrom('no-reply@'. strval($this->websiteUrl))
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->twig->render(
-                    // templates/hello/email.txt.twig
-                    'email/'.$template.'.html.twig',[
-                        'username' => $user->getUsername(),
-                        'token' =>  $user->getToken() ? $user->getToken()->toString() : null
-                    ]
-                    ),
-                    'text/html'
-            )
-        ;
+        return (new TemplatedEmail())
+            ->from(new Address('contact@pokemon.com', 'Pokemon'))
+            ->to($user->getEmail())
+            ->subject($subject)
+            ->htmlTemplate('email/'.$template.'.html.twig')
+            ->context([
+                'username' => $user->getUsername(),
+                'token' =>  $user->getToken() ? $user->getToken()->toString() : null
+            ]);
     }
 
-    public function prepareMessageToAdmin(string $template, string $subject,  UserInterface $user, ContactMessage $message)
+    public function prepareMessageToAdmin(string $template, string $subject,  User $user, ContactMessage $message)
     {
-        return (new \Swift_Message($subject))
-            ->setFrom('contact@pokemon.com')
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->twig->render(
-                    // templates/hello/email.txt.twig
-                    'email/'.$template.'.html.twig',[
-                        'username' => $user->getUsername(),
-                        'token' =>  $user->getToken() ? $user->getToken()->toString() : null,
-                        'message' => $message
-                    ]
-                    ),
-                    'text/html'
-            )
-        ;
+        return (new TemplatedEmail())
+            ->from(new Address('contact@pokemon.com', 'Pokemon'))
+            ->to($user->getEmail())
+            ->subject($subject)
+            ->htmlTemplate('email/'.$template.'.html.twig')
+            ->context([
+                'username' => $user->getUsername(),
+                'token' =>  $user->getToken() ? $user->getToken()->toString() : null,
+                'message' => $message
+            ]);
     }
 
     public function setToken($user)
@@ -127,22 +119,17 @@ class CustomMailer
         $this->mailer->send($message);
     }
 
-    public function prepareMessageForPokemonExchange(string $template, string $subject, UserInterface $user, PokemonExchange $exchange)
+    public function prepareMessageForPokemonExchange(string $template, string $subject, User $user, PokemonExchange $exchange)
     {
-        return (new \Swift_Message($subject))
-            ->setFrom('contact@pokemon.com')
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->twig->render(
-                    // templates/hello/email.txt.twig
-                    'email/pokemon_exchange/'.$template.'.html.twig',[
-                        'username' => $user->getUsername(),
-                        'ex' => $exchange,
-                        'title' => $subject
-                    ]
-                    ),
-                    'text/html'
-            )
-        ;
+        return (new TemplatedEmail())
+            ->from(new Address('contact@pokemon.com', 'Pokemon'))
+            ->to($user->getEmail())
+            ->subject($subject)
+            ->htmlTemplate('email/pokemon_exchange/'.$template.'.html.twig')
+            ->context([
+                'username' => $user->getUsername(),
+                'ex' => $exchange,
+                'title' => $subject
+            ]);
     }
 }

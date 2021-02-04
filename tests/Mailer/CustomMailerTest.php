@@ -9,13 +9,14 @@ use App\Mailer\CustomMailer;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Mailer\MailerInterface;
 use Twig\Environment;
 
 class CustomMailerTest extends TestCase
 {
     public function testSendMailAfterRegistration()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -42,7 +43,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailToResetPassword()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -70,7 +71,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailToConfirmResetPassword()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -93,7 +94,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailToAdminForNewMessage()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -118,7 +119,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailForNewPokemonExchange()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -141,7 +142,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailForEditPokemonExchange()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -165,7 +166,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailForRefusePokemonExchange()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
@@ -189,7 +190,7 @@ class CustomMailerTest extends TestCase
 
     public function testSendMailForAcceptPokemonExchange()
     {
-        $mailer = $this->createMock(\Swift_Mailer::class);
+        $mailer = $this->createMock(MailerInterface::class);
         $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);

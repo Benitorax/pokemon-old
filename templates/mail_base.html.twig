@@ -1,3 +1,4 @@
+{% apply inky_to_html|inline_css(source('@css/foundation-emails.css'), source('@css/email.css')) %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -8,21 +9,25 @@
         {% endblock %}
     </head>
     <body>
-        <div class="container my-xl-5">
-            {% block body %}{% endblock %}
-            <br/>
-            <p>Thanks,</p>
-            <h3 class="text-success font-weight-bold"><strong>PokeCompany</strong></h3>
-            <br/><br/>
-            <div style="color: gey">
-                <small><i>This email is sent to you automatically, please do not use the "reply to sender" function.</i></small>
-            </div>
-
-        </div>
-        {% block javascripts %}
-            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        {% endblock %}
+        <container>
+            <row class="border-logo">
+                <center>
+                    <img class="hero" src="{{ email.image('@images/pokemon-mail-logo.png') }}" alt="Logo">
+                </center>
+            </row>
+            <row>
+                {% block body %}{% endblock %}
+            </row>
+            <row>
+                <br/>
+                <p>Thanks,</p>
+                <h3 class="text-green"><strong>PokeCompany</strong></h3>
+                <br/><br/>
+                <div style="color: gey">
+                    <small><i>This email is sent to you automatically, please do not use the "reply to sender" function.</i></small>
+                </div>
+            </row>
+        </container>
     </body>
 </html>
+{% endapply %}

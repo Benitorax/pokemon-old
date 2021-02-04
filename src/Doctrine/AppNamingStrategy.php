@@ -2,23 +2,28 @@
 namespace App\Doctrine;
 
 use Doctrine\ORM\Mapping\NamingStrategy;
-use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 
 class AppNamingStrategy implements NamingStrategy
 {
     public function classToTableName($className)
     {
-        return 'pokemon_' . substr($className, strrpos($className, '\\') + 1);
+        if (strpos($className, '\\') !== false) {
+            $className = 'pokemon_' . substr($className, strrpos($className, '\\') + 1);
+        } else {
+            $className = 'pokemon_' . $className;
+        }
+    
+        return $this->underscore($className);
     }
 
     public function propertyToColumnName($propertyName, $className = null)
     {
-        return $propertyName;
+        return $this->underscore($propertyName);
     }
 
     public function embeddedFieldToColumnName($propertyName, $embeddedColumnName, $className = null, $embeddedClassName = null)
     {
-        return $propertyName.'_'.$embeddedColumnName;
+        return $this->underscore($propertyName).'_'.$embeddedColumnName;
     }
 
     public function referenceColumnName()
@@ -28,7 +33,7 @@ class AppNamingStrategy implements NamingStrategy
 
     public function joinColumnName($propertyName, $className = null)
     {
-        return $propertyName . '_' . $this->referenceColumnName();
+        return $this->underscore($propertyName). '_' . $this->referenceColumnName();
     }
 
     public function joinTableName($sourceEntity, $targetEntity, $propertyName = null)
@@ -41,5 +46,13 @@ class AppNamingStrategy implements NamingStrategy
     {
         return strtolower($this->classToTableName($entityName) . '_' .
                 ($referencedColumnName ?: $this->referenceColumnName()));
+    }
+
+    // TODO 
+    private function underscore($string)
+    {
+        $string = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $string);
+
+        return strtolower($string);
     }
 }
