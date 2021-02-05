@@ -2,8 +2,13 @@
     {% if championCount > 0 %}
         <div>
             {% for i in range(1, championCount) %}
+                {% if i < 9 %} {% set number = i %}
+                {% else %}
+                    {% set number = i % 8 %}
+                    {% if number == 0 %}{% set number = 8 %}{% endif %}
+                {% endif %}
                 <div style="float: left; transform: scale(0.3); max-width: 50px; max-height: 50px;">  
-                    <img src="/images/badge{{ i % 8 }}.png"/>
+                    <img src="/images/badge{{ number }}.png"/>
                 </div>
             {% endfor %}
         </div>

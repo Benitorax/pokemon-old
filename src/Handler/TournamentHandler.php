@@ -241,6 +241,7 @@ class TournamentHandler extends AdventureHandler
 
     public function handleEndBattle()
     {
+        /** @var User */
         $user = $this->battleManager->getUser();
         $centerImageUrlArray = [];
         if($this->battleManager->getPlayerTeam()->getIsVictorious()) {
@@ -249,7 +250,7 @@ class TournamentHandler extends AdventureHandler
             if(is_int($user->getConsecutiveWin() / 3)) {
                 $user->increasePokedollar(700);
                 $user->increaseChampionCount();
-                $badgeNumber = $user->getChampionCount() % 8;
+                $badgeNumber = $this->getOrdinalNumberFromBadgesCount($user->getChampionCount());
                 $centerImageUrlArray[] = '/images/badge'.$badgeNumber.'.png';
                 $messages[] = 'Congrats! You won the final and earn 700$!';
             } else {
@@ -283,5 +284,17 @@ class TournamentHandler extends AdventureHandler
             'form' => [$this->battleFormManager->createRestorePokemonsButton()],
             'centerImageUrl' => $centerImageUrlArray
         ];  
-    } 
+    }
+    
+    /** The game has 8 different badges, so the 9th badge corresponds to the 1st, and the 10th corresponds to the 2nd...  */
+    public function getOrdinalNumberFromBadgesCount(int $number) {
+        if($number < 9) {
+            return $number;
+        }
+
+        $number = $number % 8;
+        if($number === 0) $number = 8;
+        
+        return $number;
+    }
 }
