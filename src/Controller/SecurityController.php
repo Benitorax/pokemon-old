@@ -49,6 +49,10 @@ class SecurityController extends AbstractController
      */
     public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer, UserRepository $userRepository, \ReCaptcha\ReCaptcha $reCaptcha)
     {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_index');
+        }
+
         $registerUserDTO = new RegisterUserDTO($userRepository);
         $form = $this->createForm(RegisterType::class, $registerUserDTO);
         $form->handleRequest($request);

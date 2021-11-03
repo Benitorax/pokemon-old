@@ -1,5 +1,6 @@
 security:
-    encoders:
+    enable_authenticator_manager: true
+    password_hashers:
         App\Entity\User:
             algorithm: auto
 
@@ -9,16 +10,15 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: username
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
-            guard:
-                authenticators:
-                    - App\Security\LoginFormAuthenticator
+            lazy: true
+            provider: app_user_provider
+            custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -41,13 +41,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/$, roles: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER], requires_channel: https }
-        - { path: ^/privacy-policy, roles: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER], requires_channel: https }
-        - { path: ^/email_confirm/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        - { path: ^/password/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        - { path: ^/index, roles: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER], requires_channel: https }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/$, roles: [PUBLIC_ACCESS, ROLE_USER], requires_channel: https }
+        - { path: ^/privacy-policy, roles: [PUBLIC_ACCESS, ROLE_USER], requires_channel: https }
+        - { path: ^/email_confirm/, roles: PUBLIC_ACCESS, requires_channel: https }
+        - { path: ^/password/, roles: PUBLIC_ACCESS, requires_channel: https }
+        - { path: ^/index, roles: [PUBLIC_ACCESS, ROLE_USER], requires_channel: https }
+        - { path: ^/login, roles: PUBLIC_ACCESS, requires_channel: https }
+        - { path: ^/register, roles: PUBLIC_ACCESS, requires_channel: https }
         - { path: ^/, roles: ROLE_USER, requires_channel: https }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

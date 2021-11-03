@@ -3,27 +3,27 @@
 namespace App\Handler;
 
 use App\Entity\User;
+use App\Manager\BattleManager;
 use App\Entity\RegisterUserDTO;
 use App\Api\PokeApi\PokeApiManager;
-use App\Manager\BattleManager;
-use App\Repository\PokemonExchangeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Repository\PokemonExchangeRepository;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserHandler
 {
     private $manager;
-    private $encoder;
+    private $passwordHasher;
     private $pokeApiManager;
     private $pokExRepository;
     private $battleManager;
 
-    public function __construct(EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, 
+    public function __construct(EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher, 
                                 PokeApiManager $pokeApiManager, PokemonExchangeRepository $pokExRepository,
                                 BattleManager $battleManager)
     {
         $this->manager = $manager;
-        $this->encoder = $encoder;
+        $this->passwordHasher = $passwordHasher;
         $this->pokeApiManager = $pokeApiManager;
         $this->pokExRepository = $pokExRepository;
         $this->battleManager = $battleManager;
@@ -46,7 +46,7 @@ class UserHandler
 
         $user = new User();
         $user->setUsername($data->getUsername())
-            ->setPassword($this->encoder->encodePassword(
+            ->setPassword($this->passwordHasher->hashPassword(
                 $user,
                 $data->getPassword()
             ))
@@ -59,7 +59,7 @@ class UserHandler
     }
 
     public function modifyPassword($user, $newPassword) {
-        $user->setPassword($this->encoder->encodePassword(
+        $user->setPassword($this->passwordHasher->hashPassword(
             $user,
             $newPassword
         ));

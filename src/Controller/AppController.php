@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use App\Form\DeleteAccountType;
-use App\Form\ModifyPasswordType;
-use App\Entity\ModifyPasswordDTO;
-use App\Form\ContactMessageType;
 use App\Handler\UserHandler;
 use App\Mailer\CustomMailer;
+use App\Form\DeleteAccountType;
+use App\Form\ContactMessageType;
+use App\Form\ModifyPasswordType;
+use App\Entity\ModifyPasswordDTO;
 use App\Manager\ContactMessageManager;
-use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AppController extends AbstractController
@@ -39,7 +39,7 @@ class AppController extends AbstractController
     /**
      * @Route("/account/password", name="app_modify_password", methods={"GET","POST"})
      */
-    public function modifyPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $manager)
+    public function modifyPassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $manager)
     {
         $passwordForm = $this->createForm(ModifyPasswordType::class);
         $passwordForm->handleRequest($request);
@@ -49,11 +49,11 @@ class AppController extends AbstractController
             $data = $passwordForm->getData();
             $user = $this->getUser();
 
-            if($passwordEncoder->isPasswordValid($user, $data->getPassword())) {
+            if($passwordHasher->isPasswordValid($user, $data->getPassword())) {
                 if($data->getPassword() === $data->getNewPassword()) {
                     $this->addFlash('danger', 'Your new password has to be different from your actual password.');
                 } else {
-                    $encodedPassword = $passwordEncoder->encodePassword($user, $data->getNewPassword());
+                    $encodedPassword = $passwordHasher->hashPassword($user, $data->getNewPassword());
                     $user->setPassword($encodedPassword);
                     $manager->flush();
                     $this->addFlash('success', 'Your password has been modified.');
