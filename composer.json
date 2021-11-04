@@ -24,6 +24,7 @@
         "symfony/google-mailer": "5.3.*",
         "symfony/mailer": "5.3.*",
         "symfony/monolog-bundle": "^3.5",
+        "symfony/runtime": "5.3.*",
         "symfony/security-bundle": "5.3.*",
         "symfony/serializer": "5.3.*",
         "symfony/twig-bundle": "5.3.*",

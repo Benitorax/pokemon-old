@@ -1,9 +1,11 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-    debug: '%kernel.debug%'
-    strict_variables: '%kernel.debug%'
-    exception_controller: null
+    # debug: '%kernel.debug%'
+    # strict_variables: '%kernel.debug%'
     paths:
         # point this wherever your css files live
         '%kernel.project_dir%/public/css': css
         '%kernel.project_dir%/public/images': images
+when@test:
+    twig:
+        strict_variables: true
