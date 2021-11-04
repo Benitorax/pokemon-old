@@ -36,18 +36,18 @@
         "version": "v0.5.3"
     },
     "doctrine/doctrine-bundle": {
-        "version": "2.0",
+        "version": "2.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "2.0",
-            "ref": "368794356c1fb634e58b38ad2addb36933f2e73e"
+            "ref": "c3d09597f211294e75b221b1d97a9c22f74957e1"
         },
         "files": [
             "./config/packages/doctrine.yaml",
             "./config/packages/prod/doctrine.yaml",
-            "./src/Entity/.gitignore",
-            "./src/Repository/.gitignore"
+            "./src/Repository/.gitignore",
+            "./src/Entity/.gitignore"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -97,12 +97,12 @@
         "version": "v1.0.3"
     },
     "google/recaptcha": {
-        "version": "1.1",
+        "version": "1.2",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "1.1",
-            "ref": "d087df3e087f50da3955f2def05079380da5894b"
+            "ref": "e5a4aa21f2e98d7440ae9aab6b56e307f99dd084"
         },
         "files": [
             "./config/packages/google_recaptcha.yaml"
@@ -208,16 +208,15 @@
         "version": "v4.4.19"
     },
     "symfony/console": {
-        "version": "4.4",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "4.4",
-            "ref": "ea8c0eda34fda57e7d5cd8cbd889e2a387e3472c"
+            "version": "5.3",
+            "ref": "da0c8be8157600ad34f10ff0c9cc91232522e047"
         },
         "files": [
-            "./bin/console",
-            "./config/bootstrap.php"
+            "./bin/console"
         ]
     },
     "symfony/css-selector": {
@@ -314,12 +313,12 @@
         "version": "v4.4.19"
     },
     "symfony/mailer": {
-        "version": "4.3",
+        "version": "5.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "4.3",
-            "ref": "15658c2a0176cda2e7dba66276a2030b52bd81b2"
+            "ref": "bbfc7e27257d3a3f12a6fb0a42540a42d9623a37"
         },
         "files": [
             "./config/packages/mailer.yaml"
@@ -341,18 +340,18 @@
         "version": "v4.4.19"
     },
     "symfony/monolog-bundle": {
-        "version": "3.3",
+        "version": "3.7",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "3.3",
-            "ref": "d7249f7d560f6736115eee1851d02a65826f0a56"
+            "version": "3.7",
+            "ref": "a7bace7dbc5a7ed5608dbe2165e0774c87175fe6"
         },
         "files": [
-            "./config/packages/dev/monolog.yaml",
-            "./config/packages/prod/deprecations.yaml",
+            "./config/packages/test/monolog.yaml",
             "./config/packages/prod/monolog.yaml",
-            "./config/packages/test/monolog.yaml"
+            "./config/packages/prod/deprecations.yaml",
+            "./config/packages/dev/monolog.yaml"
         ]
     },
     "symfony/options-resolver": {
@@ -362,7 +361,13 @@
         "version": "v1.0.6"
     },
     "symfony/panther": {
-        "version": "v0.5.2"
+        "version": "1.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "877d853a05c6713665a2f4b954734592680abff6"
+        }
     },
     "symfony/password-hasher": {
         "version": "v5.3.8"
