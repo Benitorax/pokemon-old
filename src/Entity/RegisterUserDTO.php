@@ -128,8 +128,14 @@ class RegisterUserDTO implements UserInterface
         return $this;
     }
 
-    public function getRoles() {
+    public function getRoles(): void
+    {
 
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 
     /**

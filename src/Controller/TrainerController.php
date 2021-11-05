@@ -5,14 +5,14 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\PokemonExchange;
 use App\Form\PokemonExchangeType;
-use App\Manager\PokemonExchangeManager;
-use App\Repository\PokemonExchangeRepository;
 use App\Repository\UserRepository;
 use App\Repository\PokemonRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Manager\PokemonExchangeManager;
+use App\Repository\PokemonExchangeRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TrainerController extends AbstractController
 {
@@ -46,6 +46,7 @@ class TrainerController extends AbstractController
     public function showTrainers(UserRepository $userRepository)
     {
         $users = $userRepository->findAllActivated();
+
         return $this->render('trainer/show_trainers.html.twig', [
             'users' => $users,
         ]);
@@ -74,8 +75,9 @@ class TrainerController extends AbstractController
         $pokemonExchangeForm->handleRequest($request);
 
         if($pokemonExchangeForm->isSubmitted() && $pokemonExchangeForm->isValid()) {
-            $pokEx = $pokExManager->createPokemonExchange($pokemonExchangeForm->getData());
+            $pokExManager->createPokemonExchange($pokemonExchangeForm->getData());
             $this->addFlash('success', 'Your request of pokemons exchange has been submit.');
+
             return $this->redirectToRoute('pokemon_exchange_list');
         }
 
@@ -91,7 +93,6 @@ class TrainerController extends AbstractController
     public function listPokemonExchange(PokemonExchangeRepository $pokExRepository) 
     {
         $pokemonExchanges = $pokExRepository->findAllByTrainer($this->getUser());
-
         $csrfToken = $this->getUser()->getId()->toString();
 
         return $this->render('trainer/pokemon_exchange_list.html.twig', [
@@ -126,8 +127,9 @@ class TrainerController extends AbstractController
 
         $pokemonExchangeForm->handleRequest($request);
         if($pokemonExchangeForm->isSubmitted() && $pokemonExchangeForm->isValid()) {
-            $pokEx = $pokExManager->editPokemonExchange($pokemonExchange, $this->getUser());
+            $pokExManager->editPokemonExchange($pokemonExchange, $this->getUser());
             $this->addFlash('success', 'The modification of pokemons exchange has been submit.');
+            
             return $this->redirectToRoute('pokemon_exchange_list');
         }
 
@@ -147,6 +149,7 @@ class TrainerController extends AbstractController
 
         $pokExManager->acceptPokemonExchange($pokemonExchange, $this->getUser());
         $this->addFlash('success', 'You have accepted the exchange.');
+
         return $this->redirectToRoute('pokemon_exchange_list');
     }
 
@@ -164,6 +167,7 @@ class TrainerController extends AbstractController
         } elseif($pokemonExchange->getTrainer2() === $this->getUser()) {
             $this->addFlash('success', 'You have refused the exchange.');
         }
+
         $pokExManager->deletePokemonExchange($pokemonExchange, $this->getUser());
 
         return $this->redirectToRoute('pokemon_exchange_list');

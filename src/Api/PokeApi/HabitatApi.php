@@ -5,13 +5,14 @@ namespace App\Api\PokeApi;
 use App\Entity\Habitat;
 use App\Api\PokeApi\PokeApi;
 use App\Repository\HabitatRepository;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HabitatApi extends PokeApi
 {
-    private $habitatRepository;
+    private HabitatRepository $habitatRepository;
     
-    public function __construct(HabitatRepository $habitatRepository) {
-        parent::__construct();
+    public function __construct(HttpClientInterface $client, HabitatRepository $habitatRepository) {
+        parent::__construct($client);
         $this->habitatRepository = $habitatRepository;
     }
 

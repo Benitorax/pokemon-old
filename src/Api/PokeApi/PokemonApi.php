@@ -6,13 +6,14 @@ use App\Entity\Habitat;
 use App\Entity\Pokemon;
 use App\Api\PokeApi\PokeApi;
 use App\Api\PokeApi\HabitatApi;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PokemonApi extends PokeApi
 {
-    private $habitatApi;
+    private HabitatApi $habitatApi;
 
-    public function __construct(HabitatApi $habitatApi) {
-        parent::__construct();
+    public function __construct(HttpClientInterface $client, HabitatApi $habitatApi) {
+        parent::__construct($client);
         $this->habitatApi = $habitatApi;
     }
     

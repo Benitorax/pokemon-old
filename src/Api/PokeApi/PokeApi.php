@@ -2,21 +2,21 @@
 
 namespace App\Api\PokeApi;
 
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PokeApi
 {
-    private $client;
+    private HttpClientInterface $client;
 
-    public function __construct()
+    public function __construct(HttpClientInterface $client)
     {
-        $this->client = new Client();
+        $this->client = $client;
     }
 
     public function fetch($endpoint)
     {
         $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/'.$endpoint);
-        $data = $response->getBody()->getContents();
+        $data = $response->getContent();
         
         return $data = json_decode($data, true);
     }
