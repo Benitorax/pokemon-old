@@ -1,9 +1,15 @@
 import React from 'react';
 
-const csrfToken = document.getElementById('csrfToken').textContent;
+// const csrfElement = document.getElementById('csrfToken');
+// if (csrfElement) {
+//     const csrfToken = csrfElement.textContent;
+// } else {
+//     const csrfToken = '';
+// }
 
 export function Button(props) {
     let info = props.info;
+    const csrfToken = document.getElementById('csrfToken').textContent;
 
     function handleClick(e) {
         e.preventDefault();
@@ -15,7 +21,7 @@ export function Button(props) {
     }
 
     return (
-        <div class="mb-2">
+        <div className="mb-2">
             <button type="submit" id={ info.name } name={ info.name } className={ info.className }  onClick={ handleClick }>
                 { info.buttonText }
             </button>

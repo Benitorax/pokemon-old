@@ -51,13 +51,15 @@ Encore
         .enableVersioning(Encore.isProduction())
 
     .configureBabel((config) => {
-        if (Encore.isProduction()) {
-            config.plugins.push(
-                'transform-react-remove-prop-types'
-            );
-        }
+        // legacy code, it can be removed if it's not needed anymore
+        // if (Encore.isProduction()) {
+        //     config.plugins.push(
+        //         'transform-react-remove-prop-types'
+        //     );
+        // }
 
-        config.plugins.push('transform-object-rest-spread');
+        // config.plugins.push('transform-object-rest-spread');
+        config.plugins.push('@babel/plugin-proposal-object-rest-spread');
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })
 

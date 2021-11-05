@@ -1,4 +1,7 @@
 import { Controller } from 'stimulus';
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import { AdventureBattle } from '../js/Components/AdventureBattle';
 
 /*
  * This is an example Stimulus controller!
@@ -11,6 +14,10 @@ import { Controller } from 'stimulus';
  */
 export default class extends Controller {
     connect() {
-        this.element.textContent = 'Hello Stimulus! Edit me in assets/controllers/hello_controller.js';
+        // ReactDOM.render(
+        //     <AdventureBattle/>,
+        //     this.element
+        // );
+        // console.log('test')
     }
 }

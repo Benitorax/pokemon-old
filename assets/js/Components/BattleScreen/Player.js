@@ -6,10 +6,11 @@ export function Player(props) {
     let player = props.player;
     players.push(player);
 
-    let transitions = useTransition(players, null, {
+    let transitions = useTransition(players, {
         from: { opacity: 0, transform: 'translateX(-50px)' },
         enter: { opacity: 1, transform: 'translateX(0)' },
         leave: { opacity: 0, display: 'none' },
+        keys: item => item.key
     });   
 
     const baseClassName = 'mr-4';
@@ -36,8 +37,8 @@ export function Player(props) {
 
     return (
         <>
-            {transitions.map(({ item, props, key }) =>
-                <animated.div style={props} key={key} className={className}><img src={ item.spriteBackUrl }/></animated.div>
+            {transitions(({}, item) =>
+                <animated.div style={props} key={item.name} className={className}><img src={ item.spriteBackUrl }/></animated.div>
             )}
             <div className="text-left"><strong>{ player.name }</strong></div>
             <div className="progress">

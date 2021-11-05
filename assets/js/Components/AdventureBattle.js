@@ -36,8 +36,8 @@ export function AdventureBattle() {
 
 (function() {
     const battleNode = document.getElementById('r-battle');
-    render( <
-        AdventureBattle / > ,
+    render(
+        <AdventureBattle/> ,
         battleNode
     );
 })();
