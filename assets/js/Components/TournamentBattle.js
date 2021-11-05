@@ -46,11 +46,3 @@ export function TournamentBattle() {
     onExecutedCommand = { checkExecutedCommand }
     />;
 }
-
-(function() {
-    const battleNode = document.getElementById('r-battle');
-    render( <
-        TournamentBattle / > ,
-        battleNode
-    );
-})();

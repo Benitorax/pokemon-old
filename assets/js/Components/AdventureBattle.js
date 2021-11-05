@@ -33,11 +33,3 @@ export function AdventureBattle() {
     onExecutedCommand = { checkExecutedCommand }
     />;
 }
-
-(function() {
-    const battleNode = document.getElementById('r-battle');
-    render(
-        <AdventureBattle/> ,
-        battleNode
-    );
-})();
