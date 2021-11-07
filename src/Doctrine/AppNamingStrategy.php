@@ -36,6 +36,10 @@ class AppNamingStrategy implements NamingStrategy
         return 'id';
     }
 
+    /**
+     * @param string $propertyName
+     * @param string $className
+     */
     public function joinColumnName($propertyName, $className = null)
     {
         return $this->underscore($propertyName) . '_' . $this->referenceColumnName();
@@ -53,10 +57,14 @@ class AppNamingStrategy implements NamingStrategy
                 ($referencedColumnName ?: $this->referenceColumnName()));
     }
 
-    // TODO
+    /**
+     * @param string $string
+     * @return string
+     */
     private function underscore($string)
     {
         $string = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $string);
-        return strtolower($string);
+
+        return strtolower((string) $string);
     }
 }

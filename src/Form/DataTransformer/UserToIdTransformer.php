@@ -2,13 +2,15 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class UserToIdTransformer implements DataTransformerInterface
 {
-    private $userRepository;
+    private UserRepository $userRepository;
+
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
@@ -20,7 +22,7 @@ class UserToIdTransformer implements DataTransformerInterface
             return '';
         }
 
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             return '';
         }
 
@@ -29,7 +31,7 @@ class UserToIdTransformer implements DataTransformerInterface
 
     public function reverseTransform($id)
     {
-        if (!$id) {
+        if (null === $id) {
             return;
         }
 

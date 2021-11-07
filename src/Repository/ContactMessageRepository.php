@@ -48,6 +48,9 @@ class ContactMessageRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @return ContactMessage[] Returns an array of ContactMessage objects
+     */
     public function findNewMessages()
     {
         return $this->createQueryBuilder('c')
@@ -59,6 +62,9 @@ class ContactMessageRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return ContactMessage[] Returns an array of ContactMessage objects
+     */
     public function findReadMessages()
     {
         return $this->createQueryBuilder('c')

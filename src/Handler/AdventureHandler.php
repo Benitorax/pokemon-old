@@ -9,9 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AdventureHandler
 {
-    protected $battleManager;
-    protected $manager;
-    protected $battleFormManager;
+    protected BattleManager $battleManager;
+    protected EntityManagerInterface $manager;
+    protected BattleFormManager $battleFormManager;
 
     public function __construct(
         BattleManager $battleManager,
@@ -23,12 +23,12 @@ class AdventureHandler
         $this->battleFormManager = $battleFormManager;
     }
 
-    public function clear()
+    public function clear(): void
     {
-        return $this->battleManager->clearLastBattle();
+        $this->battleManager->clearLastBattle();
     }
 
-    public function handleTravel()
+    public function handleTravel(): array
     {
         $this->clear();
         $battle = $this->battleManager->createAdventureBattle();
@@ -47,7 +47,7 @@ class AdventureHandler
         ];
     }
 
-    public function handleSelectPokemon(Pokemon $pokemon)
+    public function handleSelectPokemon(Pokemon $pokemon): array
     {
         $this->battleManager->addFighterSelected($pokemon);
         $battle = $this->battleManager->getCurrentBattle();
@@ -65,7 +65,7 @@ class AdventureHandler
         ];
     }
 
-    public function handleAttack()
+    public function handleAttack(): array
     {
         $turn = 'player';
         if ($this->battleManager->getOpponentFighter()->getIsSleep()) {
@@ -76,17 +76,14 @@ class AdventureHandler
         } else {
             $damage = $this->battleManager->manageAttackOpponent();
             $form = [$this->battleFormManager->createNextButton()];
-            if ($this->battleManager->getOpponentFighter()->getIsSleep()) {
-                $messages[] = '<strong>' . $this->battleManager->getPlayerFighter()->getName()
-                    . '</strong> attacks <strong>' . $this->battleManager->getOpponentFighter()->getName()
-                    . '</strong> with ' . $damage . ' points of damage!';
+            $messages[] = '<strong>' . $this->battleManager->getPlayerFighter()->getName()
+                . '</strong> attacks <strong>' . $this->battleManager->getOpponentFighter()->getName()
+                . '</strong> with ' . $damage . ' points of damage!';
+
+            if ($this->battleManager->getOpponentFighter()->getIsSleep()) { /** @phpstan-ignore-line */
                 $messages[] = '<strong>' . $this->battleManager->getOpponentFighter()->getName()
                     . '</strong> has fainted.';
             } else {
-                $messages[] = '<strong>' . $this->battleManager->getPlayerFighter()->getName()
-                    . '</strong> attacks <strong>'
-                    . $this->battleManager->getOpponentFighter()->getName() . '</strong>!';
-                $messages[] = 'It inflicts ' . $damage . ' points of damage.';
                 $turn = 'opponent';
             }
         }
@@ -105,7 +102,7 @@ class AdventureHandler
         ];
     }
 
-    public function handleThrowPokeball()
+    public function handleThrowPokeball(): array
     {
         $result = $this->battleManager->manageThrowPokeball();
         $battle = $this->battleManager->getCurrentBattle();
@@ -149,7 +146,7 @@ class AdventureHandler
         return [
             'messages' => [
                'messages' => $messages,
-               'textColor' => isset($textColor) ? $textColor : 'text-white'
+               'textColor' => $textColor
             ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
@@ -159,7 +156,7 @@ class AdventureHandler
         ];
     }
 
-    public function handleLeave()
+    public function handleLeave(): array
     {
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = null;
@@ -183,7 +180,7 @@ class AdventureHandler
         return [
             'messages' => [
                 'messages' => $messages,
-                'textColor' => isset($textColor) ? $textColor : 'text-white'
+                'textColor' => $textColor
             ],
             'opponent' => $opponentTeam,
             'player' => $playerTeam,
@@ -191,9 +188,8 @@ class AdventureHandler
         ];
     }
 
-    public function handleHeal()
+    public function handleHeal(): array
     {
-        /** @var BattleManager $this->battleManager */
         $result = $this->battleManager->manageHealPlayerFighter();
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = $battle->getOpponentTeam();
@@ -221,7 +217,7 @@ class AdventureHandler
         ];
     }
 
-    public function handleNext()
+    public function handleNext(): array
     {
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = $battle->getOpponentTeam();

@@ -2,19 +2,22 @@
 
 namespace App\Handler;
 
-use App\Manager\PokemonExchangeManager;
-use App\Repository\PokemonRepository;
+use App\Entity\User;
+use App\Entity\Pokemon;
 use App\Security\CustomSession;
+use App\Repository\PokemonRepository;
+use App\Manager\PokemonExchangeManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Security;
 
 class CityHandler
 {
-    private $user;
-    private $pokemonRepository;
-    private $manager;
-    private $session;
-    private $pokExManager;
+    private User $user;
+    private PokemonRepository $pokemonRepository;
+    private EntityManagerInterface $manager;
+    private CustomSession $session;
+    private PokemonExchangeManager $pokExManager;
     public const POKEBALL_PRICE = 10;
     public const HEALTH_POTION_PRICE = 15;
     public const RESTORE_POKEMON_PRICE = 30;
@@ -26,14 +29,16 @@ class CityHandler
         CustomSession $session,
         PokemonExchangeManager $pokExManager
     ) {
-        $this->user = $security->getUser();
+        /** @var User */
+        $user = $security->getUser();
+        $this->user = $user;
         $this->pokemonRepository = $pokemonRepository;
         $this->manager = $manager;
         $this->session = $session;
         $this->pokExManager = $pokExManager;
     }
 
-    public function handleShopForm($form)
+    public function handleShopForm(FormInterface $form): void
     {
         $form = $form->getData();
         $isValidated = $this->validatePurchaseMoney($form);
@@ -61,9 +66,9 @@ class CityHandler
         $this->manager->flush();
     }
 
-    public function handleInfirmaryForm($form)
+    public function handleInfirmaryForm(FormInterface $form): void
     {
-        $request = $form->getClickedButton()->getName();
+        $request = $form->getClickedButton()->getName(); /** @phpstan-ignore-line */
 
         if ($request === 'restorePokemon') {
             $this->restorePokemonIfAllowed();
@@ -76,7 +81,7 @@ class CityHandler
         }
     }
 
-    public function restorePokemonIfAllowed()
+    public function restorePokemonIfAllowed(): void
     {
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
 
@@ -95,7 +100,7 @@ class CityHandler
         $this->session->add('success', 'Your pokemons are now in good shape.');
     }
 
-    private function restorePokemon($pokemons)
+    private function restorePokemon(array $pokemons): void
     {
         foreach ($pokemons as $pokemon) {
             $pokemon->setHealthPoint(100);
@@ -103,9 +108,10 @@ class CityHandler
         }
     }
 
-    public function donatePokemon($pokemonId)
+    public function donatePokemon(int $pokemonId): void
     {
         $pokemons = $this->pokemonRepository->findPokemonsByTrainer($this->user);
+        /** @var Pokemon */
         $donatedPokemon = $this->pokemonRepository->find($pokemonId);
 
         if (count($pokemons) <= 1) {
@@ -119,7 +125,7 @@ class CityHandler
         }
     }
 
-    public function validatePurchaseMoney($data)
+    public function validatePurchaseMoney(array $data): bool
     {
         $money = $this->user->getPokedollar();
         $amount = $data['pokeball'] * self::POKEBALL_PRICE +

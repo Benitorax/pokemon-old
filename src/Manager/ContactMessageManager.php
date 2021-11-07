@@ -2,28 +2,27 @@
 
 namespace App\Manager;
 
+use App\Entity\User;
 use App\Entity\ContactMessage;
-use App\Repository\ContactMessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
 class ContactMessageManager
 {
-    private $manager;
-    private $messageRepository;
-    private $user;
+    private EntityManagerInterface $manager;
+    private User $user;
 
     public function __construct(
         EntityManagerInterface $manager,
-        ContactMessageRepository $messageRepository,
         Security $security
     ) {
+        /** @var User */
+        $user = $security->getUser();
+        $this->user = $user;
         $this->manager = $manager;
-        $this->messageRepository = $messageRepository;
-        $this->user = $security->getUser();
     }
 
-    public function createContactMessage(ContactMessage $message)
+    public function createContactMessage(ContactMessage $message): ContactMessage
     {
         $message->setAuthorName($this->user->getUsername())
                 ->setAuthorEmail($this->user->getEmail())

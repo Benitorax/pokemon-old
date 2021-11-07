@@ -12,11 +12,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserHandler
 {
-    private $manager;
-    private $passwordHasher;
-    private $pokeApiManager;
-    private $pokExRepository;
-    private $battleManager;
+    private EntityManagerInterface $manager;
+    private UserPasswordHasherInterface $passwordHasher;
+    private PokeApiManager $pokeApiManager;
+    private PokemonExchangeRepository $pokExRepository;
+    private BattleManager $battleManager;
 
     public function __construct(
         EntityManagerInterface $manager,
@@ -32,7 +32,7 @@ class UserHandler
         $this->battleManager = $battleManager;
     }
 
-    public function handle($data)
+    public function handle(RegisterUserDTO $data): User
     {
         $user = $this->createUserWithFirstPokemon($data);
 
@@ -42,9 +42,8 @@ class UserHandler
         return $user;
     }
 
-    public function createUserWithFirstPokemon($data)
+    public function createUserWithFirstPokemon(RegisterUserDTO $data): User
     {
-        /** @var RegisterUserDTO $data */
         $pokemon = $this->pokeApiManager->getNewPokemon($data->getPokemonApiId());
 
         $user = new User();
@@ -61,7 +60,7 @@ class UserHandler
         return $user;
     }
 
-    public function modifyPassword($user, $newPassword)
+    public function modifyPassword(User $user, string $newPassword): void
     {
         $user->setPassword($this->passwordHasher->hashPassword(
             $user,
@@ -70,7 +69,7 @@ class UserHandler
         $this->manager->flush();
     }
 
-    public function deleteUser($user)
+    public function deleteUser(User $user): void
     {
         $this->battleManager->clearLastBattleOfTrainer($user);
         $pokExs = $this->pokExRepository->findAllByTrainer($user);

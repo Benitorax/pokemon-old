@@ -4,29 +4,29 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\Pokemon;
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\PokemonExchange;
-use App\Form\DataTransformer\UserToIdTransformer;
 use App\Repository\PokemonRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use App\Form\DataTransformer\UserToIdTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class PokemonExchangeType extends AbstractType
 {
-    private $pokemonRepository;
-    private $userToIdTransformer;
+    private PokemonRepository $pokemonRepository;
+    private UserToIdTransformer $userToIdTransformer;
 
     public function __construct(PokemonRepository $pokemonRepository, UserToIdTransformer $userToIdTransformer)
     {
         $this->pokemonRepository = $pokemonRepository;
         $this->userToIdTransformer = $userToIdTransformer;
     }
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('trainer1Show', EntityType::class, [
@@ -77,7 +77,7 @@ class PokemonExchangeType extends AbstractType
             //->get('trainer2')->addModelTransformer($this->userToIdTransformer);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => PokemonExchange::class,
@@ -86,7 +86,7 @@ class PokemonExchangeType extends AbstractType
         ]);
     }
 
-    public function getQueryBuilderForPokemonField(UserInterface $user)
+    public function getQueryBuilderForPokemonField(UserInterface $user): QueryBuilder
     {
         return $this->pokemonRepository->findPokemonsByTrainerQueryBuilder($user);
     }

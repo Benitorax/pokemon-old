@@ -15,8 +15,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class UserInactivatedDeleteCommand extends Command
 {
     protected static $defaultName = 'app:user-inactivated-delete';
-    private $userRepository;
-    private $manager;
+    private UserRepository $userRepository;
+    private EntityManagerInterface $manager;
 
     public function __construct(UserRepository $userRepository, EntityManagerInterface $manager)
     {
@@ -26,7 +26,7 @@ class UserInactivatedDeleteCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Delete inactivated users.')
@@ -114,7 +114,7 @@ class UserInactivatedDeleteCommand extends Command
         return 0;
     }
 
-    private function removeAndFlush($user)
+    private function removeAndFlush(User $user): void
     {
         $this->manager->remove($user);
         $this->manager->flush();

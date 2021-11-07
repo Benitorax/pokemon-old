@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Handler\UserHandler;
 use App\Mailer\CustomMailer;
 use App\Form\DeleteAccountType;
@@ -11,6 +12,7 @@ use App\Entity\ModifyPasswordDTO;
 use App\Manager\ContactMessageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -21,16 +23,15 @@ class AppController extends AbstractController
     /**
      * @Route("/", name="app_index", methods={"GET"})
      */
-    public function index()
+    public function index(): Response
     {
-        return $this->render('app/index.html.twig', [
-        ]);
+        return $this->render('app/index.html.twig', []);
     }
 
     /**
      * @Route("/account", name="app_account", methods={"GET"})
      */
-    public function showAccount()
+    public function showAccount(): Response
     {
         return $this->render('app/show_account.html.twig', [
         ]);
@@ -43,13 +44,14 @@ class AppController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $manager
-    ) {
+    ): Response {
         $passwordForm = $this->createForm(ModifyPasswordType::class);
         $passwordForm->handleRequest($request);
 
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             /** @var ModifyPasswordDTO $data */
             $data = $passwordForm->getData();
+            /** @var User */
             $user = $this->getUser();
 
             if ($passwordHasher->isPasswordValid($user, $data->getPassword())) {
@@ -78,7 +80,7 @@ class AppController extends AbstractController
         UserHandler $userHandler,
         TokenStorageInterface $tokenStorage,
         \ReCaptcha\ReCaptcha $reCaptcha
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $deleteAccountForm = $this->createForm(DeleteAccountType::class);
@@ -89,7 +91,9 @@ class AppController extends AbstractController
             $response = $reCaptcha->verify($gRecaptchaResponse);
 
             if ($response->getScore() > 0.5) {
-                $userHandler->deleteUser($this->getUser());
+                /** @var User */
+                $user = $this->getUser();
+                $userHandler->deleteUser($user);
                 $tokenStorage->setToken(null);
                 $request->getSession()->invalidate();
                 $this->addFlash('success', 'Your account has been deleted.');
@@ -113,7 +117,7 @@ class AppController extends AbstractController
         ContactMessageManager $messageManager,
         CustomMailer $mailer,
         \ReCaptcha\ReCaptcha $reCaptcha
-    ) {
+    ): Response {
         $contactForm = $this->createForm(ContactMessageType::class);
         $contactForm->handleRequest($request);
 
@@ -140,7 +144,7 @@ class AppController extends AbstractController
     /**
      * @Route("/privacy-policy", name="app_privacy_policy", methods={"GET"})
      */
-    public function showPrivacyPolicy($companyName, $websiteUrl)
+    public function showPrivacyPolicy(string $companyName, string $websiteUrl): Response
     {
         return $this->render('app/privacy_policy.html.twig', [
             'companyName' => $companyName,

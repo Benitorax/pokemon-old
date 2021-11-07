@@ -16,24 +16,24 @@ class Habitat
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="array")
      */
-    private $pokemonsId = [];
+    private array $pokemonsId = [];
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $apiId;
+    private int $apiId;
 
     public function __construct()
     {
         $this->uuid = Uuid::v4();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -57,7 +57,7 @@ class Habitat
         return $this;
     }
 
-    public function getApiId(): ?int
+    public function getApiId(): int
     {
         return $this->apiId;
     }

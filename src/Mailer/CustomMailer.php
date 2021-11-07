@@ -11,13 +11,12 @@ use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class CustomMailer
 {
-    private $mailer;
-    private $manager;
-    private $userRepository;
+    private MailerInterface $mailer;
+    private EntityManagerInterface $manager;
+    private UserRepository $userRepository;
 
     public function __construct(
         MailerInterface $mailer,
@@ -29,27 +28,27 @@ class CustomMailer
         $this->userRepository = $userRepository;
     }
 
-    public function sendMailAfterRegistration(UserInterface $user)
+    public function sendMailAfterRegistration(User $user): void
     {
         $this->setToken($user);
         $message = $this->prepareMessage('after_registration', 'Thank you for registration', $user);
         $this->mailer->send($message);
     }
 
-    public function sendMailToResetPassword(UserInterface $user)
+    public function sendMailToResetPassword(User $user): void
     {
         $this->setToken($user);
         $message = $this->prepareMessage('password_reset', 'Reset your password', $user);
         $this->mailer->send($message);
     }
 
-    public function sendMailToConfirmResetPassword(UserInterface $user)
+    public function sendMailToConfirmResetPassword(User $user): void
     {
         $message = $this->prepareMessage('confirm_password_reset', 'Your password has been modified', $user);
         $this->mailer->send($message);
     }
 
-    public function sendMailToAdminForNewMessage(ContactMessage $cMessage)
+    public function sendMailToAdminForNewMessage(ContactMessage $cMessage): void
     {
         $users = $this->userRepository->findAllAdmin();
 
@@ -68,7 +67,7 @@ class CustomMailer
         }
     }
 
-    public function prepareMessage(string $template, string $subject, User $user)
+    public function prepareMessage(string $template, string $subject, User $user): TemplatedEmail
     {
         return (new TemplatedEmail())
             ->from(new Address('contact@pokemon.com', 'Pokemon'))
@@ -86,7 +85,7 @@ class CustomMailer
         string $subject,
         User $user,
         ContactMessage $message
-    ) {
+    ): TemplatedEmail {
         return (new TemplatedEmail())
             ->from(new Address('contact@pokemon.com', 'Pokemon'))
             ->to($user->getEmail())
@@ -94,19 +93,19 @@ class CustomMailer
             ->htmlTemplate('email/' . $template . '.html.twig')
             ->context([
                 'username' => $user->getUsername(),
-                'token' =>  $user->getToken() ? $user->getToken()->_toString() : null,
+                'token' =>  $user->getToken() ? $user->getToken()->__toString() : null,
                 'message' => $message
             ]);
     }
 
-    public function setToken($user)
+    public function setToken(User $user): void
     {
         $user->setToken(Uuid::v4());
         $user->setTokenCreatedAt(new \DateTime('now'));
         $this->manager->flush();
     }
 
-    public function sendMailForNewPokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    public function sendMailForNewPokemonExchange(User $user, PokemonExchange $exchange): void
     {
         $message = $this->prepareMessageForPokemonExchange(
             'pokemon_exchange_new',
@@ -117,7 +116,7 @@ class CustomMailer
         $this->mailer->send($message);
     }
 
-    public function sendMailForEditPokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    public function sendMailForEditPokemonExchange(User $user, PokemonExchange $exchange): void
     {
         $message = $this->prepareMessageForPokemonExchange(
             'pokemon_exchange_edit',
@@ -128,7 +127,7 @@ class CustomMailer
         $this->mailer->send($message);
     }
 
-    public function sendMailForRefusePokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    public function sendMailForRefusePokemonExchange(User $user, PokemonExchange $exchange): void
     {
         $message = $this->prepareMessageForPokemonExchange(
             'pokemon_exchange_refuse',
@@ -139,7 +138,7 @@ class CustomMailer
         $this->mailer->send($message);
     }
 
-    public function sendMailForAcceptPokemonExchange(UserInterface $user, PokemonExchange $exchange)
+    public function sendMailForAcceptPokemonExchange(User $user, PokemonExchange $exchange): void
     {
         $message = $this->prepareMessageForPokemonExchange(
             'pokemon_exchange_accept',
@@ -155,7 +154,7 @@ class CustomMailer
         string $subject,
         User $user,
         PokemonExchange $exchange
-    ) {
+    ): TemplatedEmail {
         return (new TemplatedEmail())
             ->from(new Address('contact@pokemon.com', 'Pokemon'))
             ->to($user->getEmail())

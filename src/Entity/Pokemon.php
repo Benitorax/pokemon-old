@@ -19,78 +19,78 @@ class Pokemon
      * @ORM\Column(type="uuid", unique=true)
      * @Groups("selection")
      */
-    private $uuid;
+    private Uuid $uuid;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"battle", "selection"})
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups("selection")
      */
-    private $level;
+    private int $level;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $apiId;
+    private int $apiId;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $evolutionChainId;
+    private int $evolutionChainId;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("battle")
      */
-    private $spriteFrontUrl;
+    private string $spriteFrontUrl;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("battle")
      */
-    private $spriteBackUrl;
+    private string $spriteBackUrl;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $captureRate;
+    private int $captureRate;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups("battle")
      */
-    private $healthPoint = 100;
+    private int $healthPoint = 100;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $SleeptAt;
+    private ?\DateTimeInterface $sleeptAt;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isSleep = false;
+    private bool $isSleep = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="pokemons")
      */
-    private $trainer;
+    private ?User $trainer;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Habitat", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $habitat;
+    private Habitat $habitat;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\BattleTeam", inversedBy="pokemons")
      */
-    private $battleTeam;
+    private ?BattleTeam $battleTeam;
 
     public function __construct()
     {
@@ -102,7 +102,7 @@ class Pokemon
         return $this->uuid;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -198,12 +198,12 @@ class Pokemon
 
     public function getSleeptAt(): ?\DateTimeInterface
     {
-        return $this->SleeptAt;
+        return $this->sleeptAt;
     }
 
-    public function setSleeptAt(?\DateTimeInterface $SleeptAt): self
+    public function setSleeptAt(?\DateTimeInterface $sleeptAt): self
     {
-        $this->SleeptAt = $SleeptAt;
+        $this->sleeptAt = $sleeptAt;
 
         return $this;
     }
@@ -225,19 +225,19 @@ class Pokemon
         return $this->trainer;
     }
 
-    public function setTrainer(?UserInterface $trainer): self
+    public function setTrainer(?User $trainer): self
     {
         $this->trainer = $trainer;
 
         return $this;
     }
 
-    public function getHabitat(): ?Habitat
+    public function getHabitat(): Habitat
     {
         return $this->habitat;
     }
 
-    public function setHabitat(?Habitat $habitat): self
+    public function setHabitat(Habitat $habitat): self
     {
         $this->habitat = $habitat;
 

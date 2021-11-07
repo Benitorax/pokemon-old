@@ -24,7 +24,7 @@ class ContactMessage
      *      maxMessage = "Your object name cannot be longer than {{ limit }} characters"
      * )
      */
-    private $object;
+    private string $object;
 
     /**
      * @ORM\Column(type="text")
@@ -36,27 +36,27 @@ class ContactMessage
      *      maxMessage = "Your content name cannot be longer than {{ limit }} characters"
      * )
      */
-    private $content;
+    private string $content;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isRead = false;
+    private bool $isRead = false;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $authorName;
+    private string $authorName;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $authorEmail;
+    private string $authorEmail;
 
     public function __construct()
     {

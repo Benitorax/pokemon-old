@@ -3,15 +3,13 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CustomWebTestCase extends WebTestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $entityManager;
+    protected EntityManager $entityManager;
     protected function setUp()
     {
         parent::setUp();
@@ -21,7 +19,7 @@ class CustomWebTestCase extends WebTestCase
             ->getManager();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $purger = new ORMPurger($this->entityManager);
@@ -63,6 +61,7 @@ class CustomWebTestCase extends WebTestCase
             'email' => $email,
             'password' => $password,
         ]);
+
         return $client;
     }
 }

@@ -47,6 +47,10 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @return User[]
+     */
     public function findAllInactivated()
     {
         return $this->createQueryBuilder('u')
@@ -55,7 +59,7 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findOneIsActivatedByEmail($email)
+    public function findOneIsActivatedByEmail(string $email): ?User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :email')
@@ -65,6 +69,9 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @return User[]
+     */
     public function findAllActivated()
     {
         return $this->createQueryBuilder('u')
@@ -76,6 +83,9 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return User[]
+     */
     public function findAllAdmin()
     {
         return $this->createQueryBuilder('u')
@@ -86,7 +96,7 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllEmailAndUsername()
+    public function findAllEmailAndUsername(): array
     {
         $resultArray =  $this->createQueryBuilder('u')
             ->select('u.email, u.username')

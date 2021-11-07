@@ -48,7 +48,7 @@ class BattleTeamRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findOneByTrainer(UserInterface $user)
+    public function findOneByTrainer(UserInterface $user): ?BattleTeam
     {
         return $this->createQueryBuilder('b')
         ->andWhere('b.trainer = :user')

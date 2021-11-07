@@ -18,7 +18,7 @@ class PokemonApi extends PokeApi
         $this->habitatApi = $habitatApi;
     }
 
-    public function getNewPokemon($id)
+    public function getNewPokemon(int $id): Pokemon
     {
         $pokemon = new Pokemon();
 
@@ -32,7 +32,7 @@ class PokemonApi extends PokeApi
             ->setEvolutionChainId($this->getEvolutionChainId($id));
     }
 
-    public function hydrateEvolvedPokemon(Pokemon $pokemon, int $id, int $level)
+    public function hydrateEvolvedPokemon(Pokemon $pokemon, int $id, int $level): Pokemon
     {
         $pokemon->setApiId($id)
             ->setName($this->getName($id))
@@ -44,7 +44,7 @@ class PokemonApi extends PokeApi
         return $pokemon;
     }
 
-    public function checkNextEvolution(Pokemon $pokemon)
+    public function checkNextEvolution(Pokemon $pokemon): ?Pokemon
     {
         $data = $this->fetch('evolution-chain/' . $pokemon->getEvolutionChainId());
         $data = $data['chain'];
@@ -57,10 +57,18 @@ class PokemonApi extends PokeApi
             return $pokemon = $this->hydrateEvolvedPokemon($pokemon, $data['idNext'], $data['level']);
         }
 
-        return;
+        return null;
     }
 
-    public function lookForEvolution(Pokemon $pokemon, $data)
+    /**
+     * @return false|array
+     *
+     * Array format: [
+     *      'level' => 22
+     *      'idNext' => 54
+     * ]
+     */
+    public function lookForEvolution(Pokemon $pokemon, array $data)
     {
         if ($data['evolves_to']) {
             $data = $data['evolves_to'][rand(
@@ -92,35 +100,35 @@ class PokemonApi extends PokeApi
         return false;
     }
 
-    public function getName($id)
+    public function getName(int $id): string
     {
         $data = $this->fetch('pokemon/' . $id);
 
         return $data['name'];
     }
 
-    public function getCaptureRate($id)
+    public function getCaptureRate(int $id): int
     {
         $data = $this->fetch('pokemon-species/' . $id);
 
         return $data['capture_rate'];
     }
 
-    public function getSpriteFrontUrl($id)
+    public function getSpriteFrontUrl(int $id): string
     {
         $data = $this->fetch('pokemon-form/' . $id);
 
         return $data['sprites']['front_default'];
     }
 
-    public function getSpriteBackUrl($id)
+    public function getSpriteBackUrl(int $id): string
     {
         $data = $this->fetch('pokemon-form/' . $id);
 
         return $data['sprites']['back_default'];
     }
 
-    public function getEvolutionChainId($id)
+    public function getEvolutionChainId(int $id): int
     {
         $data = $this->fetch('pokemon-species/' . $id);
         $url = $data['evolution_chain']['url'];
@@ -129,9 +137,9 @@ class PokemonApi extends PokeApi
         return $id;
     }
 
-    public function getRandomPokemonFromHabitat(Habitat $habitat)
+    public function getRandomPokemonFromHabitat(Habitat $habitat): Pokemon
     {
-        $listId = $this->getPokemonsIdFromHabitat($habitat->getApiId());
+        $listId = $this->getPokemonIdsFromHabitat($habitat->getApiId());
 
         $id = $listId[array_rand($listId)];
         // To make Mew and Mewtwo less common, we have to get it twice
@@ -139,6 +147,6 @@ class PokemonApi extends PokeApi
             $id = $listId[array_rand($listId)];
         }
 
-        return $this->getNewPokemon($id, $habitat);
+        return $this->getNewPokemon($id);
     }
 }

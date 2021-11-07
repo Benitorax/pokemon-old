@@ -2,19 +2,20 @@
 
 namespace App\Manager;
 
+use App\Entity\User;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Routing\RouterInterface;
 
 class BattleFormManager
 {
     public const ADVENTURE_MODE = 'adventure';
     public const TOURNAMENT_MODE = 'tournament';
-    private $router;
-    private $pokemonRepository;
-    private $pokemonSerializer;
-    private $user;
+    private RouterInterface $router;
+    private PokemonRepository $pokemonRepository;
+    private PokemonSerializer $pokemonSerializer;
+    private User $user;
 
     public function __construct(
         RouterInterface $router,
@@ -22,12 +23,17 @@ class BattleFormManager
         PokemonSerializer $pokemonSerializer,
         Security $security
     ) {
+        /** @var User */
+        $user = $security->getUser();
+        $this->user = $user;
         $this->router = $router;
         $this->pokemonRepository = $pokemonRepository;
         $this->pokemonSerializer = $pokemonSerializer;
-        $this->user = $security->getUser();
     }
 
+    /**
+     * @return string[]
+     */
     public function generateButton(
         string $name,
         string $route,
@@ -45,37 +51,37 @@ class BattleFormManager
         ];
     }
 
-    public function createTravelButton(string $mode = self::ADVENTURE_MODE)
+    public function createTravelButton(string $mode = self::ADVENTURE_MODE): array
     {
         return $this->generateButton('travel', $mode . '_travel', 'Travel around', 'btn btn-outline-secondary');
     }
 
-    public function createAttackButton(string $mode = self::ADVENTURE_MODE)
+    public function createAttackButton(string $mode = self::ADVENTURE_MODE): array
     {
         return $this->generateButton('attack', $mode . '_attack', 'Attack', 'btn btn-outline-primary');
     }
 
-    public function createHealButton(string $mode = self::ADVENTURE_MODE)
+    public function createHealButton(string $mode = self::ADVENTURE_MODE): array
     {
         return $this->generateButton('heal', $mode . '_heal', 'Heal', 'btn btn-outline-secondary');
     }
 
-    public function createThrowPokeballButton()
+    public function createThrowPokeballButton(): array
     {
         return $this->generateButton('throwPokeball', 'adventure_pokeball_throw', 'Capture', 'btn btn-outline-success');
     }
 
-    public function createLeaveButton()
+    public function createLeaveButton(): array
     {
         return $this->generateButton('leave', 'adventure_leave', 'Leave', 'btn btn-outline-danger');
     }
 
-    public function createNextButton(string $mode = self::ADVENTURE_MODE)
+    public function createNextButton(string $mode = self::ADVENTURE_MODE): array
     {
         return $this->generateButton('next', $mode . '_next', 'Next', 'btn btn-outline-secondary');
     }
 
-    public function createAdventureButtons()
+    public function createAdventureButtons(): array
     {
         return [
             $this->createAttackButton(),
@@ -84,7 +90,8 @@ class BattleFormManager
             $this->createLeaveButton()
         ];
     }
-    public function createSelectPokemonField()
+
+    public function createSelectPokemonField(): array
     {
         $pokemons = $this->pokemonRepository->findReadyPokemonsByTrainer($this->user);
         $pokemonList = [];
@@ -102,13 +109,13 @@ class BattleFormManager
         ];
     }
 
-    private function createSelectButton(string $mode = self::ADVENTURE_MODE)
+    private function createSelectButton(string $mode = self::ADVENTURE_MODE): array
     {
         return $this->generateButton('selectPokemon', $mode . '_pokemon_select', 'SELECT', 'btn btn-outline-success');
     }
 
 
-    public function createSelectPokemonFieldForTournament()
+    public function createSelectPokemonFieldForTournament(): array
     {
         $pokemons = $this->pokemonRepository->findAllFullHPByTrainer($this->user);
         $pokemonList = [];
@@ -134,7 +141,7 @@ class BattleFormManager
         ];
     }
 
-    public function createTournamentButtons()
+    public function createTournamentButtons(): array
     {
         return [
             $this->createAttackButton(self::TOURNAMENT_MODE),
@@ -142,7 +149,7 @@ class BattleFormManager
         ];
     }
 
-    public function createRestorePokemonsButton()
+    public function createRestorePokemonsButton(): array
     {
         return $this->generateButton(
             'restorePokemons',

@@ -10,6 +10,7 @@ use App\Repository\PokemonRepository;
 use App\Manager\PokemonExchangeManager;
 use App\Repository\PokemonExchangeRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -19,7 +20,7 @@ class TrainerController extends AbstractController
     /**
      * @Route("/trainer/", name="trainer_profile", methods={"GET"})
      */
-    public function profile()
+    public function profile(): Response
     {
         $user = $this->getUser();
 
@@ -31,10 +32,11 @@ class TrainerController extends AbstractController
     /**
      * @Route("/trainer/pokemons", name="trainer_pokemons", methods={"GET"})
      */
-    public function listPokemons(PokemonRepository $rep)
+    public function listPokemons(PokemonRepository $repository): Response
     {
+        /** @var User */
         $user = $this->getUser();
-        $pokemons = $rep->findPokemonsByTrainer($user);
+        $pokemons = $repository->findPokemonsByTrainer($user);
 
         return $this->render('trainer/pokemons.html.twig', [
             'pokemons' => $pokemons,
@@ -44,7 +46,7 @@ class TrainerController extends AbstractController
     /**
      * @Route("/trainer/list", name="trainer_list", methods={"GET"})
      */
-    public function showTrainers(UserRepository $userRepository)
+    public function showTrainers(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAllActivated();
 
@@ -56,7 +58,7 @@ class TrainerController extends AbstractController
     /**
      * @Route("/trainer/{id}", name="trainer_show", methods={"GET"})
      */
-    public function showTrainer(User $user)
+    public function showTrainer(User $user): Response
     {
         return $this->render('trainer/show_trainer.html.twig', [
             'user' => $user,
@@ -70,9 +72,11 @@ class TrainerController extends AbstractController
         User $trader,
         Request $request,
         PokemonExchangeManager $pokExManager
-    ) {
+    ): Response {
+        /** @var User */
+        $user = $this->getUser();
         $pokemonExchangeForm = $this->createForm(PokemonExchangeType::class, null, [
-            'user' => $this->getUser(),
+            'user' => $user,
             'trader' => $trader
         ]);
 
@@ -94,10 +98,12 @@ class TrainerController extends AbstractController
     /**
      * @Route("/exchange", name="pokemon_exchange_list", methods={"GET"})
      */
-    public function listPokemonExchange(PokemonExchangeRepository $pokExRepository)
+    public function listPokemonExchange(PokemonExchangeRepository $pokExRepository): Response
     {
-        $pokemonExchanges = $pokExRepository->findAllByTrainer($this->getUser());
-        $csrfToken = $this->getUser()->getId()->_toString();
+        /** @var User */
+        $user = $this->getUser();
+        $pokemonExchanges = $pokExRepository->findAllByTrainer($user);
+        $csrfToken = $user->getUuid()->__toString();
 
         return $this->render('trainer/pokemon_exchange_list.html.twig', [
             'pokemonExchanges' => $pokemonExchanges,
@@ -108,8 +114,9 @@ class TrainerController extends AbstractController
     /**
      * @Route("/exchange/count", name="pokemon_exchange_count", methods={"GET"})
      */
-    public function getPokemonsExchangeCount(PokemonExchangeRepository $pokExRepository)
+    public function getPokemonsExchangeCount(PokemonExchangeRepository $pokExRepository): Response
     {
+        /** @var User */
         $user = $this->getUser();
         $pokemonExchanges = $pokExRepository->findAllByTrainer($user);
         $exchangeCount = count($pokemonExchanges);
@@ -126,7 +133,7 @@ class TrainerController extends AbstractController
         PokemonExchange $pokemonExchange,
         Request $request,
         PokemonExchangeManager $pokExManager
-    ) {
+    ): Response {
         $pokemonExchangeForm = $this->createForm(PokemonExchangeType::class, $pokemonExchange, [
             'user' => $pokemonExchange->getTrainer1(),
             'trader' => $pokemonExchange->getTrainer2()
@@ -134,7 +141,9 @@ class TrainerController extends AbstractController
 
         $pokemonExchangeForm->handleRequest($request);
         if ($pokemonExchangeForm->isSubmitted() && $pokemonExchangeForm->isValid()) {
-            $pokExManager->editPokemonExchange($pokemonExchange, $this->getUser());
+            /** @var User */
+            $user = $this->getUser();
+            $pokExManager->editPokemonExchange($pokemonExchange, $user);
             $this->addFlash('success', 'The modification of pokemons exchange has been submit.');
 
             return $this->redirectToRoute('pokemon_exchange_list');
@@ -151,13 +160,16 @@ class TrainerController extends AbstractController
     public function acceptPokemonExchange(
         PokemonExchange $pokemonExchange,
         PokemonExchangeManager $pokExManager,
-        $csrfToken
-    ) {
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
+        string $csrfToken
+    ): Response {
+        /** @var User */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getUuid()->__toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
-        $pokExManager->acceptPokemonExchange($pokemonExchange, $this->getUser());
+        $pokExManager->acceptPokemonExchange($pokemonExchange, $user);
         $this->addFlash('success', 'You have accepted the exchange.');
 
         return $this->redirectToRoute('pokemon_exchange_list');
@@ -169,19 +181,22 @@ class TrainerController extends AbstractController
     public function refusePokemonExchange(
         PokemonExchange $pokemonExchange,
         PokemonExchangeManager $pokExManager,
-        $csrfToken
-    ) {
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
+        string $csrfToken
+    ): Response {
+        /** @var User */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getUuid()->__toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
-        if ($pokemonExchange->getTrainer1() === $this->getUser()) {
+        if ($pokemonExchange->getTrainer1() === $user) {
             $this->addFlash('success', 'You have withdrawn the exchange.');
-        } elseif ($pokemonExchange->getTrainer2() === $this->getUser()) {
+        } elseif ($pokemonExchange->getTrainer2() === $user) {
             $this->addFlash('success', 'You have refused the exchange.');
         }
 
-        $pokExManager->deletePokemonExchange($pokemonExchange, $this->getUser());
+        $pokExManager->deletePokemonExchange($pokemonExchange, $user);
 
         return $this->redirectToRoute('pokemon_exchange_list');
     }

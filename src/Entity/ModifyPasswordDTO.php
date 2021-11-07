@@ -13,26 +13,30 @@ class ModifyPasswordDTO
      *     message = "Wrong value for your current password"
      * )
      */
-    private $password;
-    private $newPassword;
+    private string $password;
+    private string $newPassword;
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword($password)
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
     }
 
-    public function getNewPassword()
+    public function getNewPassword(): string
     {
         return $this->newPassword;
     }
 
-    public function setNewPassword($newPassword)
+    public function setNewPassword(string $newPassword): self
     {
         $this->newPassword = $newPassword;
+
+        return $this;
     }
 }

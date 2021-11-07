@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Entity\Pokemon;
 use App\Handler\AdventureHandler;
 use App\Manager\BattleFormManager;
 use App\Repository\PokemonRepository;
 use App\Serializer\PokemonSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -16,11 +19,14 @@ class AdventureController extends AbstractController
     /**
      * @Route("/adventure/", name="adventure", methods={"GET"})
      */
-    public function index(AdventureHandler $adventureHandler, EntityManagerInterface $manager)
+    public function index(AdventureHandler $adventureHandler, EntityManagerInterface $manager): Response
     {
         $adventureHandler->clear();
         $csrfToken = \uniqid();
-        $this->getUser()->setCurrentGameId($csrfToken);
+
+        /** @var User */
+        $user = $this->getUser();
+        $user->setCurrentGameId($csrfToken);
         $manager->flush();
 
         return $this->render('adventure/index.html.twig', [
@@ -31,9 +37,12 @@ class AdventureController extends AbstractController
     /**
      * @Route("/adventure/start", name="adventure_start", methods={"GET"})
      */
-    public function start(PokemonRepository $pokemonRepository, BattleFormManager $formManager)
+    public function start(PokemonRepository $pokemonRepository, BattleFormManager $formManager): Response
     {
-        if (count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
+        /** @var User */
+        $user = $this->getUser();
+
+        if (count($pokemonRepository->findReadyPokemonsByTrainer($user)) === 0) {
             $messages = [
                 'messages' => [
                     'You need at least one pokemon to go on adventure',
@@ -44,6 +53,7 @@ class AdventureController extends AbstractController
 
             return $this->json(['messages' => $messages]);
         }
+
         $travelButton = $formManager->createTravelButton();
         $messages = [
             'messages' => ['Let\'s go for adventure!', 'You might run into some awesome pokemons!'],
@@ -70,8 +80,11 @@ class AdventureController extends AbstractController
         PokemonRepository $pokemonRepository,
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser
-    ) {
-        if (count($pokemonRepository->findReadyPokemonsByTrainer($this->getUser())) === 0) {
+    ): Response {
+        /** @var User */
+        $user = $this->getUser();
+
+        if (count($pokemonRepository->findReadyPokemonsByTrainer($user)) === 0) {
             $messages = [
                 'messages' => [
                     'You need at least one pokemon to go on adventure.',
@@ -88,10 +101,13 @@ class AdventureController extends AbstractController
 
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -117,16 +133,20 @@ class AdventureController extends AbstractController
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser,
         PokemonRepository $pokemonRepository
-    ) {
+    ): Response {
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
+        /** @var Pokemon */
         $pokemon = $pokemonRepository->findOneBy(['uuid' => $data->pokemonUuid]);
         $data = $adventureHandler->handleSelectPokemon($pokemon);
 
@@ -137,8 +157,8 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             "turn" => 'player',
-            'pokeballCount' => $this->getUser()->getPokeball(),
-            'healingPotionCount' => $this->getUser()->getHealingPotion()
+            'pokeballCount' => $user->getPokeball(),
+            'healingPotionCount' => $user->getHealingPotion()
         ]);
     }
 
@@ -149,13 +169,16 @@ class AdventureController extends AbstractController
         Request $request,
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser
-    ) {
+    ): Response {
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -168,8 +191,8 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             "turn" => $data['turn'],
-            'pokeballCount' => $this->getUser()->getPokeball(),
-            'healingPotionCount' => $this->getUser()->getHealingPotion()
+            'pokeballCount' => $user->getPokeball(),
+            'healingPotionCount' => $user->getHealingPotion()
         ]);
     }
 
@@ -180,13 +203,16 @@ class AdventureController extends AbstractController
         Request $request,
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser
-    ) {
+    ): Response {
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -199,8 +225,8 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             "turn" => 'player',
-            'pokeballCount' => $this->getUser()->getPokeball(),
-            'healingPotionCount' => $this->getUser()->getHealingPotion()
+            'pokeballCount' => $user->getPokeball(),
+            'healingPotionCount' => $user->getHealingPotion()
         ]);
     }
 
@@ -211,13 +237,16 @@ class AdventureController extends AbstractController
         Request $request,
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser
-    ) {
+    ): Response {
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -232,8 +261,8 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => $data['centerImageUrl'],
             "turn" => $data['turn'],
-            'pokeballCount' => $this->getUser()->getPokeball(),
-            'healingPotionCount' => $this->getUser()->getHealingPotion()
+            'pokeballCount' => $user->getPokeball(),
+            'healingPotionCount' => $user->getHealingPotion()
         ]);
     }
 
@@ -244,12 +273,16 @@ class AdventureController extends AbstractController
         Request $request,
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser
-    ) {
+    ): Response {
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -264,8 +297,8 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             "turn" => 'player',
-            'pokeballCount' => $this->getUser()->getPokeball(),
-            'healingPotionCount' => $this->getUser()->getHealingPotion()
+            'pokeballCount' => $user->getPokeball(),
+            'healingPotionCount' => $user->getHealingPotion()
         ]);
     }
 
@@ -276,13 +309,16 @@ class AdventureController extends AbstractController
         Request $request,
         AdventureHandler $adventureHandler,
         PokemonSerializer $pokemonSerialiser
-    ) {
+    ): Response {
         $data = $request->getContent();
         /** stdclass */
-        $data = json_decode($data);
+        $data = json_decode((string) $data);
         $csrfToken = $data->csrfToken;
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
+        /** @var user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
 
@@ -295,8 +331,8 @@ class AdventureController extends AbstractController
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             "turn" => 'player',
-            'pokeballCount' => $this->getUser()->getPokeball(),
-            'healingPotionCount' => $this->getUser()->getHealingPotion()
+            'pokeballCount' => $user->getPokeball(),
+            'healingPotionCount' => $user->getHealingPotion()
         ]);
     }
 }

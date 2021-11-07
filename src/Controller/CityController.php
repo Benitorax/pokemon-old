@@ -2,22 +2,27 @@
 
 namespace App\Controller;
 
-use App\Form\InfirmaryType;
+use App\Entity\User;
 use App\Form\ShopType;
+use App\Form\InfirmaryType;
 use App\Handler\CityHandler;
 use App\Repository\PokemonRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CityController extends AbstractController
 {
     /**
      * @Route("/city", name="city", methods={"GET","POST"})
      */
-    public function index(Request $request, CityHandler $cityHandler, PokemonRepository $pokemonRepository)
-    {
+    public function index(
+        Request $request,
+        CityHandler $cityHandler,
+        PokemonRepository $pokemonRepository
+    ): Response {
         $shopForm = $this->createForm(ShopType::class);
         $infirmaryForm = $this->createForm(InfirmaryType::class);
 
@@ -36,7 +41,9 @@ class CityController extends AbstractController
             }
         }
 
-        $pokemons = $pokemonRepository->findAllFullHPByTrainer($this->getUser());
+        /** @var User */
+        $user = $this->getUser();
+        $pokemons = $pokemonRepository->findAllFullHPByTrainer($user);
 
         return $this->render('city/index.html.twig', [
             'shopForm' => $shopForm->createView(),
@@ -48,8 +55,11 @@ class CityController extends AbstractController
     /**
      * @Route("/city/association-trainer/help", name="city_association_trainer_help", methods={"GET"})
      */
-    public function trainerAssociationHelp(EntityManagerInterface $manager, PokemonRepository $pokemonRepository)
-    {
+    public function trainerAssociationHelp(
+        EntityManagerInterface $manager,
+        PokemonRepository $pokemonRepository
+    ): Response {
+        /** @var User */
         $user = $this->getUser();
         $pokedollar = $user->getPokedollar();
         $pokemons = $user->getPokemons();

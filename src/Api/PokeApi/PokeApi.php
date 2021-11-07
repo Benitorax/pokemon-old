@@ -13,7 +13,10 @@ class PokeApi
         $this->client = $client;
     }
 
-    public function fetch($endpoint)
+    /**
+     * @return mixed
+     */
+    public function fetch(string $endpoint)
     {
         $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/' . $endpoint);
         $data = $response->getContent();
@@ -21,7 +24,10 @@ class PokeApi
         return $data = json_decode($data, true);
     }
 
-    public function getPokemonsIdFromHabitat($habitatId)
+    /**
+     * @return int[]
+     */
+    public function getPokemonIdsFromHabitat(int $habitatId)
     {
         $data = $this->fetch('pokemon-habitat/' . $habitatId);
         $pokemonsData = $data['pokemon_species'];
@@ -40,7 +46,7 @@ class PokeApi
         return $listId;
     }
 
-    public function getIdFromUrl($url)
+    public function getIdFromUrl(string $url): int
     {
         $url = rtrim($url, "/");
         $length = strlen($url);

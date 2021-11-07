@@ -18,7 +18,7 @@ class HabitatApi extends PokeApi
     }
 
     // Useful only at the creation of user, otherwise we fetch habitat before pokemon
-    public function getHabitatFromPokemonId($pokemonId)
+    public function getHabitatFromPokemonId(int $pokemonId): Habitat
     {
         $data = $this->fetch('pokemon-species/' . $pokemonId);
         $habitatId = $this->getIdFromUrl($data['habitat']['url']);
@@ -26,7 +26,7 @@ class HabitatApi extends PokeApi
         return $this->getHabitat($habitatId);
     }
 
-    public function getHabitat($id)
+    public function getHabitat(int $id): Habitat
     {
         if ($habitat = $this->habitatRepository->findOneBy(['apiId' => $id])) {
             return $habitat;
@@ -36,31 +36,31 @@ class HabitatApi extends PokeApi
 
         return $habitat->setApiId($id)
             ->setName($this->getHabitatName($id))
-            ->setPokemonsId($this->getPokemonsIdFromHabitat($id));
+            ->setPokemonsId($this->getPokemonIdsFromHabitat($id));
     }
 
-    public function getHabitatName($id)
+    public function getHabitatName(int $id): string
     {
         $data = $this->fetch('pokemon-habitat/' . $id);
 
         return $data['name'];
     }
 
-    public function getRandomHabitat()
+    public function getRandomHabitat(): Habitat
     {
         $id = rand(1, 99);
         // To make the area "rare"(id = 5) less frequent
         if ((50 <= $id) && ($id <= 59)) {
-            $id = substr($id, 1);
+            $id = substr((string) $id, 1);
             if ($id == 0) {
                 $id = 5;
             }
         } elseif ($id < 10) {
             // nothing to do
         } else {
-            $id = substr($id, 0, -1);
+            $id = substr((string) $id, 0, -1);
         }
 
-        return $this->getHabitat($id);
+        return $this->getHabitat((int) $id);
     }
 }

@@ -49,6 +49,10 @@ class PokemonExchangeRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @return PokemonExchange[]
+     */
     public function findAllByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')

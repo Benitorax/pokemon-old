@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminController extends AbstractController
@@ -18,12 +19,14 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/new", name="admin_messages_new", methods={"GET"})
      */
-    public function showNewMessages(ContactMessageRepository $messageRepository)
+    public function showNewMessages(ContactMessageRepository $messageRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $messages = $messageRepository->findNewMessages();
-        $csrfToken = $this->getUser()->getId()->_toString();
+        /** @var User */
+        $user = $this->getUser();
+        $csrfToken = $user->getUuid()->__toString();
 
         return $this->render('admin/show_messages.html.twig', [
             'messages' => $messages,
@@ -35,12 +38,14 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/archived", name="admin_messages_archived", methods={"GET"})
      */
-    public function showArchivedMessages(ContactMessageRepository $messageRepository)
+    public function showArchivedMessages(ContactMessageRepository $messageRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $messages = $messageRepository->findReadMessages();
-        $csrfToken = $this->getUser()->getId()->_toString();
+        /** @var User */
+        $user = $this->getUser();
+        $csrfToken = $user->getUuid()->__toString();
 
         return $this->render('admin/show_messages.html.twig', [
             'messages' => $messages,
@@ -52,7 +57,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/new/count", name="admin_message_new_count", methods={"GET"})
      */
-    public function getNewContactMessageCount(ContactMessageRepository $contactMessageRepository)
+    public function getNewContactMessageCount(ContactMessageRepository $contactMessageRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -66,12 +71,15 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/{id}/archive", name="admin_messages_archive", methods={"POST"})
      */
-    public function archiveMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager)
+    public function archiveMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $csrfToken = $request->request->get('token');
+        $csrfToken = (string) $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
+        /** @var User */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getUuid()->__toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
@@ -85,14 +93,18 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/messages/{id}/delete", name="admin_messages_delete", methods={"POST"})
      */
-    public function deleteMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager)
+    public function deleteMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $csrfToken = $request->request->get('token');
+        $csrfToken = (string) $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
+        /** @var User */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($user->getUuid()->__toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
+
         $isRead = $message->getIsRead();
         $manager->remove($message);
         $manager->flush();
@@ -108,12 +120,13 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/users/activated", name="admin_users_activated", methods={"GET"})
      */
-    public function showActivatedUsers(UserRepository $userRepository)
+    public function showActivatedUsers(UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $csrfToken = $this->getUser()->getId()->_toString();
-
+        /** @var User */
+        $user = $this->getUser();
+        $csrfToken = $user->getUuid()->__toString();
         $users = $userRepository->findAllActivated();
 
         return $this->render('admin/users_activated.html.twig', [
@@ -125,14 +138,16 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/inactivated", name="admin_users_not_activated", methods={"GET"})
      */
-    public function showInactivatedUsers(UserRepository $userRepository)
+    public function showInactivatedUsers(UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $csrfToken = $this->getUser()->getId()->_toString();
-
+        /** @var User */
+        $user = $this->getUser();
+        $csrfToken = $user->getUuid()->__toString();
         $users = $userRepository->findAllInactivated();
         $onlyRealUsers = [];
+
         foreach ($users as $user) {
             if (is_int(strpos($user->getEmail(), '@'))) {
                 $onlyRealUsers[] = $user;
@@ -147,7 +162,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/expired-1-month/delete", name="admin_users_not_activated_delete", methods={"GET"})
      */
-    public function deleteAllInactivatedUsers(EntityManagerInterface $manager, UserRepository $userRepository)
+    public function deleteAllInactivatedUsers(EntityManagerInterface $manager, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -176,12 +191,15 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/inactivated/{id}/delete", name="admin_user_inactivated_delete", methods={"POST"})
      */
-    public function deleteInactivatedUser(Request $request, User $user, EntityManagerInterface $manager)
+    public function deleteInactivatedUser(Request $request, User $user, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $csrfToken = $request->request->get('token');
+        $csrfToken = (string) $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
+        /** @var User */
+        $adminUser = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($adminUser->getUuid()->__toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
@@ -195,12 +213,15 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/user/{id}/delete}", name="admin_user_delete", methods={"POST"})
      */
-    public function deleteUser(Request $request, User $user, UserHandler $userHandler)
+    public function deleteUser(Request $request, User $user, UserHandler $userHandler): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $csrfToken = $request->request->get('token');
+        $csrfToken = (string) $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
+        /** @var User */
+        $adminUser = $this->getUser();
+
+        if (!$this->isCsrfTokenValid($adminUser->getUuid()->__toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 

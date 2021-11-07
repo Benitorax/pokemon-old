@@ -39,7 +39,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/logout", name="app_logout", methods={"GET"})
      */
-    public function logout()
+    public function logout(): void
     {
         throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
@@ -53,7 +53,7 @@ class SecurityController extends AbstractController
         CustomMailer $mailer,
         UserRepository $userRepository,
         \ReCaptcha\ReCaptcha $reCaptcha
-    ) {
+    ): Response {
         if ($this->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('app_index');
         }
@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
         Request $request,
         UserRepository $userRepository,
         EntityManagerInterface $manager
-    ) {
+    ): Response {
         $token = $request->query->get('token');
         $user = $userRepository->findOneBy(['token' => $token]);
 
@@ -118,7 +118,7 @@ class SecurityController extends AbstractController
         UserRepository $userRepository,
         CustomMailer $mailer,
         \ReCaptcha\ReCaptcha $reCaptcha
-    ) {
+    ): Response {
         $emailForm = $this->createForm(CheckEmailType::class);
         $emailForm->handleRequest($request);
 
@@ -157,7 +157,7 @@ class SecurityController extends AbstractController
         UserHandler $userHandler,
         EntityManagerInterface $manager,
         CustomMailer $mailer
-    ) {
+    ): Response {
         $token = $request->query->get('token');
 
         if (!$token) {
@@ -166,15 +166,19 @@ class SecurityController extends AbstractController
 
         $user = $userRepository->findOneBy(['token' => $token]);
 
-        $interval = (new \DateTime('now'))->diff($user->getTokenCreatedAt());
-        if ($interval->format('%a') >= 1) {
-            $this->addFlash('danger', 'Your request has expired. Make a new request again.');
-            return $this->redirectToRoute('app_password_forgotten');
-        }
-
         if ($user) {
+            /** @var \DateTime */
+            $tokenDatetime = $user->getTokenCreatedAt();
+            $interval = (new \DateTime('now'))->diff($tokenDatetime);
+
+            if ($interval->format('%a') >= 1) {
+                $this->addFlash('danger', 'Your request has expired. Make a new request again.');
+                return $this->redirectToRoute('app_password_forgotten');
+            }
+
             $resetPasswordForm = $this->createForm(ResetPasswordType::class);
             $resetPasswordForm->handleRequest($request);
+
             if ($resetPasswordForm->isSubmitted() && $resetPasswordForm->isValid()) {
                 $user->setToken(null);
                 $user->setTokenCreatedAt(null);

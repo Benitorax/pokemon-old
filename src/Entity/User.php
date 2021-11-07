@@ -20,79 +20,79 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $username;
+    private string $username;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $pokedollar = 500;
+    private int $pokedollar = 500;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $pokeball = 5;
+    private int $pokeball = 5;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pokemon", mappedBy="trainer", cascade={"persist"}, orphanRemoval=true)
      * @ORM\OrderBy({"name" = "ASC", "level" = "DESC"})
+     * A list of pokemons that can be an ArrayCollection or PersistentCollection.
      */
-    private $pokemons;
+    private $pokemons; /** @phpstan-ignore-line */
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $healingPotion = 5;
+    private int $healingPotion = 5;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isActivated = false;
+    private bool $isActivated = false;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTime $createdAt;
 
     /**
      * @ORM\Column(type="uuid", nullable=true)
      */
-    private $token;
+    private ?Uuid $token;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $tokenCreatedAt;
+    private ?\DateTime $tokenCreatedAt;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $consecutiveWin = 0;
+    private int $consecutiveWin = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $championCount = 0;
+    private int $championCount = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $currentGameId;
+    private ?string $currentGameId;
 
     public function __construct()
     {
@@ -100,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->uuid = Uuid::v4();
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -169,12 +169,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getSalt()
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -296,36 +297,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getToken()
+    public function getToken(): ?Uuid
     {
         return $this->token;
     }
 
-    public function setToken($token): self
+    public function setToken(?Uuid $token): self
     {
         $this->token = $token;
 
         return $this;
     }
 
-    public function getTokenCreatedAt(): ?\DateTimeInterface
+    public function getTokenCreatedAt(): ?\DateTime
     {
         return $this->tokenCreatedAt;
     }
 
-    public function setTokenCreatedAt(?\DateTimeInterface $tokenCreatedAt): self
+    public function setTokenCreatedAt(?\DateTime $tokenCreatedAt): self
     {
         $this->tokenCreatedAt = $tokenCreatedAt;
 
@@ -351,7 +352,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getChampionCount(): ?int
+    public function getChampionCount(): int
     {
         return $this->championCount;
     }
@@ -363,9 +364,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCurrentGameId(): ?string
+    public function getCurrentGameId(): string
     {
-        return $this->currentGameId;
+        return $this->currentGameId ?: '';
     }
 
     public function setCurrentGameId(?string $currentGameId): self

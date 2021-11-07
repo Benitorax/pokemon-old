@@ -4,7 +4,7 @@ namespace App\Entity;
 
 class Trainer
 {
-    private $trainers = [
+    private array $trainers = [
         [
             'username' => 'Red',
             'email' => 'https://cdn2.bulbagarden.net/upload/thumb/8/83/FireRed_LeafGreen_Red.png/111px-FireRed_LeafGreen_Red.png',
@@ -91,7 +91,7 @@ class Trainer
         ],
     ];
 
-    public function getRandomTrainer()
+    public function getRandomTrainer(): array
     {
         return $this->trainers[array_rand($this->trainers)];
     }

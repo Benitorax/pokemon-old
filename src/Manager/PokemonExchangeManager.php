@@ -11,9 +11,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class PokemonExchangeManager
 {
-    private $manager;
-    private $mailer;
-    private $pokExRepository;
+    private EntityManagerInterface $manager;
+    private CustomMailer $mailer;
+    private PokemonExchangeRepository $pokExRepository;
     public function __construct(
         EntityManagerInterface $manager,
         CustomMailer $mailer,
@@ -24,7 +24,7 @@ class PokemonExchangeManager
         $this->pokExRepository = $pokExRepository;
     }
 
-    public function createPokemonExchange(PokemonExchange $pokemonExchange)
+    public function createPokemonExchange(PokemonExchange $pokemonExchange): PokemonExchange
     {
         $pokemonExchange
             ->setTrainer1($pokemonExchange->getPokemon1()->getTrainer())
@@ -40,7 +40,7 @@ class PokemonExchangeManager
         return $pokemonExchange;
     }
 
-    public function editPokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user)
+    public function editPokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user): PokemonExchange
     {
         $pokemonExchange->setUpdatedAt(new \DateTime('now'))->setStatus(PokemonExchange::STATUS_MODIFIED);
 
@@ -61,7 +61,7 @@ class PokemonExchangeManager
         return $pokemonExchange;
     }
 
-    public function acceptPokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user)
+    public function acceptPokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user): void
     {
         if ($pokemonExchange->getTrainer1() === $user) {
             $pokemonExchange->setAnswer1(PokemonExchange::USER_ACCEPT_CONTRACT);
@@ -85,16 +85,17 @@ class PokemonExchangeManager
         // $this->manager->flush();
     }
 
-    private function removeInvalidPokemonExchange(PokemonExchange $pokemonExchange)
+    private function removeInvalidPokemonExchange(PokemonExchange $pokemonExchange): void
     {
-
         $pokemon1 = $pokemonExchange->getPokemon1();
         $pokemon2 = $pokemonExchange->getPokemon2();
         $pokemonExchanges = $this->pokExRepository->findAll();
         $pokemonExchangesToDelete = [];
 
         foreach ($pokemonExchanges as $pokemonExchange) {
+            /** @phpstan-ignore-next-line */
             $pokemonsArray = [$pokemonExchange->getPokemon1(), $pokemonExchange->getPokemon2()];
+
             if (in_array($pokemon1, $pokemonsArray) || in_array($pokemon2, $pokemonsArray)) {
                 $pokemonExchangesToDelete[] = $pokemonExchange;
             }
@@ -107,14 +108,16 @@ class PokemonExchangeManager
         $this->manager->flush();
     }
 
-    public function removeInvalidPokemonExchangeWithPokemon(Pokemon $pokemon)
+    public function removeInvalidPokemonExchangeWithPokemon(Pokemon $pokemon): void
     {
 
         $pokemonExchanges = $this->pokExRepository->findAll();
         $pokemonExchangesToDelete = [];
 
         foreach ($pokemonExchanges as $pokemonExchange) {
+            /** @phpstan-ignore-next-line */
             $pokemonsArray = [$pokemonExchange->getPokemon1(), $pokemonExchange->getPokemon2()];
+
             if (in_array($pokemon, $pokemonsArray)) {
                 $pokemonExchangesToDelete[] = $pokemonExchange;
             }
@@ -127,7 +130,7 @@ class PokemonExchangeManager
         $this->manager->flush();
     }
 
-    public function deletePokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user)
+    public function deletePokemonExchange(PokemonExchange $pokemonExchange, UserInterface $user): void
     {
         if ($pokemonExchange->getTrainer1() === $user) {
             $pokemonExchange->setAnswer1(PokemonExchange::USER_REFUSE_CONTRACT);

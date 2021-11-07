@@ -18,7 +18,7 @@ class RegisterUserDTO implements UserInterface
      *      maxMessage = "Your username cannot be longer than {{ limit }} characters"
      * )
      */
-    private $username;
+    private string $username;
 
     /**
      * @Assert\NotBlank
@@ -26,7 +26,7 @@ class RegisterUserDTO implements UserInterface
      *     message = "The email '{{ value }}' is not a valid email.",
      * )
      */
-    private $email;
+    private string $email;
 
     /**
      * @var string The hashed password
@@ -39,23 +39,23 @@ class RegisterUserDTO implements UserInterface
      * )
 
      */
-    private $password;
+    private string $password;
 
     /**
      * @Assert\NotBlank(
      *      message = "You must choose a pokemon"
      * )
      */
-    private $pokemonApiId;
+    private int $pokemonApiId;
 
-    private $userRepository;
+    private UserRepository $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -105,18 +105,19 @@ class RegisterUserDTO implements UserInterface
     public function getSalt()
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
-    public function getPokemonApiId()
+    public function getPokemonApiId(): int
     {
         return $this->pokemonApiId;
     }
@@ -128,8 +129,12 @@ class RegisterUserDTO implements UserInterface
         return $this;
     }
 
-    public function getRoles(): void
+    /**
+     * @return string[]
+     */
+    public function getRoles()
     {
+        return [];
     }
 
     public function getUserIdentifier(): string
@@ -139,13 +144,14 @@ class RegisterUserDTO implements UserInterface
 
     /**
      * @Assert\Callback
+     * @param mixed $payload
      */
-    public function validate(ExecutionContextInterface $context, $payload)
+    public function validate(ExecutionContextInterface $context, $payload): void
     {
         $data = $this->userRepository->findAllEmailAndUsername();
 
         foreach ($data['email'] as $email) {
-            if (strtolower($email) === strtolower($this->getEmail())) {
+            if (strtolower((string) $email) === strtolower($this->getEmail())) {
                 $context->buildViolation('This email is already used.')
                 ->atPath('email')
                 ->addViolation();

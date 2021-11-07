@@ -2,6 +2,7 @@
 
 namespace App\Handler;
 
+use App\Entity\Battle;
 use App\Entity\Pokemon;
 use App\Manager\BattleManager;
 use App\Handler\AdventureHandler;
@@ -9,12 +10,12 @@ use App\Manager\BattleFormManager;
 
 class TournamentHandler extends AdventureHandler
 {
-    public function createBattle()
+    public function createBattle(): Battle
     {
         return $this->battleManager->createTournamentBattle();
     }
 
-    public function handleSelectPokemon(Pokemon $pokemon)
+    public function handleSelectPokemon(Pokemon $pokemon): array
     {
         $pokemonsCount = $this->battleManager->getPlayerTeam()->getPokemons()->count();
 
@@ -54,7 +55,7 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function handleAttack()
+    public function handleAttack(): array
     {
         $turn = 'player';
         $damage = $this->battleManager->manageAttackOpponent();
@@ -88,7 +89,7 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function presentOpponent()
+    public function presentOpponent(): array
     {
         $messages[] = 'You have selected <strong>' . $this->battleManager->getLastPlayerPokemon()->getName()
             . '</strong>!';
@@ -107,7 +108,7 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function handleNext()
+    public function handleNext(): array
     {
         $battle = $this->battleManager->getCurrentBattle();
 
@@ -136,9 +137,8 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function handleOpponentTurn()
+    public function handleOpponentTurn(): array
     {
-        /** @var BattleManager $this->battleManager */
         $damage = $this->battleManager->manageDamagePlayerFighter();
         $battle = $this->battleManager->getCurrentBattle();
         $opponentFighter = $battle->getOpponentTeam()->getCurrentFighter();
@@ -166,7 +166,7 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function handleHeal()
+    public function handleHeal(): array
     {
         $battle = $this->battleManager->getCurrentBattle();
         $opponentTeam = $battle->getOpponentTeam();
@@ -203,14 +203,16 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function isFighterSleeping()
+    public function isFighterSleeping(): bool
     {
         return $this->battleManager->getPlayerFighter()->getIsSleep() ||
                $this->battleManager->getOpponentFighter()->getIsSleep();
     }
 
-    public function handleChangeFighter()
+    public function handleChangeFighter(): array
     {
+        $messages = [];
+
         if ($this->battleManager->getOpponentFighter()->getIsSleep()) {
             $isChanged = $this->battleManager->manageChangeFighterOfTeam($this->battleManager->getOpponentTeam());
 
@@ -245,7 +247,7 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function handleRestorePokemons()
+    public function handleRestorePokemons(): array
     {
         $messages[] = 'The infirmary service is free for participants of the tournament.';
         $messages[] = 'Your pokemons are now in good shape.';
@@ -266,9 +268,8 @@ class TournamentHandler extends AdventureHandler
         ];
     }
 
-    public function handleEndBattle()
+    public function handleEndBattle(): array
     {
-        /** @var User */
         $user = $this->battleManager->getUser();
         $centerImageUrlArray = [];
 
@@ -276,7 +277,7 @@ class TournamentHandler extends AdventureHandler
             $user->increaseConsecutiveWin();
             $datas = $this->battleManager->manageLevelUpForTournament();
 
-            if (is_int($user->getConsecutiveWin() / 3)) {
+            if (0 === ($user->getConsecutiveWin() % 3)) {
                 $user->increasePokedollar(700);
                 $user->increaseChampionCount();
                 $badgeNumber = $this->getOrdinalNumberFromBadgesCount($user->getChampionCount());
@@ -321,7 +322,7 @@ class TournamentHandler extends AdventureHandler
     }
 
     /** The game has 8 different badges, so the 9th badge corresponds to the 1st, and the 10th corresponds to the 2nd...  */
-    public function getOrdinalNumberFromBadgesCount(int $number)
+    public function getOrdinalNumberFromBadgesCount(int $number): int
     {
         if ($number < 9) {
             return $number;

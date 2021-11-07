@@ -4,8 +4,10 @@ namespace App\Manager;
 
 use App\Entity\User;
 use App\Entity\Battle;
+use App\Entity\Habitat;
 use App\Entity\Pokemon;
 use App\Entity\BattleTeam;
+use App\Repository\BattleRepository;
 use App\Manager\AbstractBattleManager;
 
 class BattleManager extends AbstractBattleManager
@@ -13,7 +15,7 @@ class BattleManager extends AbstractBattleManager
     public const POKEMON_HP_FULL = 1;
     public const NO_HP_POTION = 2;
 
-    public function createAdventureBattle()
+    public function createAdventureBattle(): Battle
     {
         $playerTeam = new BattleTeam();
         $playerTeam->setTrainer($this->user);
@@ -28,7 +30,7 @@ class BattleManager extends AbstractBattleManager
         return $battle;
     }
 
-    public function createTournamentBattle()
+    public function createTournamentBattle(): Battle
     {
         $playerTeam = new BattleTeam();
         $playerTeam->setTrainer($this->user);
@@ -42,14 +44,18 @@ class BattleManager extends AbstractBattleManager
         return $battle;
     }
 
-    public function clearLastBattle()
+    public function clearLastBattle(): void
     {
-        if ($battle = $this->getCurrentBattle()) {
+        /** @var BattleRepository */
+        $repository = $this->manager->getRepository(Battle::class);
+
+        if ($battle = $repository->findOneByTrainer($this->user)) {
             $playerPokemons = $battle->getPlayerTeam()->getPokemons();
             foreach ($playerPokemons as $pokemon) {
                 $pokemon->setBattleTeam(null);
             }
 
+            /** @var User */
             $opponent = $battle->getOpponentTeam()->getTrainer();
             $opponentPokemons = $battle->getOpponentTeam()->getPokemons()->toArray();
             foreach ($opponentPokemons as $oPokemon) {
@@ -61,7 +67,7 @@ class BattleManager extends AbstractBattleManager
         }
     }
 
-    public function createAdventureOpponentTeam($habitat)
+    public function createAdventureOpponentTeam(Habitat $habitat): BattleTeam
     {
         $pokemon = $this->pokeApiManager->getRandomPokemonFromHabitat($habitat);
         $opponent = $this->createAdventureOpponent();
@@ -75,7 +81,7 @@ class BattleManager extends AbstractBattleManager
         return $team;
     }
 
-    public function createTournamentOpponentTeam($habitat)
+    public function createTournamentOpponentTeam(Habitat $habitat): BattleTeam
     {
         $opponent = $this->createTournamentOpponent();
         $team = new BattleTeam();
@@ -94,7 +100,7 @@ class BattleManager extends AbstractBattleManager
         return $team;
     }
 
-    public function addFighterSelected($pokemon)
+    public function addFighterSelected(Pokemon $pokemon): void
     {
         $playerTeam = $this->getPlayerTeam();
 
@@ -111,7 +117,7 @@ class BattleManager extends AbstractBattleManager
         $this->persistAndFlush($pokemon);
     }
 
-    public function manageThrowPokeball()
+    public function manageThrowPokeball(): string
     {
         $result = 'impossible';
         $user = $this->user;
@@ -135,7 +141,7 @@ class BattleManager extends AbstractBattleManager
         return $result;
     }
 
-    public function manageAttackOpponent()
+    public function manageAttackOpponent(): int
     {
         $battle = $this->getCurrentBattle();
         $battle->setTurn('opponent');
@@ -156,7 +162,7 @@ class BattleManager extends AbstractBattleManager
         return $damage;
     }
 
-    public function manageLeave()
+    public function manageLeave(): bool
     {
         $isSleep = $this->getOpponentFighter()->getIsSleep();
 
@@ -175,7 +181,7 @@ class BattleManager extends AbstractBattleManager
         }
     }
 
-    public function manageLevelUpForTournament()
+    public function manageLevelUpForTournament(): array
     {
         $pokemons = $this->getPlayerTeam()->getPokemons();
         $data = [];
@@ -187,7 +193,7 @@ class BattleManager extends AbstractBattleManager
         return $data;
     }
 
-    public function manageLevelUpForAdventure(Pokemon $pokemon = null)
+    public function manageLevelUpForAdventure(Pokemon $pokemon = null): array
     {
         if (!$pokemon) {
             $pokemon = $this->getPlayerFighter();
@@ -228,7 +234,7 @@ class BattleManager extends AbstractBattleManager
         ];
     }
 
-    public function manageHealPlayerFighter()
+    public function manageHealPlayerFighter(): int
     {
         if ($this->getPlayerFighter()->getHealthPoint() === 100) {
             return self::POKEMON_HP_FULL;
@@ -249,7 +255,7 @@ class BattleManager extends AbstractBattleManager
         return $healthPointRange;
     }
 
-    public function manageDamagePlayerFighter()
+    public function manageDamagePlayerFighter(): int
     {
         $battle = $this->getCurrentBattle();
         $battle->setTurn('player');
@@ -273,7 +279,7 @@ class BattleManager extends AbstractBattleManager
         return $hp - $newHp;
     }
 
-    public function manageChangeFighterOfTeam(BattleTeam $battleTeam)
+    public function manageChangeFighterOfTeam(BattleTeam $battleTeam): bool
     {
         $isAllSleep = true;
 
@@ -301,13 +307,13 @@ class BattleManager extends AbstractBattleManager
         return true;
     }
 
-    public function startBattle()
+    public function startBattle(): void
     {
         $this->getCurrentBattle()->setIsStart(true);
         $this->manager->flush();
     }
 
-    public function endBattle(BattleTeam $battleTeam)
+    public function endBattle(BattleTeam $battleTeam): void
     {
         $this->getCurrentBattle()->setIsEnd(true);
         $battle = $this->getCurrentBattle();
@@ -323,7 +329,7 @@ class BattleManager extends AbstractBattleManager
         $this->manager->flush();
     }
 
-    public function restorePlayerPokemons()
+    public function restorePlayerPokemons(): void
     {
         $pokemons = $this->getPlayerTeam()->getPokemons();
 
@@ -335,9 +341,12 @@ class BattleManager extends AbstractBattleManager
         $this->manager->flush();
     }
 
-    public function clearLastBattleOfTrainer(User $user)
+    public function clearLastBattleOfTrainer(User $user): void
     {
-        if ($battle = $this->manager->getRepository(Battle::class)->findOneByTrainer($user)) {
+        /** @var BattleRepository */
+        $repository = $this->manager->getRepository(Battle::class);
+
+        if ($battle = $repository->findOneByTrainer($user)) {
             $playerTeam = $battle->getPlayerTeam();
             $playerPokemons = $playerTeam->getPokemons();
 
@@ -346,6 +355,7 @@ class BattleManager extends AbstractBattleManager
             }
 
             $opponentTeam = $battle->getOpponentTeam();
+            /** @var User */
             $opponent = $opponentTeam->getTrainer();
             $opponentPokemons = $opponentTeam->getPokemons()->toArray();
 
