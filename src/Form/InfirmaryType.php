@@ -13,17 +13,18 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class InfirmaryType extends AbstractType
 {
     private $userPokemons;
-    
+
     public function __construct(Security $security, PokemonRepository $pokemonRepository)
     {
-        $this->userPokemons = $pokemonRepository->findPokemonsByTrainer($security->getUser());;
+        $this->userPokemons = $pokemonRepository->findPokemonsByTrainer($security->getUser());
+        ;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('restorePokemon', SubmitType::class, [
-                'label' => count($this->userPokemons) > 3 ? 'Pay 30 $' :'Restore for free',
+                'label' => count($this->userPokemons) > 3 ? 'Pay 30 $' : 'Restore for free',
                 'attr' => [
                     'class' => "btn btn-success"
                 ]
@@ -46,12 +47,11 @@ class InfirmaryType extends AbstractType
         ;
     }
 
-    public function getPokemonsChoice() 
+    public function getPokemonsChoice()
     {
         $pokemonsList = [];
-        foreach($this->userPokemons as $pokemon)
-        {
-            $pokemonsList[$pokemon->getName().' (level '.$pokemon->getLevel().')'] = $pokemon->getId();
+        foreach ($this->userPokemons as $pokemon) {
+            $pokemonsList[$pokemon->getName() . ' (level ' . $pokemon->getLevel() . ')'] = $pokemon->getId();
         }
         return $pokemonsList;
     }

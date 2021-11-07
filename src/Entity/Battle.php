@@ -111,10 +111,10 @@ class Battle
 
     public function setTurn(string $turn): self
     {
-        if(in_array($turn, ['player', 'opponent'])) {
+        if (in_array($turn, ['player', 'opponent'])) {
             $this->turn = $turn;
         }
-        
+
         return $this;
     }
 

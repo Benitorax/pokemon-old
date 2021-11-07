@@ -11,13 +11,13 @@ use App\Entity\Traits\EntityIdTrait;
  */
 class PokemonExchange
 {
-    const STATUS_WAITING_FOR_RESPONSE = 'Waiting for response';
-    const STATUS_MODIFIED = 'Modified, waiting for response';
-    const USER_ACCEPT_CONTRACT = 'Accepted';
-    const USER_REFUSE_CONTRACT = 'Refused';
-    const USER_NO_ANSWER_CONTRACT = 'None';
-
     use EntityIdTrait;
+
+    public const STATUS_WAITING_FOR_RESPONSE = 'Waiting for response';
+    public const STATUS_MODIFIED = 'Modified, waiting for response';
+    public const USER_ACCEPT_CONTRACT = 'Accepted';
+    public const USER_REFUSE_CONTRACT = 'Refused';
+    public const USER_NO_ANSWER_CONTRACT = 'None';
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
@@ -72,7 +72,7 @@ class PokemonExchange
     {
         $this->uuid = Uuid::v4();
     }
-    
+
     public function getTrainer1(): ?User
     {
         return $this->trainer1;

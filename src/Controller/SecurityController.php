@@ -24,7 +24,7 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->isGranted('ROLE_USER')) {
-           return $this->redirectToRoute('app_index');
+            return $this->redirectToRoute('app_index');
         }
 
         // get the login error if there is one
@@ -47,8 +47,13 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_register", methods={"GET", "POST"})
      */
-    public function register(Request $request, UserHandler $userHandler, CustomMailer $mailer, UserRepository $userRepository, \ReCaptcha\ReCaptcha $reCaptcha)
-    {
+    public function register(
+        Request $request,
+        UserHandler $userHandler,
+        CustomMailer $mailer,
+        UserRepository $userRepository,
+        \ReCaptcha\ReCaptcha $reCaptcha
+    ) {
         if ($this->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('app_index');
         }
@@ -61,15 +66,18 @@ class SecurityController extends AbstractController
             $gRecaptchaResponse = $request->get('g-recaptcha-response');
             $response = $reCaptcha->verify($gRecaptchaResponse);
 
-            if($response->getScore() > 0.5) {
+            if ($response->getScore() > 0.5) {
                 $user = $userHandler->handle($form->getData());
                 $mailer->sendMailAfterRegistration($user);
-                $this->addFlash('success','Congrats, you have been registered with success! You will receive an email to confirm your address.');
-    
-                return $this->redirectToRoute('app_index');
+                $this->addFlash(
+                    'success',
+                    'Congrats, you have been registered with success!'
+                    . 'You will receive an email to confirm your address.'
+                );
 
+                return $this->redirectToRoute('app_index');
             } else {
-                $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
+                $this->addFlash('danger', 'Sorry, robots are not allowed. If you\'re human, try it again.');
             }
         }
 
@@ -81,10 +89,15 @@ class SecurityController extends AbstractController
     /**
      * @Route("/email_confirm/", name="app_email_confirm", methods={"GET"})
      */
-    public function confirmEmailAddress(Request $request, UserRepository $userRepository, EntityManagerInterface $manager) {
+    public function confirmEmailAddress(
+        Request $request,
+        UserRepository $userRepository,
+        EntityManagerInterface $manager
+    ) {
         $token = $request->query->get('token');
         $user = $userRepository->findOneBy(['token' => $token]);
-        if($user) {
+
+        if ($user) {
             $user->setToken(null);
             $user->setTokenCreatedAt(null);
             $user->setIsActivated(true);
@@ -100,26 +113,33 @@ class SecurityController extends AbstractController
     /**
      * @Route("/password/forgotten/", name="app_password_forgotten", methods={"GET", "POST"})
      */
-    public function passwordForgotten(Request $request, UserRepository $userRepository, CustomMailer $mailer, \ReCaptcha\ReCaptcha $reCaptcha) {
+    public function passwordForgotten(
+        Request $request,
+        UserRepository $userRepository,
+        CustomMailer $mailer,
+        \ReCaptcha\ReCaptcha $reCaptcha
+    ) {
         $emailForm = $this->createForm(CheckEmailType::class);
         $emailForm->handleRequest($request);
 
-        if($emailForm->isSubmitted() && $emailForm->isValid()) {
+        if ($emailForm->isSubmitted() && $emailForm->isValid()) {
             $gRecaptchaResponse = $request->get('g-recaptcha-response');
             $response = $reCaptcha->verify($gRecaptchaResponse);
 
-            if($response->getScore() > 0.5) {
+            if ($response->getScore() > 0.5) {
                 $email = $emailForm->getData()['email'];
-                $user = $userRepository->findOneIsActivatedByEmail($email); 
-                if($user) {
+                $user = $userRepository->findOneIsActivatedByEmail($email);
+
+                if ($user) {
                     $mailer->sendMailToResetPassword($user);
                     $this->addFlash('success', 'You will receive an email to reset your password.');
+
                     return $this->redirectToRoute('app_login');
                 } else {
-                    $this->addFlash('danger', 'This email is not registered.');    
+                    $this->addFlash('danger', 'This email is not registered.');
                 }
             } else {
-                $this->addFlash('danger','Sorry, robots are not allowed. If you\'re human, try it again.'); 
+                $this->addFlash('danger', 'Sorry, robots are not allowed. If you\'re human, try it again.');
             }
         }
 
@@ -131,23 +151,31 @@ class SecurityController extends AbstractController
     /**
      * @Route("/password/reset/", name="app_password_reset", methods={"GET", "POST"})
      */
-    public function resetPasswordForgotten(Request $request, UserRepository $userRepository, UserHandler $userHandler, EntityManagerInterface $manager, CustomMailer $mailer) {
+    public function resetPasswordForgotten(
+        Request $request,
+        UserRepository $userRepository,
+        UserHandler $userHandler,
+        EntityManagerInterface $manager,
+        CustomMailer $mailer
+    ) {
         $token = $request->query->get('token');
-        
-        if(!$token) { throw new \ErrorException('This page does\'t exist.'); }
+
+        if (!$token) {
+            throw new \ErrorException('This page does\'t exist.');
+        }
+
         $user = $userRepository->findOneBy(['token' => $token]);
 
         $interval = (new \DateTime('now'))->diff($user->getTokenCreatedAt());
-        if($interval->format('%a') >= 1) {
+        if ($interval->format('%a') >= 1) {
             $this->addFlash('danger', 'Your request has expired. Make a new request again.');
             return $this->redirectToRoute('app_password_forgotten');
-        } 
-        
-        if($user) {
-            $resetPasswordForm = $this->createForm(ResetPasswordType::class);
-            $resetPasswordForm->handleRequest($request);    
-            if($resetPasswordForm->isSubmitted() && $resetPasswordForm->isValid()) {
+        }
 
+        if ($user) {
+            $resetPasswordForm = $this->createForm(ResetPasswordType::class);
+            $resetPasswordForm->handleRequest($request);
+            if ($resetPasswordForm->isSubmitted() && $resetPasswordForm->isValid()) {
                 $user->setToken(null);
                 $user->setTokenCreatedAt(null);
                 $userHandler->modifyPassword($user, $resetPasswordForm->getData()['newPassword']);
@@ -155,11 +183,11 @@ class SecurityController extends AbstractController
                 $mailer->sendMailToConfirmResetPassword($user);
                 $this->addFlash('success', 'Your password has been modified with success.');
                 return $this->redirectToRoute('app_login');
-            } 
+            }
         }
 
         return $this->render('security/password_reset.html.twig', [
             'resetPasswordForm' => isset($resetPasswordForm) ? $resetPasswordForm->createView() : null,
-        ]);    
+        ]);
     }
 }

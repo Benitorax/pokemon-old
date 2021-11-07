@@ -62,7 +62,7 @@ class ContactMessage
     {
         $this->uuid = Uuid::v4();
     }
-    
+
     public function getObject(): ?string
     {
         return $this->object;

@@ -134,7 +134,7 @@ class BattleTeam
 
     public function removePokemons(): self
     {
-        foreach($this->pokemons as $pokemon) {
+        foreach ($this->pokemons as $pokemon) {
             if ($pokemon->getBattleTeam() === $this) {
                 $pokemon->setBattleTeam(null);
             }

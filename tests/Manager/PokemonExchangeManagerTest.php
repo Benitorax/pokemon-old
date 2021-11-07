@@ -17,7 +17,7 @@ class PokemonExchangeManagerTest extends TestCase
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
-        
+
         $mailer->expects($this->once())
             ->method('sendMailForNewPokemonExchange');
         $manager->expects($this->once())
@@ -28,9 +28,10 @@ class PokemonExchangeManagerTest extends TestCase
         $pokemon1 = new Pokemon();
         $pokemon2 = new Pokemon();
         $trainer1 = (new User())->addPokemon($pokemon1);
-        $trainer2 = (new User())->addPokemon($pokemon2);;
+        $trainer2 = (new User())->addPokemon($pokemon2);
+        ;
         $pokemonExchange = (new PokemonExchange())->setPokemon1($pokemon1)->setPokemon2($pokemon2);
-    
+
         $pokemonExchange = $pokExManager->createPokemonExchange($pokemonExchange);
         $this->assertInstanceOf(PokemonExchange::class, $pokemonExchange);
         $this->assertInstanceOf(\DateTime::class, $pokemonExchange->getCreatedAt());
@@ -48,7 +49,7 @@ class PokemonExchangeManagerTest extends TestCase
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
-        
+
         $mailer->expects($this->once())
             ->method('sendMailForEditPokemonExchange');
         //$manager->expects($this->once())
@@ -59,14 +60,15 @@ class PokemonExchangeManagerTest extends TestCase
         $pokemon1 = new Pokemon();
         $pokemon2 = new Pokemon();
         $trainer1 = (new User())->addPokemon($pokemon1);
-        $trainer2 = (new User())->addPokemon($pokemon2);;
+        $trainer2 = (new User())->addPokemon($pokemon2);
+        ;
         $pokemonExchange = (new PokemonExchange())
             ->setPokemon1($pokemon1)->setPokemon2($pokemon2)
             ->setTrainer1($trainer1)->setTrainer2($trainer2)
             ->setAnswer1(PokemonExchange::USER_ACCEPT_CONTRACT)
             ->setAnswer2(PokemonExchange::USER_NO_ANSWER_CONTRACT)
             ->setCreatedAt(new \DateTime('now'));
-    
+
         $pokemonExchange = $pokExManager->editPokemonExchange($pokemonExchange, $trainer2);
         $this->assertInstanceOf(PokemonExchange::class, $pokemonExchange);
         $this->assertInstanceOf(\DateTime::class, $pokemonExchange->getUpdatedAt());
@@ -83,7 +85,7 @@ class PokemonExchangeManagerTest extends TestCase
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
-        
+
         $mailer->expects($this->once())
             ->method('sendMailForAcceptPokemonExchange');
         $manager->expects($this->once())
@@ -114,7 +116,7 @@ class PokemonExchangeManagerTest extends TestCase
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
         $pokExManager = new PokemonExchangeManager($manager, $mailer);
-        
+
         $mailer->expects($this->once())
             ->method('sendMailForRefusePokemonExchange');
         $manager->expects($this->once())
@@ -133,7 +135,7 @@ class PokemonExchangeManagerTest extends TestCase
             ->setAnswer1(PokemonExchange::USER_ACCEPT_CONTRACT)
             ->setAnswer2(PokemonExchange::USER_NO_ANSWER_CONTRACT)
             ->setCreatedAt(new \DateTime('now'));
-        
+
         $pokemonExchange = $pokExManager->deletePokemonExchange($pokemonExchange, $trainer2);
         $this->assertSame($pokemon1, $trainer1->getPokemons()->first());
         $this->assertSame($pokemon2, $trainer2->getPokemons()->first());

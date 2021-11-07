@@ -21,22 +21,23 @@ class CityController extends AbstractController
         $shopForm = $this->createForm(ShopType::class);
         $infirmaryForm = $this->createForm(InfirmaryType::class);
 
-        if($request->isMethod('POST')) {
+        if ($request->isMethod('POST')) {
             $shopForm->handleRequest($request);
             $infirmaryForm->handleRequest($request);
 
-            if($shopForm->isSubmitted() && $shopForm->isValid()) {
+            if ($shopForm->isSubmitted() && $shopForm->isValid()) {
                 $cityHandler->handleShopForm($shopForm);
-                return $this->redirectToRoute('city');
 
-            } elseif($infirmaryForm->isSubmitted() && $infirmaryForm->isValid()) {
+                return $this->redirectToRoute('city');
+            } elseif ($infirmaryForm->isSubmitted() && $infirmaryForm->isValid()) {
                 $cityHandler->handleInfirmaryForm($infirmaryForm);
+
                 return $this->redirectToRoute('city');
             }
         }
 
         $pokemons = $pokemonRepository->findAllFullHPByTrainer($this->getUser());
-        
+
         return $this->render('city/index.html.twig', [
             'shopForm' => $shopForm->createView(),
             'infirmaryForm' => $infirmaryForm->createView(),
@@ -54,7 +55,7 @@ class CityController extends AbstractController
         $pokemons = $user->getPokemons();
         $fullHPPokemons = $pokemonRepository->findAllFullHPByTrainer($user);
 
-        if(count($pokemons) > 3 && count($fullHPPokemons) < 3 && $pokedollar < 30) {
+        if (count($pokemons) > 3 && count($fullHPPokemons) < 3 && $pokedollar < 30) {
             $user->increasePokedollar(50);
             $manager->flush();
             $this->addFlash('success', "The trainer's association gives you 50 $.");

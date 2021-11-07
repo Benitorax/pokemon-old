@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Manager;
 
 use App\Entity\ContactMessage;
@@ -12,8 +13,11 @@ class ContactMessageManager
     private $messageRepository;
     private $user;
 
-    public function __construct(EntityManagerInterface $manager, ContactMessageRepository $messageRepository, Security $security)
-    {
+    public function __construct(
+        EntityManagerInterface $manager,
+        ContactMessageRepository $messageRepository,
+        Security $security
+    ) {
         $this->manager = $manager;
         $this->messageRepository = $messageRepository;
         $this->user = $security->getUser();
@@ -26,7 +30,7 @@ class ContactMessageManager
                 ->setCreatedAt(new \DateTime('now'));
         $this->manager->persist($message);
         $this->manager->flush();
-        
+
         return $message;
     }
 }

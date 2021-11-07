@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Doctrine;
 
 use Doctrine\ORM\Mapping\NamingStrategy;
@@ -12,7 +13,7 @@ class AppNamingStrategy implements NamingStrategy
         } else {
             $className = 'pokemon_' . $className;
         }
-    
+
         return $this->underscore($className);
     }
 
@@ -21,9 +22,13 @@ class AppNamingStrategy implements NamingStrategy
         return $this->underscore($propertyName);
     }
 
-    public function embeddedFieldToColumnName($propertyName, $embeddedColumnName, $className = null, $embeddedClassName = null)
-    {
-        return $this->underscore($propertyName).'_'.$embeddedColumnName;
+    public function embeddedFieldToColumnName(
+        $propertyName,
+        $embeddedColumnName,
+        $className = null,
+        $embeddedClassName = null
+    ) {
+        return $this->underscore($propertyName) . '_' . $embeddedColumnName;
     }
 
     public function referenceColumnName()
@@ -33,7 +38,7 @@ class AppNamingStrategy implements NamingStrategy
 
     public function joinColumnName($propertyName, $className = null)
     {
-        return $this->underscore($propertyName). '_' . $this->referenceColumnName();
+        return $this->underscore($propertyName) . '_' . $this->referenceColumnName();
     }
 
     public function joinTableName($sourceEntity, $targetEntity, $propertyName = null)
@@ -48,11 +53,10 @@ class AppNamingStrategy implements NamingStrategy
                 ($referencedColumnName ?: $this->referenceColumnName()));
     }
 
-    // TODO 
+    // TODO
     private function underscore($string)
     {
         $string = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $string);
-
         return strtolower($string);
     }
 }

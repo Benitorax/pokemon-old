@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,22 +14,25 @@ class ModifyPasswordDTO
      * )
      */
     private $password;
-
     private $newPassword;
 
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = $password;
     }
 
-    public function getNewPassword() {
+    public function getNewPassword()
+    {
         return $this->newPassword;
     }
 
-    public function setNewPassword($newPassword) {
+    public function setNewPassword($newPassword)
+    {
         $this->newPassword = $newPassword;
     }
 }

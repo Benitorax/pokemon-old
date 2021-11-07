@@ -12,12 +12,13 @@ class PokemonApi extends PokeApi
 {
     private HabitatApi $habitatApi;
 
-    public function __construct(HttpClientInterface $client, HabitatApi $habitatApi) {
+    public function __construct(HttpClientInterface $client, HabitatApi $habitatApi)
+    {
         parent::__construct($client);
         $this->habitatApi = $habitatApi;
     }
-    
-    public function getNewPokemon($id) 
+
+    public function getNewPokemon($id)
     {
         $pokemon = new Pokemon();
 
@@ -45,13 +46,14 @@ class PokemonApi extends PokeApi
 
     public function checkNextEvolution(Pokemon $pokemon)
     {
-        $data = $this->fetch('evolution-chain/'.$pokemon->getEvolutionChainId());
+        $data = $this->fetch('evolution-chain/' . $pokemon->getEvolutionChainId());
         $data = $data['chain'];
         $data = $this->lookForEvolution($pokemon, $data);
 
-        if($data && $data['level'] <= $pokemon->getLevel())
-        {
-            if(!$data['level']) { $data['level'] = $pokemon->getLevel(); }
+        if ($data && $data['level'] <= $pokemon->getLevel()) {
+            if (!$data['level']) {
+                $data['level'] = $pokemon->getLevel();
+            }
             return $pokemon = $this->hydrateEvolvedPokemon($pokemon, $data['idNext'], $data['level']);
         }
 
@@ -60,23 +62,22 @@ class PokemonApi extends PokeApi
 
     public function lookForEvolution(Pokemon $pokemon, $data)
     {
-        if($data['evolves_to'])
-        {
+        if ($data['evolves_to']) {
             $data = $data['evolves_to'][rand(
-                0, count($data['evolves_to'])-1
+                0,
+                count($data['evolves_to']) - 1
             )];
             $level = $data['evolution_details'][0]['min_level'];
             $idNext = $this->getIdFromUrl($data['species']['url']);
 
-            if($idNext > 151) {
+            if ($idNext > 151) {
                 return false;
             }
 
-            if(
+            if (
                 (intval($idNext) < $pokemon->getApiId()
                 || intval($idNext) == $pokemon->getApiId())
-            )
-            {
+            ) {
                 $data = $this->lookForEvolution($pokemon, $data);
 
                 return $data;
@@ -93,35 +94,35 @@ class PokemonApi extends PokeApi
 
     public function getName($id)
     {
-        $data = $this->fetch('pokemon/'.$id);
+        $data = $this->fetch('pokemon/' . $id);
 
         return $data['name'];
     }
 
     public function getCaptureRate($id)
     {
-        $data = $this->fetch('pokemon-species/'.$id);
+        $data = $this->fetch('pokemon-species/' . $id);
 
         return $data['capture_rate'];
     }
 
     public function getSpriteFrontUrl($id)
     {
-        $data = $this->fetch('pokemon-form/'.$id);
+        $data = $this->fetch('pokemon-form/' . $id);
 
         return $data['sprites']['front_default'];
     }
-    
+
     public function getSpriteBackUrl($id)
     {
-        $data = $this->fetch('pokemon-form/'.$id);
+        $data = $this->fetch('pokemon-form/' . $id);
 
         return $data['sprites']['back_default'];
     }
 
     public function getEvolutionChainId($id)
     {
-        $data = $this->fetch('pokemon-species/'.$id);
+        $data = $this->fetch('pokemon-species/' . $id);
         $url = $data['evolution_chain']['url'];
         $id = $this->getIdFromUrl($url);
 
@@ -134,8 +135,7 @@ class PokemonApi extends PokeApi
 
         $id = $listId[array_rand($listId)];
         // To make Mew and Mewtwo less common, we have to get it twice
-        if(in_array($id, [150, 151])) 
-        {
+        if (in_array($id, [150, 151])) {
             $id = $listId[array_rand($listId)];
         }
 

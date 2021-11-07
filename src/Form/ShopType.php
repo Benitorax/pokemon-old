@@ -15,14 +15,14 @@ class ShopType extends AbstractType
         $builder
             ->add('pokeball', ChoiceType::class, [
                 'label' => 'Pokeball (10$)',
-                'choices' => range(0,100),
+                'choices' => range(0, 100),
                 'attr' => [
                     'class' => "custom-select"
                 ]
             ])
             ->add('healingPotion', ChoiceType::class, [
                 'label' => 'Healing potion (15$)',
-                'choices' => range(0,100),
+                'choices' => range(0, 100),
                 'attr' => [
                     'class' => "custom-select"
                 ]

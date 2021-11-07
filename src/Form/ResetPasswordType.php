@@ -20,7 +20,7 @@ class ResetPasswordType extends AbstractType
     {
         return ModifyPasswordType::class;
     }
-    
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

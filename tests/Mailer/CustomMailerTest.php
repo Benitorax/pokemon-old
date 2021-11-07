@@ -66,7 +66,6 @@ class CustomMailerTest extends TestCase
             ->method('send');
 
         $customMailer->sendMailToResetPassword($user);
-
     }
 
     public function testSendMailToConfirmResetPassword()
@@ -114,7 +113,6 @@ class CustomMailerTest extends TestCase
 
         $contactMessage = new ContactMessage();
         $customMailer->sendMailToAdminForNewMessage($contactMessage);
-
     }
 
     public function testSendMailForNewPokemonExchange()
@@ -128,7 +126,7 @@ class CustomMailerTest extends TestCase
             ->setEmail('sacha@mail.com')
             ->setUsername('Sacha');
         $exchange = new PokemonExchange();
-        
+
         $twig
             ->expects($this->any())
             ->method('render');
@@ -151,7 +149,7 @@ class CustomMailerTest extends TestCase
             ->setEmail('sacha@mail.com')
             ->setUsername('Sacha');
         $exchange = new PokemonExchange();
-        
+
         $twig
             ->expects($this->any())
             ->method('render');
@@ -161,7 +159,6 @@ class CustomMailerTest extends TestCase
             ->method('send');
 
         $customMailer->sendMailForEditPokemonExchange($user, $exchange);
-
     }
 
     public function testSendMailForRefusePokemonExchange()
@@ -175,7 +172,7 @@ class CustomMailerTest extends TestCase
             ->setEmail('sacha@mail.com')
             ->setUsername('Sacha');
         $exchange = new PokemonExchange();
-        
+
         $twig
             ->expects($this->any())
             ->method('render');
@@ -185,7 +182,6 @@ class CustomMailerTest extends TestCase
             ->method('send');
 
         $customMailer->sendMailForRefusePokemonExchange($user, $exchange);
-
     }
 
     public function testSendMailForAcceptPokemonExchange()
@@ -199,7 +195,7 @@ class CustomMailerTest extends TestCase
             ->setEmail('sacha@mail.com')
             ->setUsername('Sacha');
         $exchange = new PokemonExchange();
-        
+
         $twig
             ->expects($this->any())
             ->method('render');
@@ -209,6 +205,5 @@ class CustomMailerTest extends TestCase
             ->method('send');
 
         $customMailer->sendMailForAcceptPokemonExchange($user, $exchange);
-
     }
 }

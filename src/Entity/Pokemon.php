@@ -96,7 +96,7 @@ class Pokemon
     {
         $this->uuid = Uuid::v4();
     }
-    
+
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -129,7 +129,9 @@ class Pokemon
     public function increaseLevel(int $level): self
     {
         $this->level += $level;
-        if($this->level > 100) { $this->level = 100; }
+        if ($this->level > 100) {
+            $this->level = 100;
+        }
 
         return $this;
     }
@@ -257,9 +259,9 @@ class Pokemon
     public function decreaseHealthPoint(int $healthPoint): self
     {
         $this->healthPoint -= $healthPoint;
-        if($this->healthPoint <= 0) {
+        if ($this->healthPoint <= 0) {
             $this->healthPoint = 0;
-            $this->setIsSleep(true); 
+            $this->setIsSleep(true);
         }
 
         return $this;
@@ -268,7 +270,7 @@ class Pokemon
     public function increaseHealthPoint(int $healthPoint): self
     {
         $this->healthPoint += $healthPoint;
-        if($this->healthPoint > 100) {
+        if ($this->healthPoint > 100) {
             $this->healthPoint = 100;
         }
 

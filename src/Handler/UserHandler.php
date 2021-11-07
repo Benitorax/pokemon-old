@@ -18,28 +18,31 @@ class UserHandler
     private $pokExRepository;
     private $battleManager;
 
-    public function __construct(EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher, 
-                                PokeApiManager $pokeApiManager, PokemonExchangeRepository $pokExRepository,
-                                BattleManager $battleManager)
-    {
+    public function __construct(
+        EntityManagerInterface $manager,
+        UserPasswordHasherInterface $passwordHasher,
+        PokeApiManager $pokeApiManager,
+        PokemonExchangeRepository $pokExRepository,
+        BattleManager $battleManager
+    ) {
         $this->manager = $manager;
         $this->passwordHasher = $passwordHasher;
         $this->pokeApiManager = $pokeApiManager;
         $this->pokExRepository = $pokExRepository;
         $this->battleManager = $battleManager;
     }
-    
-    public function handle($data) 
+
+    public function handle($data)
     {
         $user = $this->createUserWithFirstPokemon($data);
-        
+
         $this->manager->persist($user);
         $this->manager->flush();
 
         return $user;
     }
 
-    public function createUserWithFirstPokemon($data) 
+    public function createUserWithFirstPokemon($data)
     {
         /** @var RegisterUserDTO $data */
         $pokemon = $this->pokeApiManager->getNewPokemon($data->getPokemonApiId());
@@ -58,7 +61,8 @@ class UserHandler
         return $user;
     }
 
-    public function modifyPassword($user, $newPassword) {
+    public function modifyPassword($user, $newPassword)
+    {
         $user->setPassword($this->passwordHasher->hashPassword(
             $user,
             $newPassword
@@ -66,11 +70,12 @@ class UserHandler
         $this->manager->flush();
     }
 
-    public function deleteUser($user) {
+    public function deleteUser($user)
+    {
         $this->battleManager->clearLastBattleOfTrainer($user);
-
         $pokExs = $this->pokExRepository->findAllByTrainer($user);
-        foreach($pokExs as $pokEx) {
+
+        foreach ($pokExs as $pokEx) {
             $this->manager->remove($pokEx);
         }
 

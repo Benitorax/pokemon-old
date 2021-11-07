@@ -61,7 +61,7 @@ class AdminController extends AbstractController
         return $this->json([
             'count' => $newContactMessageCount
         ]);
-    }  
+    }
 
     /**
      * @Route("/admin/messages/{id}/archive", name="admin_messages_archive", methods={"POST"})
@@ -98,7 +98,7 @@ class AdminController extends AbstractController
         $manager->flush();
         $this->addFlash('success', 'The message has been deleted.');
 
-        if($isRead) {
+        if ($isRead) {
             return $this->redirectToRoute('admin_messages_archived');
         } else {
             return $this->redirectToRoute('admin_messages_new');
@@ -133,8 +133,8 @@ class AdminController extends AbstractController
 
         $users = $userRepository->findAllInactivated();
         $onlyRealUsers = [];
-        foreach($users as $user) {
-            if(is_int(strpos($user->getEmail(), '@'))) {
+        foreach ($users as $user) {
+            if (is_int(strpos($user->getEmail(), '@'))) {
                 $onlyRealUsers[] = $user;
             }
         }
@@ -153,22 +153,22 @@ class AdminController extends AbstractController
 
         $users = $userRepository->findAllInactivated();
         $onlyRealUsers = [];
-        foreach($users as $user) {
-            if(is_int(strpos($user->getEmail(), '@')) && $user->getCreatedAt() < new \DateTime('- 1 month')) {
+        foreach ($users as $user) {
+            if (is_int(strpos($user->getEmail(), '@')) && $user->getCreatedAt() < new \DateTime('- 1 month')) {
                 $onlyRealUsers[] = $user;
             }
         }
 
-        if(count($onlyRealUsers) === 0) {
+        if (count($onlyRealUsers) === 0) {
             $this->addFlash('danger', 'No accounts have been created one month ago.');
-            return $this->redirectToRoute('admin_users_not_activated');    
+            return $this->redirectToRoute('admin_users_not_activated');
         }
 
-        foreach($onlyRealUsers as $user) {
+        foreach ($onlyRealUsers as $user) {
             $manager->remove($user);
             $manager->flush();
         }
-        
+
         $this->addFlash('success', 'All accounts created one month ago have been deleted with success.');
         return $this->redirectToRoute('admin_users_not_activated');
     }
@@ -208,5 +208,5 @@ class AdminController extends AbstractController
         $this->addFlash('success', 'The account has been deleted with success.');
 
         return $this->redirectToRoute('admin_users_activated');
-    }  
+    }
 }

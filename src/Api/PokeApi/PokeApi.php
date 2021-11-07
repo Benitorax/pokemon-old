@@ -15,28 +15,24 @@ class PokeApi
 
     public function fetch($endpoint)
     {
-        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/'.$endpoint);
+        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/' . $endpoint);
         $data = $response->getContent();
-        
+
         return $data = json_decode($data, true);
     }
 
     public function getPokemonsIdFromHabitat($habitatId)
     {
-        $data = $this->fetch('pokemon-habitat/'.$habitatId);
+        $data = $this->fetch('pokemon-habitat/' . $habitatId);
         $pokemonsData = $data['pokemon_species'];
         $listId = [];
 
-        foreach($pokemonsData as $pokemonData) 
-        {
+        foreach ($pokemonsData as $pokemonData) {
             $id = $this->getIdFromUrl($pokemonData['url']);
-            
-            if($id < 152)
-            {
+
+            if ($id < 152) {
                 $listId[] = $id;
-            } 
-            else 
-            {
+            } else {
                 break;
             }
         }
@@ -46,18 +42,14 @@ class PokeApi
 
     public function getIdFromUrl($url)
     {
-        $url = rtrim($url,"/");
+        $url = rtrim($url, "/");
         $length = strlen($url);
         $id = "";
 
-        for($i = $length-1 ; $i > strlen('https://pokeapi.co/api/v2/') ; $i--)
-        {
-            if($url[$i] !== "/")
-            {
+        for ($i = $length - 1; $i > strlen('https://pokeapi.co/api/v2/'); $i--) {
+            if ($url[$i] !== "/") {
                 $id = $url[$i] . $id;
-            } 
-            else 
-            {
+            } else {
                 break;
             }
         }

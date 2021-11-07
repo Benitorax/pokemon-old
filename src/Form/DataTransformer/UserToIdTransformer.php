@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form\DataTransformer;
 
 use App\Repository\UserRepository;
@@ -8,7 +9,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserToIdTransformer implements DataTransformerInterface
 {
     private $userRepository;
-
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
@@ -16,11 +16,11 @@ class UserToIdTransformer implements DataTransformerInterface
 
     public function transform($user)
     {
-        if($user === null) {
+        if ($user === null) {
             return '';
         }
 
-        if(!$user instanceof UserInterface) {
+        if (!$user instanceof UserInterface) {
             return '';
         }
 
@@ -29,16 +29,13 @@ class UserToIdTransformer implements DataTransformerInterface
 
     public function reverseTransform($id)
     {
-        if(!$id) {
+        if (!$id) {
             return;
         }
 
         $user = $this->userRepository->find($id);
-        if($user === null) {
-            throw new TransformationFailedException(sprintf(
-                'An User with id "%s" does not exist!',
-                $id
-            ));
+        if ($user === null) {
+            throw new TransformationFailedException(sprintf('An User with id "%s" does not exist!', $id));
         }
 
         return $user;

@@ -20,15 +20,21 @@ class TournamentController extends AbstractController
     {
         $pokemons = $pokemonRepository->findAllFullHPByTrainer($user = $this->getUser());
         $isAllowed = false;
-        if(count($pokemons) >= 3 ) {
+
+        if (count($pokemons) >= 3) {
             $isAllowed = true;
         }
 
         $wins = $user->getConsecutiveWin() % 3;
         $baseMessage = 'Ready for the ';
-        if($wins === 0) { $buttonMessage = $baseMessage.'first round'; }
-        elseif($wins === 1) { $buttonMessage = $baseMessage.'semi-final'; }
-        elseif($wins === 2) { $buttonMessage = $baseMessage.'final'; }
+
+        if ($wins === 0) {
+            $buttonMessage = $baseMessage . 'first round';
+        } elseif ($wins === 1) {
+            $buttonMessage = $baseMessage . 'semi-final';
+        } elseif ($wins === 2) {
+            $buttonMessage = $baseMessage . 'final';
+        }
 
         return $this->render('tournament/index.html.twig', [
             'isAllowed' => $isAllowed,
@@ -39,18 +45,21 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/battle", name="tournament_battle", methods={"GET"})
      */
-    public function battle(TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository, EntityManagerInterface $manager)
-    {
+    public function battle(
+        TournamentHandler $tournamentHandler,
+        PokemonRepository $pokemonRepository,
+        EntityManagerInterface $manager
+    ) {
         $user = $this->getUser();
         $pokemonsCount = $pokemonRepository->findAllFullHPByTrainerNumber($user);
         $csrfToken = \uniqid();
         $user->setCurrentGameId($csrfToken);
         $manager->flush();
 
-        if($pokemonsCount < 3) {
+        if ($pokemonsCount < 3) {
             return $this->redirectToRoute('tournament');
         }
-        
+
         $tournamentHandler->clear();
 
         return $this->render('tournament/battle.html.twig', [
@@ -64,7 +73,6 @@ class TournamentController extends AbstractController
     public function start(TournamentHandler $tournamentHandler, BattleFormManager $formManager)
     {
         $tournamentHandler->createBattle();
-
         $selectField = $formManager->createSelectPokemonFieldForTournament();
         $wins = $this->getUser()->getConsecutiveWin() % 3;
         $messages = [
@@ -77,7 +85,7 @@ class TournamentController extends AbstractController
             'opponent' => null,
             'player' => null,
             'messages' => $messages,
-            'centerImageUrl' => ['/images/round'.$wins.'.png'],
+            'centerImageUrl' => ['/images/round' . $wins . '.png'],
             'turn' => 'player',
             'healingPotionCount' => null,
             'pokeballCount' => null
@@ -87,12 +95,16 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/select-pokemon", name="tournament_pokemon_select", methods={"POST"})
      */
-    public function selectPokemon(Request $request, TournamentHandler $tournamentHandler, PokemonRepository $pokemonRepository)
-    {
+    public function selectPokemon(
+        Request $request,
+        TournamentHandler $tournamentHandler,
+        PokemonRepository $pokemonRepository
+    ) {
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -114,12 +126,16 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/attack", name="tournament_attack", methods={"POST"})
      */
-    public function attack(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
-    {
+    public function attack(
+        Request $request,
+        TournamentHandler $tournamentHandler,
+        PokemonSerializer $pokemonSerialiser
+    ) {
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -141,12 +157,16 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/heal", name="tournament_heal", methods={"POST"})
      */
-    public function heal(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
-    {
+    public function heal(
+        Request $request,
+        TournamentHandler $tournamentHandler,
+        PokemonSerializer $pokemonSerialiser
+    ) {
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -168,12 +188,16 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/throw-pokeball", name="tournament_pokeball_throw", methods={"POST"})
      */
-    public function throwPokeball(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
-    {
+    public function throwPokeball(
+        Request $request,
+        TournamentHandler $tournamentHandler,
+        PokemonSerializer $pokemonSerialiser
+    ) {
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -182,8 +206,10 @@ class TournamentController extends AbstractController
 
         return $this->json([
             'form' => $data['form'],
-            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            'player' => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'opponent' => $data['opponent'] ?
+                $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['player'] ?
+                $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             'turn' => $data['turn'],
@@ -195,12 +221,16 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/leave", name="tournament_leave", methods={"POST"})
      */
-    public function leave(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
-    {
+    public function leave(
+        Request $request,
+        TournamentHandler $tournamentHandler,
+        PokemonSerializer $pokemonSerialiser
+    ) {
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -209,8 +239,10 @@ class TournamentController extends AbstractController
 
         return $this->json([
             'form' => $data['form'],
-            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            'player' => $data['player'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'opponent' => $data['opponent'] ?
+                $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['player'] ?
+                $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
             'centerImageUrl' => null,
             'turn' => 'player',
@@ -222,12 +254,16 @@ class TournamentController extends AbstractController
     /**
      * @Route("/tournament/next", name="tournament_next", methods={"POST"})
      */
-    public function next(Request $request, TournamentHandler $tournamentHandler, PokemonSerializer $pokemonSerialiser)
-    {
+    public function next(
+        Request $request,
+        TournamentHandler $tournamentHandler,
+        PokemonSerializer $pokemonSerialiser
+    ) {
         $data = $request->getContent();
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -236,8 +272,10 @@ class TournamentController extends AbstractController
 
         return $this->json([
             'form' => $data['form'],
-            'opponent' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
-            'player' => $data['opponent'] ? $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
+            'opponent' => $data['opponent'] ?
+                $pokemonSerialiser->normalizeForBattle($data['opponent']->getCurrentFighter()) : null,
+            'player' => $data['opponent'] ?
+                $pokemonSerialiser->normalizeForBattle($data['player']->getCurrentFighter()) : null,
             'messages' => $data['messages'],
             'centerImageUrl' => isset($data['centerImageUrl']) ? $data['centerImageUrl'] : null,
             'turn' => 'player',
@@ -255,6 +293,7 @@ class TournamentController extends AbstractController
         /** stdclass */
         $data = json_decode($data);
         $csrfToken = $data->csrfToken;
+
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
@@ -267,7 +306,7 @@ class TournamentController extends AbstractController
             'opponent' => null,
             'player' => null,
             'messages' => $data['messages'],
-            'centerImageUrl' => ['/images/round'.$round.'.png'],
+            'centerImageUrl' => ['/images/round' . $round . '.png'],
             'turn' => 'player',
             'pokeballCount' => null,
             'healingPotionCount' => null

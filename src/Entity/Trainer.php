@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 class Trainer
@@ -34,19 +35,19 @@ class Trainer
         ],
         [
             'username' => 'Elio',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/0/05/Ultra_Sun_Ultra_Moon_Protagonist_male.png/179px-Ultra_Sun_Ultra_Moon_Protagonist_male.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/6/6e/Ultra_Sun_Ultra_Moon_Elio.png/179px-Ultra_Sun_Ultra_Moon_Elio.png',
         ],
         [
             'username' => 'Chase',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/6/62/Lets_Go_Pikachu_Eevee_Male_Trainer.png/159px-Lets_Go_Pikachu_Eevee_Male_Trainer.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/4/41/Lets_Go_Pikachu_Eevee_Chase.png/159px-Lets_Go_Pikachu_Eevee_Chase.png',
         ],
         [
             'username' => 'Victor',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/e/e5/Sword_Shield_Male_Trainer.png/90px-Sword_Shield_Male_Trainer.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/1/1f/Sword_Shield_Victor.png/90px-Sword_Shield_Victor.png'
         ],
         [
             'username' => 'Kris',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/e/e1/Crystal_Kris.png/135px-Crystal_Kris.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/e/e1/Crystal_Kris.png/132px-Crystal_Kris.png',
         ],
         [
             'username' => 'May',
@@ -78,15 +79,15 @@ class Trainer
         ],
         [
             'username' => 'Selene',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/2/21/Ultra_Sun_Ultra_Moon_Protagonist_female.png/154px-Ultra_Sun_Ultra_Moon_Protagonist_female.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/2/2a/Ultra_Sun_Ultra_Moon_Selene.png/154px-Ultra_Sun_Ultra_Moon_Selene.png',
         ],
         [
             'username' => 'Elaine',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/0/04/Lets_Go_Pikachu_Eevee_Female_Trainer.png/123px-Lets_Go_Pikachu_Eevee_Female_Trainer.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/b/b7/Lets_Go_Pikachu_Eevee_Elaine.png/123px-Lets_Go_Pikachu_Eevee_Elaine.png',
         ],
         [
             'username' => 'Gloria',
-            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/5/5e/Sword_Shield_Female_Trainer.png/117px-Sword_Shield_Female_Trainer.png',
+            'email' => 'https://cdn2.bulbagarden.net/upload/thumb/c/cd/Sword_Shield_Gloria.png/117px-Sword_Shield_Gloria.png',
         ],
     ];
 

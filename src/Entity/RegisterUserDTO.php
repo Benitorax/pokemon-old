@@ -130,7 +130,6 @@ class RegisterUserDTO implements UserInterface
 
     public function getRoles(): void
     {
-
     }
 
     public function getUserIdentifier(): string
@@ -144,19 +143,21 @@ class RegisterUserDTO implements UserInterface
     public function validate(ExecutionContextInterface $context, $payload)
     {
         $data = $this->userRepository->findAllEmailAndUsername();
-        
-        foreach($data['email'] as $email) {
-            if(strtolower($email) === strtolower($this->getEmail())) {
+
+        foreach ($data['email'] as $email) {
+            if (strtolower($email) === strtolower($this->getEmail())) {
                 $context->buildViolation('This email is already used.')
                 ->atPath('email')
-                ->addViolation();            }
+                ->addViolation();
+            }
         }
 
-        foreach($data['username'] as $username) {
-            if(strtolower($username) === strtolower($this->getUsername())) {
+        foreach ($data['username'] as $username) {
+            if (strtolower($username) === strtolower($this->getUsername())) {
                 $context->buildViolation('This username is already used.')
                 ->atPath('username')
-                ->addViolation();            }
+                ->addViolation();
+            }
         }
     }
 }

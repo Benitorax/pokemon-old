@@ -59,6 +59,6 @@ class BattleTeamRepository extends ServiceEntityRepository
         ->addSelect('p')
         ->getQuery()
         ->getOneOrNullResult()
-    ;
+        ;
     }
 }

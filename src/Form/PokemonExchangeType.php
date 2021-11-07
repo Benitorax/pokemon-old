@@ -44,8 +44,8 @@ class PokemonExchangeType extends AbstractType
                 'class' => Pokemon::class,
                 'label' => 'Proposed pokemon',
                 'query_builder' => $this->getQueryBuilderForPokemonField($options['user']),
-                'choice_label' => function($pokemon) {
-                    return $pokemon->getName().' (level '.$pokemon->getLevel().')';
+                'choice_label' => function ($pokemon) {
+                    return $pokemon->getName() . ' (level ' . $pokemon->getLevel() . ')';
                 },
             ])
             ->add('trainer2Show', EntityType::class, [
@@ -63,8 +63,8 @@ class PokemonExchangeType extends AbstractType
                 'class' => Pokemon::class,
                 'label' => 'Requested pokemon',
                 'query_builder' => $this->getQueryBuilderForPokemonField($options['trader']),
-                'choice_label' => function($pokemon) {
-                    return $pokemon->getName().' (level '.$pokemon->getLevel().')';
+                'choice_label' => function ($pokemon) {
+                    return $pokemon->getName() . ' (level ' . $pokemon->getLevel() . ')';
                 },
             ])
             ->add('submit', SubmitType::class, [
@@ -86,7 +86,8 @@ class PokemonExchangeType extends AbstractType
         ]);
     }
 
-    public function getQueryBuilderForPokemonField(UserInterface $user) {
+    public function getQueryBuilderForPokemonField(UserInterface $user)
+    {
         return $this->pokemonRepository->findPokemonsByTrainerQueryBuilder($user);
     }
 }

@@ -32,7 +32,7 @@ class ModifyPasswordType extends AbstractType
                         'max' => 40,
                         'minMessage' => "Your username must be at least {{ limit }} characters long",
                         'maxMessage' => "Your usernamename cannot be longer than {{ limit }} characters"
-                   
+
                     ])
                 ]
             ])

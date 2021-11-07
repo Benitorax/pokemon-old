@@ -96,7 +96,7 @@ class UserRepository extends ServiceEntityRepository
         $emailArray = [];
         $usernameArray = [];
 
-        foreach($resultArray as $result) {
+        foreach ($resultArray as $result) {
             $emailArray[] = $result['email'];
             $usernameArray[] = $result['username'];
         }

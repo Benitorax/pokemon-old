@@ -32,7 +32,7 @@ class Habitat
     {
         $this->uuid = Uuid::v4();
     }
-    
+
     public function getName(): ?string
     {
         return $this->name;

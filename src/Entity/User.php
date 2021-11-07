@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use EntityIdTrait;
-   
+
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -217,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
     public function usePokeball(): self
     {
         $this->pokeball--;
@@ -270,7 +270,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function useHealingPotion(): self
     {
-        if($this->healingPotion >= 1) {
+        if ($this->healingPotion >= 1) {
             $this->healingPotion -= 1;
         }
 

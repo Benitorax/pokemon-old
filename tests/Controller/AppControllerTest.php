@@ -16,7 +16,8 @@ class AppControllerTest extends CustomWebTestCase
         $this->assertSelectorTextContains('h1', 'Please sign in');
     }
 
-    public function testCreateAndActivateUser() {
+    public function testCreateAndActivateUser()
+    {
         $client = static::createClient();
         $client->request('GET', '/register');
 
@@ -47,7 +48,7 @@ class AppControllerTest extends CustomWebTestCase
         // Assert new user
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'sacha@mail.com']);
         $this->assertSame(false, $user->getIsActivated());
-        
+
         // Assert user inactivated
         $client->request('GET', '/login');
         $client->submitForm('Sign in', [
@@ -59,7 +60,7 @@ class AppControllerTest extends CustomWebTestCase
 
         // Assert user activated
         $token = $user->getToken()->toString();
-        $client->request('GET', '/email_confirm/?token='.$token);
+        $client->request('GET', '/email_confirm/?token=' . $token);
         $client->followRedirect();
         $this->assertContains('Thank you, your account is now activated', $client->getResponse()->getContent());
 
@@ -109,7 +110,7 @@ class AppControllerTest extends CustomWebTestCase
     {
         $misty = $this->createUserAndLogIn('Misty', 'misty@mail.com', '123456', 1);
         $ash = $this->createUserAndLogIn('Ash', 'ash@mail.com', '123456', 4);
-        
+
         $ash->request('GET', '/trainer/pokemons');
         $this->assertContains('Charmander', $ash->getResponse()->getContent());
         $misty->request('GET', '/trainer/pokemons');
@@ -121,12 +122,15 @@ class AppControllerTest extends CustomWebTestCase
         $ash->submitForm('Submit');
         $ash->followRedirect();
         $this->assertContains('Your request of pokemons exchange has been submit', $ash->getResponse()->getContent());
-        
+
         $misty->request('GET', '/exchange');
         $misty->clickLink('Modify');
         $misty->submitForm('Submit');
         $misty->followRedirect();
-        $this->assertContains('The modification of pokemons exchange has been submit', $misty->getResponse()->getContent());
+        $this->assertContains(
+            'The modification of pokemons exchange has been submit',
+            $misty->getResponse()->getContent()
+        );
 
         $ash->request('GET', '/exchange');
         $ash->clickLink('Accept');
@@ -139,6 +143,5 @@ class AppControllerTest extends CustomWebTestCase
         $this->assertContains('Charmander', $misty->getResponse()->getContent());
 
         //dump($ash->getResponse()->getContent());
-
     }
 }
