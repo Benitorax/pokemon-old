@@ -22,6 +22,7 @@ class TrainerController extends AbstractController
     public function profile()
     {
         $user = $this->getUser();
+
         return $this->render('trainer/profile.html.twig', [
             'user' => $user,
         ]);
@@ -93,7 +94,7 @@ class TrainerController extends AbstractController
     public function listPokemonExchange(PokemonExchangeRepository $pokExRepository) 
     {
         $pokemonExchanges = $pokExRepository->findAllByTrainer($this->getUser());
-        $csrfToken = $this->getUser()->getId()->toString();
+        $csrfToken = $this->getUser()->getId()->_toString();
 
         return $this->render('trainer/pokemon_exchange_list.html.twig', [
             'pokemonExchanges' => $pokemonExchanges,
@@ -143,7 +144,7 @@ class TrainerController extends AbstractController
      */
     public function acceptPokemonExchange(PokemonExchange $pokemonExchange, PokemonExchangeManager $pokExManager, $csrfToken) 
     {
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
@@ -158,7 +159,7 @@ class TrainerController extends AbstractController
      */
     public function refusePokemonExchange(PokemonExchange $pokemonExchange, PokemonExchangeManager $pokExManager, $csrfToken) 
     {
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 

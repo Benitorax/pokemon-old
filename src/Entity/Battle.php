@@ -2,21 +2,16 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use App\Entity\Traits\EntityIdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BattleRepository")
  */
 class Battle
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -56,9 +51,9 @@ class Battle
      */
     private $isEnd = false;
 
-    public function getId(): ?\Ramsey\Uuid\Lazy\LazyUuidFromString
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
     public function getType(): ?string

@@ -5,6 +5,6 @@ export function api_get(url) {
 export function api_post(url, data) {
     return axios.post(url, {
         csrfToken: data.csrfToken,
-        pokemonId: data.data
+        pokemonUuid: data.data
     });
 }

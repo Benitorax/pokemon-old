@@ -38,7 +38,7 @@ export function Message(props) {
                     { props.messages.length === 0 ? null :
                         transitions(({}, item) =>
                             {
-                                return <animated.div dangerouslySetInnerHTML={{__html: item.message}} style={props} key={item.id} className="text-center"/>;
+                                return <animated.div dangerouslySetInnerHTML={{__html: item.message}} style={props} className="text-center"/>;
                             }
                         )
                     }

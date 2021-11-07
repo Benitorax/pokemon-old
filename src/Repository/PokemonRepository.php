@@ -65,8 +65,8 @@ class PokemonRepository extends ServiceEntityRepository
     public function findPokemonsByTrainerQueryBuilder(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
-            ->setParameter('val', $user)
+            ->andWhere('p.trainer = :user')
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
         ;
     }
@@ -74,9 +74,9 @@ class PokemonRepository extends ServiceEntityRepository
     public function findReadyPokemonsByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
-            ->setParameter('val', $user)
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
             ->getQuery()
             ->getResult()
@@ -86,9 +86,9 @@ class PokemonRepository extends ServiceEntityRepository
     public function findReadyPokemonsByTrainerQueryBuilder(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
-            ->setParameter('val', $user)
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
         ;
     }
@@ -96,10 +96,10 @@ class PokemonRepository extends ServiceEntityRepository
     public function findAllFullHPByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
             ->andWhere('p.healthPoint = 100')
-            ->setParameter('val', $user)
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
             ->getQuery()
             ->getResult()
@@ -109,11 +109,11 @@ class PokemonRepository extends ServiceEntityRepository
     public function findAllFullHPByTrainerQueryBuilder(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
             ->andWhere('p.healthPoint = 100')
             ->andWhere('p.battleTeam is NULL')
-            ->setParameter('val', $user)
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
         ;
     }
@@ -122,10 +122,10 @@ class PokemonRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->select('count(p)')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
             ->andWhere('p.healthPoint = 100')
-            ->setParameter('val', $user)
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
             ->getQuery()
             ->getSingleScalarResult()

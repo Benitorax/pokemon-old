@@ -23,7 +23,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $messages = $messageRepository->findNewMessages();
-        $csrfToken = $this->getUser()->getId()->toString();
+        $csrfToken = $this->getUser()->getId()->_toString();
 
         return $this->render('admin/show_messages.html.twig', [
             'messages' => $messages,
@@ -40,7 +40,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $messages = $messageRepository->findReadMessages();
-        $csrfToken = $this->getUser()->getId()->toString();
+        $csrfToken = $this->getUser()->getId()->_toString();
 
         return $this->render('admin/show_messages.html.twig', [
             'messages' => $messages,
@@ -71,7 +71,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
@@ -90,7 +90,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
         $isRead = $message->getIsRead();
@@ -112,7 +112,7 @@ class AdminController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $csrfToken = $this->getUser()->getId()->toString();
+        $csrfToken = $this->getUser()->getId()->_toString();
 
         $users = $userRepository->findAllActivated();
 
@@ -129,7 +129,7 @@ class AdminController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $csrfToken = $this->getUser()->getId()->toString();
+        $csrfToken = $this->getUser()->getId()->_toString();
 
         $users = $userRepository->findAllInactivated();
         $onlyRealUsers = [];
@@ -181,7 +181,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 
@@ -200,7 +200,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $csrfToken = $request->request->get('token');
 
-        if (!$this->isCsrfTokenValid($this->getUser()->getId()->toString(), $csrfToken)) {
+        if (!$this->isCsrfTokenValid($this->getUser()->getId()->_toString(), $csrfToken)) {
             throw new AccessDeniedException('Forbidden.');
         }
 

@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\EntityIdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PokemonExchangeRepository")
@@ -15,12 +17,7 @@ class PokemonExchange
     const USER_REFUSE_CONTRACT = 'Refused';
     const USER_NO_ANSWER_CONTRACT = 'None';
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
@@ -71,11 +68,11 @@ class PokemonExchange
      */
     private $updatedAt;
 
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
-
+    
     public function getTrainer1(): ?User
     {
         return $this->trainer1;

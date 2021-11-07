@@ -4,7 +4,7 @@ import { Button } from './Button';
 export function Select(props) {
     let info = props.info;
 
-    const [pokemonSelected, setPokemonSelected] = useState(props.info.pokemons[0].id);
+    const [pokemonSelected, setPokemonSelected] = useState(props.info.pokemons[0].uuid);
 
     function handleChange(e) {
         setPokemonSelected(e.target.value);
@@ -15,14 +15,14 @@ export function Select(props) {
     }
 
     useEffect(() => {
-        setPokemonSelected(props.info.pokemons[0].id);
+        setPokemonSelected(props.info.pokemons[0].uuid);
     }, [props.info.pokemons]);
 
     return (
         <>
             <select id={info.name} name={info.name} className={info.className} onChange={ handleChange } >
                 { props.info.pokemons.map((pokemon) =>
-                    <option key={pokemon.id} value={pokemon.id}>{pokemon.name} (level {pokemon.level})</option>
+                    <option key={pokemon.uuid} value={pokemon.uuid}>{pokemon.name} (level {pokemon.level})</option>
                 ) }
             </select>
             <div>

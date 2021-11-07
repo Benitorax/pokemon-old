@@ -96,7 +96,7 @@ class TournamentController extends AbstractController
         if (!$this->isCsrfTokenValid($this->getUser()->getCurrentGameId(), $csrfToken)) {
             return $this->json([], 403);
         }
-        $pokemon = $pokemonRepository->find($data->pokemonId);
+        $pokemon = $pokemonRepository->findOneBy(['uuid' => $data->pokemonUuid]);
         $data = $tournamentHandler->handleSelectPokemon($pokemon);
 
         return $this->json([

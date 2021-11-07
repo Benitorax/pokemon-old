@@ -2,24 +2,24 @@
 
 namespace App\Entity;
 
-use Ramsey\Uuid\Uuid;
+use App\Entity\Traits\IdentifierTrait;
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PokemonRepository")
  */
 class Pokemon
 {
+    use IdentifierTrait;
+
     /**
-     * @ORM\Id()
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      * @Groups("selection")
      */
-    private $id;
+    private $uuid;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -92,9 +92,14 @@ class Pokemon
      */
     private $battleTeam;
 
-    public function getId(): ?\Ramsey\Uuid\Lazy\LazyUuidFromString
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
+    }
+    
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
     }
 
     public function getName(): ?string

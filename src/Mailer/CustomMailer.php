@@ -2,10 +2,10 @@
 namespace App\Mailer;
 
 use App\Entity\User;
-use Ramsey\Uuid\Uuid;
 use \Twig\Environment;
 use App\Entity\ContactMessage;
 use App\Entity\PokemonExchange;
+use Symfony\Component\Uid\Uuid;
 use App\Repository\UserRepository;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,7 +70,7 @@ class CustomMailer
             ->htmlTemplate('email/'.$template.'.html.twig')
             ->context([
                 'username' => $user->getUsername(),
-                'token' =>  $user->getToken() ? $user->getToken()->toString() : null
+                'token' =>  $user->getToken() ? $user->getToken()->__toString() : null
             ]);
     }
 
@@ -83,14 +83,14 @@ class CustomMailer
             ->htmlTemplate('email/'.$template.'.html.twig')
             ->context([
                 'username' => $user->getUsername(),
-                'token' =>  $user->getToken() ? $user->getToken()->toString() : null,
+                'token' =>  $user->getToken() ? $user->getToken()->_toString() : null,
                 'message' => $message
             ]);
     }
 
     public function setToken($user)
     {
-        $user->setToken(Uuid::uuid4());
+        $user->setToken(Uuid::v4());
         $user->setTokenCreatedAt(new \DateTime('now'));
         $this->manager->flush();
     }

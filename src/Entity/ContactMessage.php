@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\EntityIdTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -10,12 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ContactMessage
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -61,11 +58,11 @@ class ContactMessage
      */
     private $authorEmail;
 
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
-
+    
     public function getObject(): ?string
     {
         return $this->object;

@@ -2,23 +2,18 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BattleTeamRepository")
  */
 class BattleTeam
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="boolean")
@@ -53,11 +48,7 @@ class BattleTeam
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
-    }
-
-    public function getId(): ?\Ramsey\Uuid\Lazy\LazyUuidFromString
-    {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
     public function getHasNoMoreFighter(): ?bool
