@@ -33,27 +33,28 @@
         "version": "v0.5.3"
     },
     "doctrine/doctrine-bundle": {
-        "version": "2.2",
+        "version": "2.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.0",
-            "ref": "c3d09597f211294e75b221b1d97a9c22f74957e1"
+            "version": "2.4",
+            "ref": "032f52ed50a27762b78ca6a2aaf432958c473553"
         },
         "files": [
             "./config/packages/doctrine.yaml",
+            "./config/packages/test/doctrine.yaml",
             "./config/packages/prod/doctrine.yaml",
             "./src/Repository/.gitignore",
             "./src/Entity/.gitignore"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
-        "version": "2.2",
+        "version": "3.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.2",
-            "ref": "baaa439e3e3179e69e3da84b671f0a3e4a2f56ad"
+            "version": "3.1",
+            "ref": "ee609429c9ee23e22d6fa5728211768f51ed2818"
         },
         "files": [
             "./config/packages/doctrine_migrations.yaml",
@@ -110,12 +111,6 @@
     },
     "laminas/laminas-code": {
         "version": "4.0.0"
-    },
-    "laminas/laminas-eventmanager": {
-        "version": "3.3.0"
-    },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.1.1"
     },
     "lorenzo/pinky": {
         "version": "1.0.5"
