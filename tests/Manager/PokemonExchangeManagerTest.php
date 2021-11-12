@@ -9,6 +9,7 @@ use App\Entity\PokemonExchange;
 use PHPUnit\Framework\TestCase;
 use App\Manager\PokemonExchangeManager;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PokemonExchangeRepository;
 
 class PokemonExchangeManagerTest extends TestCase
 {
@@ -16,7 +17,8 @@ class PokemonExchangeManagerTest extends TestCase
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
-        $pokExManager = new PokemonExchangeManager($manager, $mailer);
+        $repository = $this->createMock(PokemonExchangeRepository::class);
+        $pokExManager = new PokemonExchangeManager($manager, $mailer, $repository);
 
         $mailer->expects($this->once())
             ->method('sendMailForNewPokemonExchange');
@@ -29,7 +31,7 @@ class PokemonExchangeManagerTest extends TestCase
         $pokemon2 = new Pokemon();
         $trainer1 = (new User())->addPokemon($pokemon1);
         $trainer2 = (new User())->addPokemon($pokemon2);
-        ;
+
         $pokemonExchange = (new PokemonExchange())->setPokemon1($pokemon1)->setPokemon2($pokemon2);
 
         $pokemonExchange = $pokExManager->createPokemonExchange($pokemonExchange);
@@ -48,12 +50,11 @@ class PokemonExchangeManagerTest extends TestCase
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
-        $pokExManager = new PokemonExchangeManager($manager, $mailer);
+        $repository = $this->createMock(PokemonExchangeRepository::class);
+        $pokExManager = new PokemonExchangeManager($manager, $mailer, $repository);
 
         $mailer->expects($this->once())
             ->method('sendMailForEditPokemonExchange');
-        //$manager->expects($this->once())
-        //    ->method('persist');
         $manager->expects($this->once())
             ->method('flush');
 
@@ -61,7 +62,7 @@ class PokemonExchangeManagerTest extends TestCase
         $pokemon2 = new Pokemon();
         $trainer1 = (new User())->addPokemon($pokemon1);
         $trainer2 = (new User())->addPokemon($pokemon2);
-        ;
+
         $pokemonExchange = (new PokemonExchange())
             ->setPokemon1($pokemon1)->setPokemon2($pokemon2)
             ->setTrainer1($trainer1)->setTrainer2($trainer2)
@@ -84,11 +85,12 @@ class PokemonExchangeManagerTest extends TestCase
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
-        $pokExManager = new PokemonExchangeManager($manager, $mailer);
+        $repository = $this->createMock(PokemonExchangeRepository::class);
+        $pokExManager = new PokemonExchangeManager($manager, $mailer, $repository);
 
         $mailer->expects($this->once())
             ->method('sendMailForAcceptPokemonExchange');
-        $manager->expects($this->once())
+        $manager->expects($this->any())
             ->method('remove');
         $manager->expects($this->once())
             ->method('flush');
@@ -115,7 +117,8 @@ class PokemonExchangeManagerTest extends TestCase
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $mailer = $this->createMock(CustomMailer::class);
-        $pokExManager = new PokemonExchangeManager($manager, $mailer);
+        $repository = $this->createMock(PokemonExchangeRepository::class);
+        $pokExManager = new PokemonExchangeManager($manager, $mailer, $repository);
 
         $mailer->expects($this->once())
             ->method('sendMailForRefusePokemonExchange');

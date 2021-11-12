@@ -8,6 +8,7 @@ use App\Form\CheckEmailType;
 use App\Handler\UserHandler;
 use App\Mailer\CustomMailer;
 use App\Form\ResetPasswordType;
+use App\ReCaptcha\ReCaptchaService;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,7 +53,7 @@ class SecurityController extends AbstractController
         UserHandler $userHandler,
         CustomMailer $mailer,
         UserRepository $userRepository,
-        \ReCaptcha\ReCaptcha $reCaptcha
+        ReCaptchaService $reCaptcha
     ): Response {
         if ($this->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('app_index');
@@ -63,10 +64,9 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $gRecaptchaResponse = $request->get('g-recaptcha-response');
-            $response = $reCaptcha->verify($gRecaptchaResponse);
+            $reCaptcha->handleResponse($request->get('g-recaptcha-response'));
 
-            if ($response->getScore() > 0.5) {
+            if ($reCaptcha->isResponseValid(0.5)) {
                 $user = $userHandler->handle($form->getData());
                 $mailer->sendMailAfterRegistration($user);
                 $this->addFlash(
@@ -107,7 +107,7 @@ class SecurityController extends AbstractController
             $this->addFlash('danger', 'Your account has been deleted, you need to register again');
         }
 
-        return $this->redirectToRoute('app_index');
+        return $this->redirectToRoute('app_login');
     }
 
     /**
@@ -117,16 +117,15 @@ class SecurityController extends AbstractController
         Request $request,
         UserRepository $userRepository,
         CustomMailer $mailer,
-        \ReCaptcha\ReCaptcha $reCaptcha
+        ReCaptchaService $reCaptcha
     ): Response {
         $emailForm = $this->createForm(CheckEmailType::class);
         $emailForm->handleRequest($request);
 
         if ($emailForm->isSubmitted() && $emailForm->isValid()) {
-            $gRecaptchaResponse = $request->get('g-recaptcha-response');
-            $response = $reCaptcha->verify($gRecaptchaResponse);
+            $reCaptcha->handleResponse($request->get('g-recaptcha-response'));
 
-            if ($response->getScore() > 0.5) {
+            if ($reCaptcha->isResponseValid(0.5)) {
                 $email = $emailForm->getData()['email'];
                 $user = $userRepository->findOneIsActivatedByEmail($email);
 

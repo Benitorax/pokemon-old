@@ -10,6 +10,7 @@ use App\Form\ContactMessageType;
 use App\Form\ModifyPasswordType;
 use App\Entity\ModifyPasswordDTO;
 use App\Manager\ContactMessageManager;
+use App\ReCaptcha\ReCaptchaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,7 +80,7 @@ class AppController extends AbstractController
         Request $request,
         UserHandler $userHandler,
         TokenStorageInterface $tokenStorage,
-        \ReCaptcha\ReCaptcha $reCaptcha
+        ReCaptchaService $reCaptcha
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -87,10 +88,9 @@ class AppController extends AbstractController
         $deleteAccountForm->handleRequest($request);
 
         if ($deleteAccountForm->isSubmitted() && $deleteAccountForm->isValid()) {
-            $gRecaptchaResponse = $request->get('g-recaptcha-response');
-            $response = $reCaptcha->verify($gRecaptchaResponse);
+            $reCaptcha->handleResponse($request->get('g-recaptcha-response'));
 
-            if ($response->getScore() > 0.5) {
+            if ($reCaptcha->isResponseValid(0.5)) {
                 /** @var User */
                 $user = $this->getUser();
                 $userHandler->deleteUser($user);
@@ -116,16 +116,15 @@ class AppController extends AbstractController
         Request $request,
         ContactMessageManager $messageManager,
         CustomMailer $mailer,
-        \ReCaptcha\ReCaptcha $reCaptcha
+        ReCaptchaService $reCaptcha
     ): Response {
         $contactForm = $this->createForm(ContactMessageType::class);
         $contactForm->handleRequest($request);
 
         if ($contactForm->isSubmitted() && $contactForm->isValid()) {
-            $gRecaptchaResponse = $request->get('g-recaptcha-response');
-            $response = $reCaptcha->verify($gRecaptchaResponse);
+            $reCaptcha->handleResponse($request->get('g-recaptcha-response'));
 
-            if ($response->getScore() > 0.5) {
+            if ($reCaptcha->isResponseValid(0.5)) {
                 $message = $messageManager->createContactMessage($contactForm->getData());
                 $this->addFlash('success', 'Your message has been sent.');
                 $mailer->sendMailToAdminForNewMessage($message);

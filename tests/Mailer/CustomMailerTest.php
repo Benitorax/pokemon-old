@@ -2,25 +2,25 @@
 
 namespace App\Tests\Mailer;
 
+use App\Entity\User;
+use Twig\Environment;
+use App\Mailer\CustomMailer;
 use App\Entity\ContactMessage;
 use App\Entity\PokemonExchange;
-use App\Entity\User;
-use App\Mailer\CustomMailer;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Uid\Uuid;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Mailer\MailerInterface;
-use Twig\Environment;
 
 class CustomMailerTest extends TestCase
 {
     public function testSendMailAfterRegistration()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $user = (new User())
             ->setEmail('sacha@mail.com')
@@ -29,10 +29,6 @@ class CustomMailerTest extends TestCase
         $manager
             ->expects($this->once())
             ->method('flush');
-
-        $twig
-            ->expects($this->once())
-            ->method('render');
 
         $mailer
             ->expects($this->once())
@@ -44,10 +40,9 @@ class CustomMailerTest extends TestCase
     public function testSendMailToResetPassword()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $user = (new User())
             ->setEmail('sacha@mail.com')
@@ -56,10 +51,6 @@ class CustomMailerTest extends TestCase
         $manager
             ->expects($this->once())
             ->method('flush');
-
-        $twig
-            ->expects($this->once())
-            ->method('render');
 
         $mailer
             ->expects($this->once())
@@ -71,18 +62,16 @@ class CustomMailerTest extends TestCase
     public function testSendMailToConfirmResetPassword()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $user = (new User())
             ->setEmail('sacha@mail.com')
-            ->setUsername('Sacha');
-
-        $twig
-            ->expects($this->once())
-            ->method('render');
+            ->setUsername('Sacha')
+            ->setToken(Uuid::v4())
+            ->setTokenCreatedAt(new \DateTime('now'))
+        ;
 
         $mailer
             ->expects($this->once())
@@ -94,18 +83,13 @@ class CustomMailerTest extends TestCase
     public function testSendMailToAdminForNewMessage()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $userRepository
             ->expects($this->once())
             ->method('findAllAdmin');
-
-        $twig
-            ->expects($this->any())
-            ->method('render');
 
         $mailer
             ->expects($this->any())
@@ -118,22 +102,18 @@ class CustomMailerTest extends TestCase
     public function testSendMailForNewPokemonExchange()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
-        $user = (new User())
-            ->setEmail('sacha@mail.com')
-            ->setUsername('Sacha');
-        $exchange = new PokemonExchange();
-
-        $twig
-            ->expects($this->any())
-            ->method('render');
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $mailer
             ->expects($this->once())
             ->method('send');
+
+        $user = (new User())
+            ->setEmail('sacha@mail.com')
+            ->setUsername('Sacha');
+        $exchange = new PokemonExchange();
 
         $customMailer->sendMailForNewPokemonExchange($user, $exchange);
     }
@@ -141,22 +121,18 @@ class CustomMailerTest extends TestCase
     public function testSendMailForEditPokemonExchange()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
-        $user = (new User())
-            ->setEmail('sacha@mail.com')
-            ->setUsername('Sacha');
-        $exchange = new PokemonExchange();
-
-        $twig
-            ->expects($this->any())
-            ->method('render');
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $mailer
             ->expects($this->once())
             ->method('send');
+
+        $user = (new User())
+            ->setEmail('sacha@mail.com')
+            ->setUsername('Sacha');
+        $exchange = new PokemonExchange();
 
         $customMailer->sendMailForEditPokemonExchange($user, $exchange);
     }
@@ -164,22 +140,18 @@ class CustomMailerTest extends TestCase
     public function testSendMailForRefusePokemonExchange()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
-        $user = (new User())
-            ->setEmail('sacha@mail.com')
-            ->setUsername('Sacha');
-        $exchange = new PokemonExchange();
-
-        $twig
-            ->expects($this->any())
-            ->method('render');
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $mailer
             ->expects($this->once())
             ->method('send');
+
+        $user = (new User())
+            ->setEmail('sacha@mail.com')
+            ->setUsername('Sacha');
+        $exchange = new PokemonExchange();
 
         $customMailer->sendMailForRefusePokemonExchange($user, $exchange);
     }
@@ -187,22 +159,18 @@ class CustomMailerTest extends TestCase
     public function testSendMailForAcceptPokemonExchange()
     {
         $mailer = $this->createMock(MailerInterface::class);
-        $twig = $this->createMock(Environment::class);
         $manager = $this->createMock(EntityManagerInterface::class);
         $userRepository = $this->createMock(UserRepository::class);
-        $customMailer = new CustomMailer($mailer, $twig, $manager, $userRepository);
-        $user = (new User())
-            ->setEmail('sacha@mail.com')
-            ->setUsername('Sacha');
-        $exchange = new PokemonExchange();
-
-        $twig
-            ->expects($this->any())
-            ->method('render');
+        $customMailer = new CustomMailer($mailer, $manager, $userRepository);
 
         $mailer
             ->expects($this->once())
             ->method('send');
+
+        $user = (new User())
+            ->setEmail('sacha@mail.com')
+            ->setUsername('Sacha');
+        $exchange = new PokemonExchange();
 
         $customMailer->sendMailForAcceptPokemonExchange($user, $exchange);
     }

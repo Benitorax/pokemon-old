@@ -16,7 +16,7 @@ class AppWebTestCase extends PantherTestCase
     {
         self::createClient();
         self::initDatabase();
-        // self::purgeDatabase();
+        self::purgeDatabase();
         // self::loadFixtures();
         self::ensureKernelShutdown();
     }
@@ -37,7 +37,7 @@ class AppWebTestCase extends PantherTestCase
      */
     private static function loadFixtures(): void
     {
-        self::getService(AppFixtures::class)->load(self::getEntityManager());
+        // self::getService(AppFixtures::class)->load(self::getEntityManager());
     }
 
     /**

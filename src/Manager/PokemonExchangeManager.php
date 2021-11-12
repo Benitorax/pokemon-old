@@ -85,11 +85,14 @@ class PokemonExchangeManager
         // $this->manager->flush();
     }
 
+    /**
+     * Remove pokemon exchange that contains any of the pokemons in the given pokemon exchange.
+     */
     private function removeInvalidPokemonExchange(PokemonExchange $pokemonExchange): void
     {
         $pokemon1 = $pokemonExchange->getPokemon1();
         $pokemon2 = $pokemonExchange->getPokemon2();
-        $pokemonExchanges = $this->pokExRepository->findAll();
+        $pokemonExchanges = $this->pokExRepository->findAll() ?: [];
         $pokemonExchangesToDelete = [];
 
         foreach ($pokemonExchanges as $pokemonExchange) {
@@ -110,7 +113,6 @@ class PokemonExchangeManager
 
     public function removeInvalidPokemonExchangeWithPokemon(Pokemon $pokemon): void
     {
-
         $pokemonExchanges = $this->pokExRepository->findAll();
         $pokemonExchangesToDelete = [];
 
