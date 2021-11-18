@@ -15,9 +15,6 @@ class ReCaptchaService
      */
     public const THRESHOLD = 0.5;
 
-    /**
-     * @param null|float|int $threshold is the minimum score to be valid.
-     */
     public function __construct(ReCaptcha $reCaptcha)
     {
         $this->reCaptcha = $reCaptcha;

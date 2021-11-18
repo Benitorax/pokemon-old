@@ -14,28 +14,25 @@ class ContactMessage
 {
     use EntityIdTrait;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 5,
-     *      max = 50,
-     *      minMessage = "Your object name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your object name cannot be longer than {{ limit }} characters"
-     * )
-     */
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 5,
+        max: 50,
+        minMessage: 'Your object name must be at least {{ limit }} characters long',
+        maxMessage: 'Your object name cannot be longer than {{ limit }} characters'
+    )]
     private string $object;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 10,
-     *      max = 400,
-     *      minMessage = "Your content name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your content name cannot be longer than {{ limit }} characters"
-     * )
      */
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 10,
+        max: 400,
+        minMessage: 'Your content name must be at least {{ limit }} characters long',
+        maxMessage: 'Your content name cannot be longer than {{ limit }} characters'
+    )]
     private string $content;
 
     /**

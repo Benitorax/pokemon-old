@@ -83,12 +83,10 @@ class PokemonApi extends PokeApi
             }
 
             if (
-                (intval($idNext) < $pokemon->getApiId()
-                || intval($idNext) == $pokemon->getApiId())
+                $idNext < $pokemon->getApiId()
+                || $idNext == $pokemon->getApiId()
             ) {
-                $data = $this->lookForEvolution($pokemon, $data);
-
-                return $data;
+                return $this->lookForEvolution($pokemon, $data);
             }
 
             return [
@@ -132,16 +130,15 @@ class PokemonApi extends PokeApi
     {
         $data = $this->fetch('pokemon-species/' . $id);
         $url = $data['evolution_chain']['url'];
-        $id = $this->getIdFromUrl($url);
 
-        return $id;
+        return $this->getIdFromUrl($url);
     }
 
     public function getRandomPokemonFromHabitat(Habitat $habitat): Pokemon
     {
         $listId = $this->getPokemonIdsFromHabitat($habitat->getApiId());
-
         $id = $listId[array_rand($listId)];
+
         // To make Mew and Mewtwo less common, we have to get it twice
         if (in_array($id, [150, 151])) {
             $id = $listId[array_rand($listId)];

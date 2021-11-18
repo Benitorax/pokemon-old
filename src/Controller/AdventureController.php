@@ -16,9 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdventureController extends AbstractController
 {
-    /**
-     * @Route("/adventure/", name="adventure", methods={"GET"})
-     */
+    #[Route(path: '/adventure/', name: 'adventure', methods: ['GET'])]
     public function index(AdventureHandler $adventureHandler, EntityManagerInterface $manager): Response
     {
         $adventureHandler->clear();
@@ -34,15 +32,14 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/start", name="adventure_start", methods={"GET"})
-     */
+    #[Route(path: '/adventure/start', name: 'adventure_start', methods: ['GET'])]
     public function start(PokemonRepository $pokemonRepository, BattleFormManager $formManager): Response
     {
         /** @var User */
         $user = $this->getUser();
+        $pokemons = $pokemonRepository->findReadyPokemonsByTrainer($user);
 
-        if (count($pokemonRepository->findReadyPokemonsByTrainer($user)) === 0) {
+        if ($pokemons === [] || $pokemons === null) {
             $messages = [
                 'messages' => [
                     'You need at least one pokemon to go on adventure',
@@ -72,9 +69,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/travel", name="adventure_travel", methods={"POST"})
-     */
+    #[Route(path: '/adventure/travel', name: 'adventure_travel', methods: ['POST'])]
     public function travel(
         Request $request,
         PokemonRepository $pokemonRepository,
@@ -83,8 +78,8 @@ class AdventureController extends AbstractController
     ): Response {
         /** @var User */
         $user = $this->getUser();
-
-        if (count($pokemonRepository->findReadyPokemonsByTrainer($user)) === 0) {
+        $pokemons = $pokemonRepository->findReadyPokemonsByTrainer($user);
+        if ($pokemons === [] || $pokemons === null) {
             $messages = [
                 'messages' => [
                     'You need at least one pokemon to go on adventure.',
@@ -125,9 +120,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/select-pokemon", name="adventure_pokemon_select", methods={"POST"})
-     */
+    #[Route(path: '/adventure/select-pokemon', name: 'adventure_pokemon_select', methods: ['POST'])]
     public function selectPokemon(
         Request $request,
         AdventureHandler $adventureHandler,
@@ -162,9 +155,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/attack", name="adventure_attack", methods={"POST"})
-     */
+    #[Route(path: '/adventure/attack', name: 'adventure_attack', methods: ['POST'])]
     public function attack(
         Request $request,
         AdventureHandler $adventureHandler,
@@ -196,9 +187,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/heal", name="adventure_heal", methods={"POST"})
-     */
+    #[Route(path: '/adventure/heal', name: 'adventure_heal', methods: ['POST'])]
     public function heal(
         Request $request,
         AdventureHandler $adventureHandler,
@@ -230,9 +219,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/throw-pokeball", name="adventure_pokeball_throw", methods={"POST"})
-     */
+    #[Route(path: '/adventure/throw-pokeball', name: 'adventure_pokeball_throw', methods: ['POST'])]
     public function throwPokeball(
         Request $request,
         AdventureHandler $adventureHandler,
@@ -266,9 +253,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/leave", name="adventure_leave", methods={"POST"})
-     */
+    #[Route(path: '/adventure/leave', name: 'adventure_leave', methods: ['POST'])]
     public function leave(
         Request $request,
         AdventureHandler $adventureHandler,
@@ -302,9 +287,7 @@ class AdventureController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/adventure/next", name="adventure_next", methods={"POST"})
-     */
+    #[Route(path: '/adventure/next', name: 'adventure_next', methods: ['POST'])]
     public function next(
         Request $request,
         AdventureHandler $adventureHandler,

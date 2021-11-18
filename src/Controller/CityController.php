@@ -15,9 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CityController extends AbstractController
 {
-    /**
-     * @Route("/city", name="city", methods={"GET","POST"})
-     */
+    #[Route(path: '/city', name: 'city', methods: ['GET', 'POST'])]
     public function index(
         Request $request,
         CityHandler $cityHandler,
@@ -52,9 +50,7 @@ class CityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/city/association-trainer/help", name="city_association_trainer_help", methods={"GET"})
-     */
+    #[Route(path: '/city/association-trainer/help', name: 'city_association_trainer_help', methods: ['GET'])]
     public function trainerAssociationHelp(
         EntityManagerInterface $manager,
         PokemonRepository $pokemonRepository

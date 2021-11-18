@@ -28,7 +28,9 @@ class HabitatApi extends PokeApi
 
     public function getHabitat(int $id): Habitat
     {
-        if ($habitat = $this->habitatRepository->findOneBy(['apiId' => $id])) {
+        $habitat = $this->habitatRepository->findOneBy(['apiId' => $id]);
+
+        if (null !== $habitat) {
             return $habitat;
         }
 

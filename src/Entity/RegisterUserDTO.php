@@ -9,43 +9,32 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RegisterUserDTO implements UserInterface
 {
-    /**
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 3,
-     *      max = 40,
-     *      minMessage = "Your username must be at least {{ limit }} characters long",
-     *      maxMessage = "Your username cannot be longer than {{ limit }} characters"
-     * )
-     */
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 40,
+        minMessage: 'Your username must be at least {{ limit }} characters long',
+        maxMessage: 'Your username cannot be longer than {{ limit }} characters'
+    )]
     private string $username;
 
-    /**
-     * @Assert\NotBlank
-     * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email.",
-     * )
-     */
+    #[Assert\NotBlank]
+    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
     private string $email;
 
     /**
      * @var string The hashed password
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 6,
-     *      max = 40,
-     *      minMessage = "Your password must be at least {{ limit }} characters long",
-     *      maxMessage = "Your password cannot be longer than {{ limit }} characters"
-     * )
-
      */
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 6,
+        max: 40,
+        minMessage: 'Your password must be at least {{ limit }} characters long',
+        maxMessage: 'Your password cannot be longer than {{ limit }} characters'
+    )]
     private string $password;
 
-    /**
-     * @Assert\NotBlank(
-     *      message = "You must choose a pokemon"
-     * )
-     */
+    #[Assert\NotBlank(message: 'You must choose a pokemon')]
     private int $pokemonApiId;
 
     private UserRepository $userRepository;
@@ -74,7 +63,7 @@ class RegisterUserDTO implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     public function setUsername(string $username): self
@@ -89,7 +78,7 @@ class RegisterUserDTO implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -143,13 +132,12 @@ class RegisterUserDTO implements UserInterface
     }
 
     /**
-     * @Assert\Callback
      * @param mixed $payload
      */
+    #[Assert\Callback]
     public function validate(ExecutionContextInterface $context, $payload): void
     {
         $data = $this->userRepository->findAllEmailAndUsername();
-
         foreach ($data['email'] as $email) {
             if (strtolower((string) $email) === strtolower($this->getEmail())) {
                 $context->buildViolation('This email is already used.')
@@ -157,7 +145,6 @@ class RegisterUserDTO implements UserInterface
                 ->addViolation();
             }
         }
-
         foreach ($data['username'] as $username) {
             if (strtolower($username) === strtolower($this->getUsername())) {
                 $context->buildViolation('This username is already used.')

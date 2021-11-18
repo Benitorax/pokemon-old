@@ -16,9 +16,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminController extends AbstractController
 {
-    /**
-     * @Route("/admin/messages/new", name="admin_messages_new", methods={"GET"})
-     */
+    #[Route(path: '/admin/messages/new', name: 'admin_messages_new', methods: ['GET'])]
     public function showNewMessages(ContactMessageRepository $messageRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -35,9 +33,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/admin/messages/archived", name="admin_messages_archived", methods={"GET"})
-     */
+    #[Route(path: '/admin/messages/archived', name: 'admin_messages_archived', methods: ['GET'])]
     public function showArchivedMessages(ContactMessageRepository $messageRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -54,9 +50,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/admin/messages/new/count", name="admin_message_new_count", methods={"GET"})
-     */
+    #[Route(path: '/admin/messages/new/count', name: 'admin_message_new_count', methods: ['GET'])]
     public function getNewContactMessageCount(ContactMessageRepository $contactMessageRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -68,9 +62,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/admin/messages/{id}/archive", name="admin_messages_archive", methods={"POST"})
-     */
+    #[Route(path: '/admin/messages/{id}/archive', name: 'admin_messages_archive', methods: ['POST'])]
     public function archiveMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -90,9 +82,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_messages_new');
     }
 
-    /**
-     * @Route("/admin/messages/{id}/delete", name="admin_messages_delete", methods={"POST"})
-     */
+    #[Route(path: '/admin/messages/{id}/delete', name: 'admin_messages_delete', methods: ['POST'])]
     public function deleteMessage(Request $request, ContactMessage $message, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -117,9 +107,7 @@ class AdminController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/admin/users/activated", name="admin_users_activated", methods={"GET"})
-     */
+    #[Route(path: '/admin/users/activated', name: 'admin_users_activated', methods: ['GET'])]
     public function showActivatedUsers(UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -135,9 +123,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/admin/user/inactivated", name="admin_users_not_activated", methods={"GET"})
-     */
+    #[Route(path: '/admin/user/inactivated', name: 'admin_users_not_activated', methods: ['GET'])]
     public function showInactivatedUsers(UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -159,9 +145,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/admin/user/expired-1-month/delete", name="admin_users_not_activated_delete", methods={"GET"})
-     */
+    #[Route(path: '/admin/user/expired-1-month/delete', name: 'admin_users_not_activated_delete', methods: ['GET'])]
     public function deleteAllInactivatedUsers(EntityManagerInterface $manager, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -174,7 +158,7 @@ class AdminController extends AbstractController
             }
         }
 
-        if (count($onlyRealUsers) === 0) {
+        if ($onlyRealUsers === [] || $onlyRealUsers === null) {
             $this->addFlash('danger', 'No accounts have been created one month ago.');
             return $this->redirectToRoute('admin_users_not_activated');
         }
@@ -188,9 +172,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_users_not_activated');
     }
 
-    /**
-     * @Route("/admin/user/inactivated/{id}/delete", name="admin_user_inactivated_delete", methods={"POST"})
-     */
+    #[Route(path: '/admin/user/inactivated/{id}/delete', name: 'admin_user_inactivated_delete', methods: ['POST'])]
     public function deleteInactivatedUser(Request $request, User $user, EntityManagerInterface $manager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -210,9 +192,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_users_not_activated');
     }
 
-    /**
-     * @Route("/admin/user/{id}/delete}", name="admin_user_delete", methods={"POST"})
-     */
+    #[Route(path: '/admin/user/{id}/delete}', name: 'admin_user_delete', methods: ['POST'])]
     public function deleteUser(Request $request, User $user, UserHandler $userHandler): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');

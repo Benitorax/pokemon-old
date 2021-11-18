@@ -66,8 +66,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="datetime")
+     * @var \DateTime|\DateTimeImmutable
      */
-    private \DateTime $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="uuid", nullable=true)
@@ -76,8 +77,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    private ?\DateTime $tokenCreatedAt;
+    private ?\DateTimeInterface $tokenCreatedAt;
 
     /**
      * @ORM\Column(type="integer")
@@ -119,7 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     public function setUsername(string $username): self
@@ -153,7 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -297,12 +299,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable
+     */
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    /**
+     * @param \DateTime|\DateTimeImmutable $createdAt
+     */
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -321,12 +329,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTokenCreatedAt(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getTokenCreatedAt(): ?\DateTimeInterface
     {
         return $this->tokenCreatedAt;
     }
 
-    public function setTokenCreatedAt(?\DateTime $tokenCreatedAt): self
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $tokenCreatedAt
+     */
+    public function setTokenCreatedAt(?\DateTimeInterface $tokenCreatedAt): self
     {
         $this->tokenCreatedAt = $tokenCreatedAt;
 

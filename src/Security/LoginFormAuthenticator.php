@@ -44,7 +44,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             new UserBadge($email, function ($userIdentifier) {
                 $user = $this->repository->findOneIsActivatedByEmail($userIdentifier);
 
-                if (!$user) {
+                if (!$user instanceof \App\Entity\User) {
                     throw new UserNotFoundException();
                 }
 

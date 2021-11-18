@@ -17,9 +17,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TrainerController extends AbstractController
 {
-    /**
-     * @Route("/trainer/", name="trainer_profile", methods={"GET"})
-     */
+    #[Route(path: '/trainer/', name: 'trainer_profile', methods: ['GET'])]
     public function profile(): Response
     {
         $user = $this->getUser();
@@ -29,9 +27,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/trainer/pokemons", name="trainer_pokemons", methods={"GET"})
-     */
+    #[Route(path: '/trainer/pokemons', name: 'trainer_pokemons', methods: ['GET'])]
     public function listPokemons(PokemonRepository $repository): Response
     {
         /** @var User */
@@ -43,9 +39,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/trainer/list", name="trainer_list", methods={"GET"})
-     */
+    #[Route(path: '/trainer/list', name: 'trainer_list', methods: ['GET'])]
     public function showTrainers(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAllActivated();
@@ -55,9 +49,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/trainer/{id}", name="trainer_show", methods={"GET"})
-     */
+    #[Route(path: '/trainer/{id}', name: 'trainer_show', methods: ['GET'])]
     public function showTrainer(User $user): Response
     {
         return $this->render('trainer/show_trainer.html.twig', [
@@ -65,9 +57,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/trainer/{id}/exchange/create", name="pokemon_exchange_create", methods={"GET","POST"})
-     */
+    #[Route(path: '/trainer/{id}/exchange/create', name: 'pokemon_exchange_create', methods: ['GET', 'POST'])]
     public function createPokemonExchange(
         User $trader,
         Request $request,
@@ -95,9 +85,7 @@ class TrainerController extends AbstractController
     }
 
 
-    /**
-     * @Route("/exchange", name="pokemon_exchange_list", methods={"GET"})
-     */
+    #[Route(path: '/exchange', name: 'pokemon_exchange_list', methods: ['GET'])]
     public function listPokemonExchange(PokemonExchangeRepository $pokExRepository): Response
     {
         /** @var User */
@@ -111,9 +99,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/exchange/count", name="pokemon_exchange_count", methods={"GET"})
-     */
+    #[Route(path: '/exchange/count', name: 'pokemon_exchange_count', methods: ['GET'])]
     public function getPokemonsExchangeCount(PokemonExchangeRepository $pokExRepository): Response
     {
         /** @var User */
@@ -126,9 +112,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/exchange/{id}", name="pokemon_exchange_edit", methods={"GET","POST"})
-     */
+    #[Route(path: '/exchange/{id}', name: 'pokemon_exchange_edit', methods: ['GET', 'POST'])]
     public function editPokemonExchange(
         PokemonExchange $pokemonExchange,
         Request $request,
@@ -154,9 +138,7 @@ class TrainerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/exchange/{id}/accept/{csrfToken}", name="pokemon_exchange_accept", methods={"GET"})
-     */
+    #[Route(path: '/exchange/{id}/accept/{csrfToken}', name: 'pokemon_exchange_accept', methods: ['GET'])]
     public function acceptPokemonExchange(
         PokemonExchange $pokemonExchange,
         PokemonExchangeManager $pokExManager,
@@ -175,9 +157,7 @@ class TrainerController extends AbstractController
         return $this->redirectToRoute('pokemon_exchange_list');
     }
 
-    /**
-     * @Route("/exchange/{id}/refuse/{csrfToken}", name="pokemon_exchange_delete", methods={"GET"})
-     */
+    #[Route(path: '/exchange/{id}/refuse/{csrfToken}', name: 'pokemon_exchange_delete', methods: ['GET'])]
     public function refusePokemonExchange(
         PokemonExchange $pokemonExchange,
         PokemonExchangeManager $pokExManager,

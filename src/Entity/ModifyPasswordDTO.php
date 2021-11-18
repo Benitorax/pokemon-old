@@ -8,11 +8,11 @@ use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 class ModifyPasswordDTO
 {
     /**
-     * @Assert\NotBlank
      * @SecurityAssert\UserPassword(
      *     message = "Wrong value for your current password"
      * )
      */
+    #[Assert\NotBlank]
     private string $password;
     private string $newPassword;
 

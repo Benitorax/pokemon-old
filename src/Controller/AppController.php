@@ -21,26 +21,20 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class AppController extends AbstractController
 {
-    /**
-     * @Route("/", name="app_index", methods={"GET"})
-     */
+    #[Route(path: '/', name: 'app_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('app/index.html.twig', []);
     }
 
-    /**
-     * @Route("/account", name="app_account", methods={"GET"})
-     */
+    #[Route(path: '/account', name: 'app_account', methods: ['GET'])]
     public function showAccount(): Response
     {
         return $this->render('app/show_account.html.twig', [
         ]);
     }
 
-    /**
-     * @Route("/account/password", name="app_modify_password", methods={"GET","POST"})
-     */
+    #[Route(path: '/account/password', name: 'app_modify_password', methods: ['GET', 'POST'])]
     public function modifyPassword(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
@@ -73,9 +67,7 @@ class AppController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/account/delete", name="app_account_delete", methods={"GET","POST"})
-     */
+    #[Route(path: '/account/delete', name: 'app_account_delete', methods: ['GET', 'POST'])]
     public function deleteAccount(
         Request $request,
         UserHandler $userHandler,
@@ -109,9 +101,7 @@ class AppController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/contact", name="app_contact", methods={"GET","POST"})
-     */
+    #[Route(path: '/contact', name: 'app_contact', methods: ['GET', 'POST'])]
     public function sendMessageToAdmin(
         Request $request,
         ContactMessageManager $messageManager,
@@ -140,9 +130,7 @@ class AppController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/privacy-policy", name="app_privacy_policy", methods={"GET"})
-     */
+    #[Route(path: '/privacy-policy', name: 'app_privacy_policy', methods: ['GET'])]
     public function showPrivacyPolicy(string $companyName, string $websiteUrl): Response
     {
         return $this->render('app/privacy_policy.html.twig', [

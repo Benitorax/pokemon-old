@@ -48,8 +48,9 @@ class BattleManager extends AbstractBattleManager
     {
         /** @var BattleRepository */
         $repository = $this->manager->getRepository(Battle::class);
+        $battle = $repository->findOneByTrainer($this->user);
 
-        if ($battle = $repository->findOneByTrainer($this->user)) {
+        if (null !== $battle) {
             $playerPokemons = $battle->getPlayerTeam()->getPokemons();
             foreach ($playerPokemons as $pokemon) {
                 $pokemon->setBattleTeam(null);
@@ -155,7 +156,7 @@ class BattleManager extends AbstractBattleManager
             $max = 25;
         }
 
-        $damage = intval(round(rand($min, $max) * (100 + $playerLevel) / 100));
+        $damage = (int) round(rand($min, $max) * (100 + $playerLevel) / 100);
         $opponentFighter->decreaseHealthPoint($damage);
         $this->manager->flush();
 
@@ -195,7 +196,7 @@ class BattleManager extends AbstractBattleManager
 
     public function manageLevelUpForAdventure(Pokemon $pokemon = null): array
     {
-        if (!$pokemon) {
+        if (null === $pokemon) {
             $pokemon = $this->getPlayerFighter();
         }
 
@@ -213,7 +214,7 @@ class BattleManager extends AbstractBattleManager
         $newPokemon = $this->pokeApiManager->checkNextEvolution($pokemon);
         $this->manager->flush();
 
-        if ($newPokemon) {
+        if (null !== $newPokemon) {
             return [
                 'hasLeveledUp' => true,
                 'hasEvolved' => true,
@@ -270,7 +271,7 @@ class BattleManager extends AbstractBattleManager
             $max = 25;
         }
 
-        $damage = intval(round(rand($min, $max) * (160 - $playerLevel) / 100));
+        $damage = (int) round(rand($min, $max) * (160 - $playerLevel) / 100);
         $playerFighter->decreaseHealthPoint($damage);
         $newHp = $playerFighter->getHealthPoint();
         $this->manager->flush();
@@ -345,8 +346,9 @@ class BattleManager extends AbstractBattleManager
     {
         /** @var BattleRepository */
         $repository = $this->manager->getRepository(Battle::class);
+        $battle = $repository->findOneByTrainer($user);
 
-        if ($battle = $repository->findOneByTrainer($user)) {
+        if (null !== $battle) {
             $playerTeam = $battle->getPlayerTeam();
             $playerPokemons = $playerTeam->getPokemons();
 

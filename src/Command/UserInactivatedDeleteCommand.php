@@ -59,7 +59,7 @@ class UserInactivatedDeleteCommand extends Command
             }
         }
         //---------------- Delete only one user Part - START -------------------------------
-        if ($email) {
+        if ($email !== '' && $email !== '0') {
             $user = $this->userRepository->findOneBy(['email' => $email]);
             if ($user instanceof User) {
                 $this->removeAndFlush($user);

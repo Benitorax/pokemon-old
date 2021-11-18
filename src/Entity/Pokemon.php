@@ -6,7 +6,6 @@ use App\Entity\Traits\IdentifierTrait;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PokemonRepository")
@@ -17,20 +16,20 @@ class Pokemon
 
     /**
      * @ORM\Column(type="uuid", unique=true)
-     * @Groups("selection")
      */
+    #[Groups(groups: 'selection')]
     private Uuid $uuid;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"battle", "selection"})
      */
+    #[Groups(groups: ['battle', 'selection'])]
     private string $name;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("selection")
      */
+    #[Groups(groups: 'selection')]
     private int $level;
 
     /**
@@ -45,14 +44,14 @@ class Pokemon
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("battle")
      */
+    #[Groups(groups: 'battle')]
     private string $spriteFrontUrl;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("battle")
      */
+    #[Groups(groups: 'battle')]
     private string $spriteBackUrl;
 
     /**
@@ -62,8 +61,8 @@ class Pokemon
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("battle")
      */
+    #[Groups(groups: 'battle')]
     private int $healthPoint = 100;
 
     /**

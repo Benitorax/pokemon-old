@@ -60,6 +60,6 @@ class PokeApi
             }
         }
 
-        return intval($id);
+        return (int) $id;
     }
 }

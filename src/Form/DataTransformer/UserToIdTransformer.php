@@ -18,11 +18,7 @@ class UserToIdTransformer implements DataTransformerInterface
 
     public function transform($user)
     {
-        if ($user === null) {
-            return '';
-        }
-
-        if (!$user instanceof User) {
+        if (!$user instanceof \App\Entity\User) {
             return '';
         }
 
@@ -36,7 +32,7 @@ class UserToIdTransformer implements DataTransformerInterface
         }
 
         $user = $this->userRepository->find($id);
-        if ($user === null) {
+        if (!$user instanceof \App\Entity\User) {
             throw new TransformationFailedException(sprintf('An User with id "%s" does not exist!', $id));
         }
 

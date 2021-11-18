@@ -52,7 +52,7 @@ class CustomMailer
     {
         $users = $this->userRepository->findAllAdmin();
 
-        if (!$users) {
+        if ($users === [] || $users === null) {
             return;
         }
 
@@ -76,7 +76,7 @@ class CustomMailer
             ->htmlTemplate('email/' . $template . '.html.twig')
             ->context([
                 'username' => $user->getUsername(),
-                'token' =>  $user->getToken() ? $user->getToken()->__toString() : null
+                'token' =>  $user->getToken() !== null ? $user->getToken()->__toString() : null
             ]);
     }
 
@@ -93,7 +93,7 @@ class CustomMailer
             ->htmlTemplate('email/' . $template . '.html.twig')
             ->context([
                 'username' => $user->getUsername(),
-                'token' =>  $user->getToken() ? $user->getToken()->__toString() : null,
+                'token' =>  $user->getToken() !== null ? $user->getToken()->__toString() : null,
                 'message' => $message
             ]);
     }

@@ -328,7 +328,7 @@ class TournamentHandler extends AdventureHandler
             return $number;
         }
 
-        $number = $number % 8;
+        $number %= 8;
 
         if ($number === 0) {
             $number = 8;

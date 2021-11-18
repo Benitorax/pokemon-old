@@ -16,9 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TournamentController extends AbstractController
 {
-    /**
-     * @Route("/tournament/", name="tournament", methods={"GET"})
-     */
+    #[Route(path: '/tournament/', name: 'tournament', methods: ['GET'])]
     public function index(PokemonRepository $pokemonRepository): Response
     {
         /** @var User */
@@ -47,9 +45,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/battle", name="tournament_battle", methods={"GET"})
-     */
+    #[Route(path: '/tournament/battle', name: 'tournament_battle', methods: ['GET'])]
     public function battle(
         TournamentHandler $tournamentHandler,
         PokemonRepository $pokemonRepository,
@@ -73,9 +69,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/start", name="tournament_start", methods={"GET"})
-     */
+    #[Route(path: '/tournament/start', name: 'tournament_start', methods: ['GET'])]
     public function start(TournamentHandler $tournamentHandler, BattleFormManager $formManager): Response
     {
         $tournamentHandler->createBattle();
@@ -100,9 +94,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/select-pokemon", name="tournament_pokemon_select", methods={"POST"})
-     */
+    #[Route(path: '/tournament/select-pokemon', name: 'tournament_pokemon_select', methods: ['POST'])]
     public function selectPokemon(
         Request $request,
         TournamentHandler $tournamentHandler,
@@ -136,9 +128,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/attack", name="tournament_attack", methods={"POST"})
-     */
+    #[Route(path: '/tournament/attack', name: 'tournament_attack', methods: ['POST'])]
     public function attack(
         Request $request,
         TournamentHandler $tournamentHandler,
@@ -170,9 +160,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/heal", name="tournament_heal", methods={"POST"})
-     */
+    #[Route(path: '/tournament/heal', name: 'tournament_heal', methods: ['POST'])]
     public function heal(
         Request $request,
         TournamentHandler $tournamentHandler,
@@ -204,9 +192,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/throw-pokeball", name="tournament_pokeball_throw", methods={"POST"})
-     */
+    #[Route(path: '/tournament/throw-pokeball', name: 'tournament_pokeball_throw', methods: ['POST'])]
     public function throwPokeball(
         Request $request,
         TournamentHandler $tournamentHandler,
@@ -240,9 +226,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/leave", name="tournament_leave", methods={"POST"})
-     */
+    #[Route(path: '/tournament/leave', name: 'tournament_leave', methods: ['POST'])]
     public function leave(
         Request $request,
         TournamentHandler $tournamentHandler,
@@ -276,9 +260,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/next", name="tournament_next", methods={"POST"})
-     */
+    #[Route(path: '/tournament/next', name: 'tournament_next', methods: ['POST'])]
     public function next(
         Request $request,
         TournamentHandler $tournamentHandler,
@@ -312,9 +294,7 @@ class TournamentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/tournament/restore-pokemons", name="tournament_pokemons_restore", methods={"POST"})
-     */
+    #[Route(path: '/tournament/restore-pokemons', name: 'tournament_pokemons_restore', methods: ['POST'])]
     public function restorePokemons(Request $request, TournamentHandler $tournamentHandler): Response
     {
         $data = $request->getContent();

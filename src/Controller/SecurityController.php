@@ -19,9 +19,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/login", name="app_login", methods={"GET", "POST"})
-     */
+    #[Route(path: '/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->isGranted('ROLE_USER')) {
@@ -37,17 +35,13 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
-    /**
-     * @Route("/logout", name="app_logout", methods={"GET"})
-     */
+    #[Route(path: '/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(): void
     {
         throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
 
-    /**
-     * @Route("/register", name="app_register", methods={"GET", "POST"})
-     */
+    #[Route(path: '/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function register(
         Request $request,
         UserHandler $userHandler,
@@ -72,7 +66,7 @@ class SecurityController extends AbstractController
                 $this->addFlash(
                     'success',
                     'Congrats, you have been registered with success!'
-                    . 'You will receive an email to confirm your address.'
+                    . ' You will receive an email to confirm your address.'
                 );
 
                 return $this->redirectToRoute('app_index');
@@ -86,9 +80,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/email_confirm/", name="app_email_confirm", methods={"GET"})
-     */
+    #[Route(path: '/email_confirm/', name: 'app_email_confirm', methods: ['GET'])]
     public function confirmEmailAddress(
         Request $request,
         UserRepository $userRepository,
@@ -97,7 +89,7 @@ class SecurityController extends AbstractController
         $token = $request->query->get('token');
         $user = $userRepository->findOneBy(['token' => $token]);
 
-        if ($user) {
+        if (null !== $user) {
             $user->setToken(null);
             $user->setTokenCreatedAt(null);
             $user->setIsActivated(true);
@@ -110,9 +102,7 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    /**
-     * @Route("/password/forgotten/", name="app_password_forgotten", methods={"GET", "POST"})
-     */
+    #[Route(path: '/password/forgotten/', name: 'app_password_forgotten', methods: ['GET', 'POST'])]
     public function passwordForgotten(
         Request $request,
         UserRepository $userRepository,
@@ -129,7 +119,7 @@ class SecurityController extends AbstractController
                 $email = $emailForm->getData()['email'];
                 $user = $userRepository->findOneIsActivatedByEmail($email);
 
-                if ($user) {
+                if (null !== $user) {
                     $mailer->sendMailToResetPassword($user);
                     $this->addFlash('success', 'You will receive an email to reset your password.');
 
@@ -147,9 +137,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/password/reset/", name="app_password_reset", methods={"GET", "POST"})
-     */
+    #[Route(path: '/password/reset/', name: 'app_password_reset', methods: ['GET', 'POST'])]
     public function resetPasswordForgotten(
         Request $request,
         UserRepository $userRepository,
@@ -165,7 +153,7 @@ class SecurityController extends AbstractController
 
         $user = $userRepository->findOneBy(['token' => $token]);
 
-        if ($user) {
+        if (null !== $user) {
             /** @var \DateTime */
             $tokenDatetime = $user->getTokenCreatedAt();
             $interval = (new \DateTime('now'))->diff($tokenDatetime);
