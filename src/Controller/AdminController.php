@@ -158,7 +158,7 @@ class AdminController extends AbstractController
             }
         }
 
-        if ($onlyRealUsers === [] || $onlyRealUsers === null) {
+        if ($onlyRealUsers === []) {
             $this->addFlash('danger', 'No accounts have been created one month ago.');
             return $this->redirectToRoute('admin_users_not_activated');
         }

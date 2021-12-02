@@ -6,7 +6,10 @@ use Doctrine\ORM\Mapping\NamingStrategy;
 
 class AppNamingStrategy implements NamingStrategy
 {
-    public function classToTableName($className)
+    /**
+     * @param string $className
+     */
+    public function classToTableName($className): string
     {
         if (strpos($className, '\\') !== false) {
             $className = 'pokemon_' . substr($className, strrpos($className, '\\') + 1);
@@ -17,21 +20,30 @@ class AppNamingStrategy implements NamingStrategy
         return $this->underscore($className);
     }
 
-    public function propertyToColumnName($propertyName, $className = null)
+    /**
+     * @param string $propertyName
+     */
+    public function propertyToColumnName($propertyName, $className = null): string
     {
         return $this->underscore($propertyName);
     }
 
+    /**
+     * @param string $propertyName
+     * @param string $embeddedColumnName
+     * @param string $className
+     * @param string $embeddedClassName
+     */
     public function embeddedFieldToColumnName(
         $propertyName,
         $embeddedColumnName,
         $className = null,
         $embeddedClassName = null
-    ) {
+    ): ?string {
         return $this->underscore($propertyName) . '_' . $embeddedColumnName;
     }
 
-    public function referenceColumnName()
+    public function referenceColumnName(): string
     {
         return 'id';
     }
@@ -40,18 +52,27 @@ class AppNamingStrategy implements NamingStrategy
      * @param string $propertyName
      * @param string $className
      */
-    public function joinColumnName($propertyName, $className = null)
+    public function joinColumnName($propertyName, $className = null): string
     {
         return $this->underscore($propertyName) . '_' . $this->referenceColumnName();
     }
 
-    public function joinTableName($sourceEntity, $targetEntity, $propertyName = null)
+    /**
+     * @param string      $sourceEntity The source entity.
+     * @param string      $targetEntity The target entity.
+     * @param string|null $propertyName A property name.
+     */
+    public function joinTableName($sourceEntity, $targetEntity, $propertyName = null): string
     {
         return strtolower($this->classToTableName($sourceEntity) . '_' .
                 $this->classToTableName($targetEntity));
     }
 
-    public function joinKeyColumnName($entityName, $referencedColumnName = null)
+    /**
+     * @param string      $entityName           An entity.
+     * @param string|null $referencedColumnName A property.
+     */
+    public function joinKeyColumnName($entityName, $referencedColumnName = null): string
     {
         return strtolower($this->classToTableName($entityName) . '_' .
                 ($referencedColumnName ?: $this->referenceColumnName()));
@@ -61,7 +82,7 @@ class AppNamingStrategy implements NamingStrategy
      * @param string $string
      * @return string
      */
-    private function underscore($string)
+    private function underscore($string): string
     {
         $string = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $string);
 

@@ -34,7 +34,7 @@ class AdventureHandler
         $battle = $this->battleManager->createAdventureBattle();
         $messages[] = 'You\'re located around <strong>' . $battle->getArena()->getName() . '</strong> area.';
         $messages[] = 'And you come across... <strong>'
-            . $battle->getOpponentTeam()->getCurrentFighter()->getName() . '</strong>!';
+            . $battle->getOpponentTeam()->getCurrentFighter()?->getName() . '</strong>!';
 
         return [
             'messages' => [
@@ -51,7 +51,7 @@ class AdventureHandler
     {
         $this->battleManager->addFighterSelected($pokemon);
         $battle = $this->battleManager->getCurrentBattle();
-        $messages[] = 'You have selected <strong>' . $battle->getPlayerTeam()->getCurrentFighter()->getName()
+        $messages[] = 'You have selected <strong>' . $battle->getPlayerTeam()->getCurrentFighter()?->getName()
             . '</strong>!';
 
         return [
@@ -113,16 +113,16 @@ class AdventureHandler
         if ($result == 'success') {
             $form = [$this->battleFormManager->createTravelButton()];
             $data = $this->battleManager->manageLevelupForAdventure();
-            $messages[] = '<strong>' . $opponentTeam->getCurrentFighter()->getName() . '</strong> was captured!';
+            $messages[] = '<strong>' . $opponentTeam->getCurrentFighter()?->getName() . '</strong> was captured!';
             $textColor = 'battle-text-success';
 
             if ($data['hasEvolved']) {
-                $spriteFrontUrl = $playerTeam->getCurrentFighter()->getspriteFrontUrl();
+                $spriteFrontUrl = $playerTeam->getCurrentFighter()?->getspriteFrontUrl();
                 $messages[] = '<strong>' . $data['name'] . '</strong> evolves to <strong>' .
                               $data['newName'] . '</strong> (level: ' . $data['newLevel'] . ').';
             } elseif ($data['hasLeveledUp']) {
                 $messages[] = '<strong>' . $data['name'] . '</strong> levels up to ' .
-                $playerTeam->getCurrentFighter()->getLevel() . " (+" . $data['increasedLevel'] . ').';
+                $playerTeam->getCurrentFighter()?->getLevel() . " (+" . $data['increasedLevel'] . ').';
             }
 
             $this->clear();
@@ -133,7 +133,7 @@ class AdventureHandler
                 $messages[] = "You missed!";
                 $form = [$this->battleFormManager->createNextButton()];
 
-                if (!$opponentTeam->getCurrentFighter()->getIsSleep()) {
+                if (!$opponentTeam->getCurrentFighter()?->getIsSleep()) {
                     $turn = 'opponent';
                 }
             } else {
@@ -169,7 +169,7 @@ class AdventureHandler
             $form = [$this->battleFormManager->createTravelButton()];
             $this->clear();
         } else {
-            $messages[] = '<strong>' . $battle->getOpponentTeam()->getCurrentFighter()->getName()
+            $messages[] = '<strong>' . $battle->getOpponentTeam()->getCurrentFighter()?->getName()
                 . '</strong> has prevented your escape!';
             $textColor = 'battle-text-danger';
             $form = $this->battleFormManager->createAdventureButtons();
@@ -201,7 +201,7 @@ class AdventureHandler
             $messages[] = 'You don\'t have any healing potions!';
             $textColor = 'battle-text-danger';
         } else {
-            $messages[] = '<strong>' . $playerTeam->getCurrentFighter()->getName()
+            $messages[] = '<strong>' . $playerTeam->getCurrentFighter()?->getName()
                 . '</strong> has been healed (+' . $result . 'HP)!';
             $textColor = 'battle-text-info';
         }
@@ -226,19 +226,19 @@ class AdventureHandler
         $playerFighter = $battle->getPlayerTeam()->getCurrentFighter();
         $form = $this->battleFormManager->createAdventureButtons();
 
-        if (!$opponentFighter->getIsSleep()) {
+        if (!$opponentFighter?->getIsSleep()) {
             $damage = $this->battleManager->manageDamagePlayerFighter();
 
-            if ($playerFighter->getIsSleep()) {
+            if ($playerFighter?->getIsSleep()) {
                 $form = [$this->battleFormManager->createTravelButton()];
-                $messages[] = '<strong>' . $opponentFighter->getName() . '</strong> has knocked <strong>'
+                $messages[] = '<strong>' . $opponentFighter?->getName() . '</strong> has knocked <strong>'
                     . $playerFighter->getName() . '</strong> out (-' . $damage . ' HP).';
-                $messages[] = 'Besides, <strong>' . $opponentFighter->getName() . '</strong> has escaped.';
+                $messages[] = 'Besides, <strong>' . $opponentFighter?->getName() . '</strong> has escaped.';
                 $textColor = 'battle-text-danger';
                 $this->clear();
             } else {
-                $messages[] = '<strong>' . $opponentFighter->getName() . '</strong> attacks <strong>'
-                    . $playerFighter->getName() . '</strong>';
+                $messages[] = '<strong>' . $opponentFighter?->getName() . '</strong> attacks <strong>'
+                    . $playerFighter?->getName() . '</strong>';
                 $messages[] = 'It inflicts ' . $damage . ' points of damage.';
                 $textColor = 'battle-text-danger';
             }

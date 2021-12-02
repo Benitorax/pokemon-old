@@ -145,13 +145,13 @@ class TournamentHandler extends AdventureHandler
         $playerFighter = $battle->getPlayerTeam()->getCurrentFighter();
         $form = $this->battleFormManager->createTournamentButtons();
 
-        if ($playerFighter->getIsSleep()) {
-            $messages[] = '<strong>' . $opponentFighter->getName() . '</strong> has knocked <strong>' .
+        if ($playerFighter?->getIsSleep()) {
+            $messages[] = '<strong>' . $opponentFighter?->getName() . '</strong> has knocked <strong>' .
                             $playerFighter->getName() . '</strong> out (-' . $damage . ' HP).';
             $form = [$this->battleFormManager->createNextButton(BattleFormManager::TOURNAMENT_MODE)];
         } else {
-            $messages[] = '<strong>' . $opponentFighter->getName() . '</strong> attacks <strong>'
-                . $playerFighter->getName() . '</strong>';
+            $messages[] = '<strong>' . $opponentFighter?->getName() . '</strong> attacks <strong>'
+                . $playerFighter?->getName() . '</strong>';
             $messages[] = 'It inflicts ' . $damage . ' points of damage.';
         }
 
@@ -185,7 +185,7 @@ class TournamentHandler extends AdventureHandler
                 $textColor = 'battle-text-danger';
             } else {
                 $healCount += 1;
-                $messages[] = '<strong>' . $playerTeam->getCurrentFighter()->getName()
+                $messages[] = '<strong>' . $playerTeam->getCurrentFighter()?->getName()
                     . '</strong> has been healed (+' . $result . 'HP)!';
                 $messages[] = $healCount . ' potion' . ($healCount > 1 ? 's' : '') . ' used.';
                 $textColor = 'battle-text-info';
