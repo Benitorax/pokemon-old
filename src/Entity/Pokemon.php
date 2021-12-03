@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use Ramsey\Uuid\Uuid;
+use App\Entity\Traits\IdentifierTrait;
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -12,92 +12,96 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Pokemon
 {
+    use IdentifierTrait;
+
     /**
-     * @ORM\Id()
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     * @Groups("selection")
      */
-    private $id;
+    #[Groups(groups: 'selection')]
+    private Uuid $uuid;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"battle", "selection"})
      */
-    private $name;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups("selection")
-     */
-    private $level;
+    #[Groups(groups: ['battle', 'selection'])]
+    private string $name;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $apiId;
+    #[Groups(groups: 'selection')]
+    private int $level;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $evolutionChainId;
+    private int $apiId;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $evolutionChainId;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("battle")
      */
-    private $spriteFrontUrl;
+    #[Groups(groups: 'battle')]
+    private string $spriteFrontUrl;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("battle")
      */
-    private $spriteBackUrl;
+    #[Groups(groups: 'battle')]
+    private string $spriteBackUrl;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $captureRate;
+    private int $captureRate;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("battle")
      */
-    private $healthPoint = 100;
+    #[Groups(groups: 'battle')]
+    private int $healthPoint = 100;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $SleeptAt;
+    private ?\DateTimeInterface $sleeptAt;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isSleep = false;
+    private bool $isSleep = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="pokemons")
      */
-    private $trainer;
+    private ?User $trainer;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Habitat", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $habitat;
+    private Habitat $habitat;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\BattleTeam", inversedBy="pokemons")
      */
-    private $battleTeam;
+    private ?BattleTeam $battleTeam;
 
-    public function getId(): ?Uuid
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
-    public function getName(): ?string
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
+
+    public function getName(): string
     {
         return $this->name;
     }
@@ -124,7 +128,9 @@ class Pokemon
     public function increaseLevel(int $level): self
     {
         $this->level += $level;
-        if($this->level > 100) { $this->level = 100; }
+        if ($this->level > 100) {
+            $this->level = 100;
+        }
 
         return $this;
     }
@@ -191,12 +197,12 @@ class Pokemon
 
     public function getSleeptAt(): ?\DateTimeInterface
     {
-        return $this->SleeptAt;
+        return $this->sleeptAt;
     }
 
-    public function setSleeptAt(?\DateTimeInterface $SleeptAt): self
+    public function setSleeptAt(?\DateTimeInterface $sleeptAt): self
     {
-        $this->SleeptAt = $SleeptAt;
+        $this->sleeptAt = $sleeptAt;
 
         return $this;
     }
@@ -218,19 +224,19 @@ class Pokemon
         return $this->trainer;
     }
 
-    public function setTrainer(?UserInterface $trainer): self
+    public function setTrainer(?User $trainer): self
     {
         $this->trainer = $trainer;
 
         return $this;
     }
 
-    public function getHabitat(): ?Habitat
+    public function getHabitat(): Habitat
     {
         return $this->habitat;
     }
 
-    public function setHabitat(?Habitat $habitat): self
+    public function setHabitat(Habitat $habitat): self
     {
         $this->habitat = $habitat;
 
@@ -252,9 +258,9 @@ class Pokemon
     public function decreaseHealthPoint(int $healthPoint): self
     {
         $this->healthPoint -= $healthPoint;
-        if($this->healthPoint <= 0) {
+        if ($this->healthPoint <= 0) {
             $this->healthPoint = 0;
-            $this->setIsSleep(true); 
+            $this->setIsSleep(true);
         }
 
         return $this;
@@ -263,7 +269,7 @@ class Pokemon
     public function increaseHealthPoint(int $healthPoint): self
     {
         $this->healthPoint += $healthPoint;
-        if($this->healthPoint > 100) {
+        if ($this->healthPoint > 100) {
             $this->healthPoint = 100;
         }
 

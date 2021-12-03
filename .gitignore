@@ -1,8 +1,8 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
@@ -14,9 +14,16 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+###> htaccess ###
+.htaccess
+/public/.htaccess
+###< htaccess ###
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###
 
 ###> symfony/phpunit-bridge ###
-.phpunit
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###

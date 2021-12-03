@@ -2,63 +2,58 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use App\Entity\Traits\EntityIdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BattleRepository")
  */
 class Battle
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    private string $type;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Habitat")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $arena;
+    private Habitat $arena;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\BattleTeam", cascade={"persist"}, orphanRemoval=true)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $playerTeam;
+    private BattleTeam $playerTeam;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\BattleTeam", cascade={"persist"}, orphanRemoval=true)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $opponentTeam;
+    private BattleTeam $opponentTeam;
 
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $turn = 'player';
+    private string $turn = 'player';
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isStart = false;
+    private bool $isStart = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isEnd = false;
+    private bool $isEnd = false;
 
-    public function getId(): ?Uuid
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
     public function getType(): ?string
@@ -73,19 +68,19 @@ class Battle
         return $this;
     }
 
-    public function getArena(): ?Habitat
+    public function getArena(): Habitat
     {
         return $this->arena;
     }
 
-    public function setArena(?Habitat $arena): self
+    public function setArena(Habitat $arena): self
     {
         $this->arena = $arena;
 
         return $this;
     }
 
-    public function getPlayerTeam(): ?BattleTeam
+    public function getPlayerTeam(): BattleTeam
     {
         return $this->playerTeam;
     }
@@ -97,7 +92,7 @@ class Battle
         return $this;
     }
 
-    public function getOpponentTeam(): ?BattleTeam
+    public function getOpponentTeam(): BattleTeam
     {
         return $this->opponentTeam;
     }
@@ -116,10 +111,10 @@ class Battle
 
     public function setTurn(string $turn): self
     {
-        if(in_array($turn, ['player', 'opponent'])) {
+        if (in_array($turn, ['player', 'opponent'])) {
             $this->turn = $turn;
         }
-        
+
         return $this;
     }
 

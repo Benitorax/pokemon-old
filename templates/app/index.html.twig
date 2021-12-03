@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pokemon Island!{% endblock %}
+{% block title %}Pokemon{% endblock %}
 
 {% block body %}
     <div class="row">
         <div class="jumbotron my-3 w-100 bg-light">
-            <h1 class="display-5 text-success"><strong>Pokemon Island!</strong></h1>
+            <h1 class="display-5 text-success"><strong>Pokemon</strong></h1>
             <hr class="my-4">
             <div class="lead my-3">
                 {% if is_granted('ROLE_USER') %}
@@ -14,15 +14,19 @@
                     <p><a class="btn btn-warning btn-lg" href="{{ path('tournament') }}">Challenge yourself in tournament!</a></p>
                     <p><a class="btn btn-info btn-lg" href="{{ path('city') }}">Visit the city</a></p>
                     <p><a class="btn btn-secondary btn-lg" href="{{ path('trainer_list') }}">See all the trainers</a></p>
+                    <br/>
+                    <i>Use Firefox or Chrome for better experience.</i><br/>
                 {% else %}
                     <p class="lead">
                         This website fetch data from <a href="https://pokeapi.co/">PokeApi</a> each time it needs to instantiate a new pokemon.<br/>
                         If you capture a pokemon, then it will be saved in our database.<br/>
                         <br/>
+                        <i>Use Firefox or Chrome for better experience.</i><br/>
+                        <br/>
                         Try it now!
                     </p>
                     <p><a class="btn btn-success btn-lg" href="{{ path('app_login') }}">Login</a></p>
-                    <p><a class="btn btn-info btn-lg" href="{{ path('app_register') }}">Sign in</a></p>
+                    <p><a class="btn btn-info btn-lg" href="{{ path('app_register') }}">Sign up</a></p>
                 {% endif %}
             </div>
         </div>

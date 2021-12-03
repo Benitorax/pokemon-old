@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\BattleTeam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -48,7 +48,7 @@ class BattleTeamRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findOneByTrainer(UserInterface $user)
+    public function findOneByTrainer(UserInterface $user): ?BattleTeam
     {
         return $this->createQueryBuilder('b')
         ->andWhere('b.trainer = :user')
@@ -59,6 +59,6 @@ class BattleTeamRepository extends ServiceEntityRepository
         ->addSelect('p')
         ->getQuery()
         ->getOneOrNullResult()
-    ;
+        ;
     }
 }

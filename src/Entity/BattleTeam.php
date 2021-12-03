@@ -2,62 +2,54 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use App\Entity\Traits\EntityIdTrait;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BattleTeamRepository")
  */
 class BattleTeam
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasNoMoreFighter = false;
+    private bool $hasNoMoreFighter = false;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $isVictorious;
+    private bool $isVictorious = false;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pokemon", cascade={"persist"})
      */
-    private $currentFighter;
+    private ?Pokemon $currentFighter;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist"})
      */
-    private $trainer;
+    private ?User $trainer;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pokemon", mappedBy="battleTeam")
+     * A list of pokemons that can be an ArrayCollection or PersistentCollection.
      */
-    private $pokemons;
+    private $pokemons; /** @phpstan-ignore-line */
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $healCount = 0;
+    private int $healCount = 0;
 
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
-    }
-
-    public function getId(): ?Uuid
-    {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
     public function getHasNoMoreFighter(): ?bool
@@ -72,12 +64,12 @@ class BattleTeam
         return $this;
     }
 
-    public function getIsVictorious(): ?bool
+    public function getIsVictorious(): bool
     {
         return $this->isVictorious;
     }
 
-    public function setIsVictorious(?bool $isVictorious): self
+    public function setIsVictorious(bool $isVictorious): self
     {
         $this->isVictorious = $isVictorious;
 
@@ -143,7 +135,7 @@ class BattleTeam
 
     public function removePokemons(): self
     {
-        foreach($this->pokemons as $pokemon) {
+        foreach ($this->pokemons as $pokemon) {
             if ($pokemon->getBattleTeam() === $this) {
                 $pokemon->setBattleTeam(null);
             }

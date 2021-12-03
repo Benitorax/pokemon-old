@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ContactMessage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method ContactMessage|null find($id, $lockMode = null, $lockVersion = null)
@@ -48,6 +48,9 @@ class ContactMessageRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @return ContactMessage[] Returns an array of ContactMessage objects
+     */
     public function findNewMessages()
     {
         return $this->createQueryBuilder('c')
@@ -59,6 +62,9 @@ class ContactMessageRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return ContactMessage[] Returns an array of ContactMessage objects
+     */
     public function findReadMessages()
     {
         return $this->createQueryBuilder('c')

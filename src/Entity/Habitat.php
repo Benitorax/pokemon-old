@@ -2,43 +2,38 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use App\Entity\Traits\EntityIdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\HabitatRepository")
  */
 class Habitat
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="array")
      */
-    private $pokemonsId = [];
+    private array $pokemonsId = [];
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $apiId;
+    private int $apiId;
 
-    public function getId(): ?Uuid
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -62,7 +57,7 @@ class Habitat
         return $this;
     }
 
-    public function getApiId(): ?int
+    public function getApiId(): int
     {
         return $this->apiId;
     }

@@ -34,7 +34,11 @@ Admin users can also delete accounts which have not been activated.</p>
   If you have Symfony CLI Tool, you can launch the server with:<br>
   <code>symfony server:start</code><br/>
   <br/>
-  Finally you have to register this site on Recaptcha's admin panel and fill this lines in .env file:<br>
+  You need to add a MAILER_DSN variable in your env file.<br/>
+  If you don't want to send emails, you can configure your mailer:<br/>
+  <code>dsn: 'null://null'</code> instead of <code>dsn: '%env(MAILER_DSN)%'</code><br/>
+  <br/>
+  Finally you have to register this site on your Recaptcha's admin panel and fill these variables in .env file:<br>
   <code>GOOGLE_RECAPTCHA_SITE_KEY=</code><br/>
   <code>GOOGLE_RECAPTCHA_SECRET=</code>
 </p>

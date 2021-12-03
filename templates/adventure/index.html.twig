@@ -3,7 +3,7 @@
 {% block title %}Adventure{% endblock %}
 
 {% block body %}
-    <div id="r-battle" class="row justify-content-center"></div>
+    <div class="row justify-content-center" {{ stimulus_controller('adventure-battle') }}></div>
     <div>
         <span hidden id="csrfToken">{{ csrf_token(csrfToken) }}</span>
     </div>
@@ -17,6 +17,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js" defer></script>
     {{ encore_entry_script_tags('adventure_battle') }}
 {% endblock javascripts %}

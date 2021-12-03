@@ -10,19 +10,19 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class ShopType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('pokeball', ChoiceType::class, [
                 'label' => 'Pokeball (10$)',
-                'choices' => range(0,100),
+                'choices' => range(0, 100),
                 'attr' => [
                     'class' => "custom-select"
                 ]
             ])
             ->add('healingPotion', ChoiceType::class, [
                 'label' => 'Healing potion (15$)',
-                'choices' => range(0,100),
+                'choices' => range(0, 100),
                 'attr' => [
                     'class' => "custom-select"
                 ]
@@ -36,7 +36,7 @@ class ShopType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             // Configure your form options here

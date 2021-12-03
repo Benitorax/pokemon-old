@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\EntityIdTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -10,60 +12,52 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ContactMessage
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use EntityIdTrait;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 5,
-     *      max = 50,
-     *      minMessage = "Your object name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your object name cannot be longer than {{ limit }} characters"
-     * )
-     */
-    private $object;
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 5,
+        max: 50,
+        minMessage: 'Your object name must be at least {{ limit }} characters long',
+        maxMessage: 'Your object name cannot be longer than {{ limit }} characters'
+    )]
+    private string $object;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 10,
-     *      max = 400,
-     *      minMessage = "Your content name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your content name cannot be longer than {{ limit }} characters"
-     * )
      */
-    private $content;
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 10,
+        max: 400,
+        minMessage: 'Your content name must be at least {{ limit }} characters long',
+        maxMessage: 'Your content name cannot be longer than {{ limit }} characters'
+    )]
+    private string $content;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isRead = false;
+    private bool $isRead = false;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $authorName;
+    private string $authorName;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $authorEmail;
+    private string $authorEmail;
 
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
     public function getObject(): ?string

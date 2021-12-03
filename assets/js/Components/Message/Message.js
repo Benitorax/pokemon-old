@@ -24,21 +24,21 @@ export function Message(props) {
         setTextColor(baseTextColor + ' ' + textColor);
     }
 
-    let transitions = useTransition(messages, item => item.id, {
+    const transitions = useTransition(messages, {
         from: { opacity: 0 },
         enter: { opacity: 1 },
         leave: { opacity: 0, display: 'none' },
+        keys: item => item.key
     });
 
     return (
         <>
             <div className="row">
                 <div className={textColor} style={{minHeight: '90px'}}>
-                    { props.messages === null ? null :
-                        transitions.map(({ item, props, key }) =>
+                    { props.messages.length === 0 ? null :
+                        transitions(({}, item) =>
                             {
-                                return                             <animated.div dangerouslySetInnerHTML={{__html: item.message}} style={props} key={key} className="text-center"/>;
-
+                                return <animated.div dangerouslySetInnerHTML={{__html: item.message}} style={props} className="text-center"/>;
                             }
                         )
                     }

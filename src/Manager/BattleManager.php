@@ -4,16 +4,18 @@ namespace App\Manager;
 
 use App\Entity\User;
 use App\Entity\Battle;
+use App\Entity\Habitat;
 use App\Entity\Pokemon;
 use App\Entity\BattleTeam;
+use App\Repository\BattleRepository;
 use App\Manager\AbstractBattleManager;
 
 class BattleManager extends AbstractBattleManager
 {
-    const POKEMON_HP_FULL = 1;
-    const NO_HP_POTION = 2;
+    public const POKEMON_HP_FULL = 1;
+    public const NO_HP_POTION = 2;
 
-    public function createAdventureBattle()
+    public function createAdventureBattle(): Battle
     {
         $playerTeam = new BattleTeam();
         $playerTeam->setTrainer($this->user);
@@ -28,7 +30,7 @@ class BattleManager extends AbstractBattleManager
         return $battle;
     }
 
-    public function createTournamentBattle()
+    public function createTournamentBattle(): Battle
     {
         $playerTeam = new BattleTeam();
         $playerTeam->setTrainer($this->user);
@@ -42,18 +44,22 @@ class BattleManager extends AbstractBattleManager
         return $battle;
     }
 
-    public function clearLastBattle()
+    public function clearLastBattle(): void
     {
-        if($battle = $this->getCurrentBattle())
-        {
+        /** @var BattleRepository */
+        $repository = $this->manager->getRepository(Battle::class);
+        $battle = $repository->findOneByTrainer($this->user);
+
+        if (null !== $battle) {
             $playerPokemons = $battle->getPlayerTeam()->getPokemons();
-            foreach($playerPokemons as $pokemon) {
+            foreach ($playerPokemons as $pokemon) {
                 $pokemon->setBattleTeam(null);
             }
 
+            /** @var User */
             $opponent = $battle->getOpponentTeam()->getTrainer();
-            $opponentPokemons = $battle->getOpponentTeam()->getPokemons()->toArray();        
-            foreach($opponentPokemons as $oPokemon) {
+            $opponentPokemons = $battle->getOpponentTeam()->getPokemons()->toArray();
+            foreach ($opponentPokemons as $oPokemon) {
                 $oPokemon->setBattleTeam(null);
             }
 
@@ -62,70 +68,72 @@ class BattleManager extends AbstractBattleManager
         }
     }
 
-    public function createAdventureOpponentTeam($habitat)
+    public function createAdventureOpponentTeam(Habitat $habitat): BattleTeam
     {
         $pokemon = $this->pokeApiManager->getRandomPokemonFromHabitat($habitat);
         $opponent = $this->createAdventureOpponent();
         $opponent->addPokemon($pokemon);
-    
+
         $team = new BattleTeam();
         $team->setTrainer($opponent)
              ->addPokemon($pokemon)
              ->setCurrentFighter($pokemon);
-        
+
         return $team;
     }
 
-    public function createTournamentOpponentTeam($habitat)
+    public function createTournamentOpponentTeam(Habitat $habitat): BattleTeam
     {
         $opponent = $this->createTournamentOpponent();
         $team = new BattleTeam();
         $team->setTrainer($opponent);
 
-        for($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $pokemon = $this->pokeApiManager->getRandomPokemonFromHabitat($habitat);
             $opponent->addPokemon($pokemon);
             $team->addPokemon($pokemon);
 
-            if($i == 0) {
+            if ($i == 0) {
                 $team->setCurrentFighter($pokemon);
             }
         }
-        
+
         return $team;
     }
 
-    public function addFighterSelected($pokemon)
+    public function addFighterSelected(Pokemon $pokemon): void
     {
         $playerTeam = $this->getPlayerTeam();
-        if($playerTeam->getPokemons()->contains($pokemon)) {
+
+        if ($playerTeam->getPokemons()->contains($pokemon)) {
             return;
         }
 
         $playerTeam->addPokemon($pokemon);
-        if($playerTeam->getPokemons()->count() == 1) {
+
+        if ($playerTeam->getPokemons()->count() == 1) {
             $playerTeam->setCurrentFighter($pokemon);
         }
 
         $this->persistAndFlush($pokemon);
     }
 
-    public function manageThrowPokeball() 
+    public function manageThrowPokeball(): string
     {
         $result = 'impossible';
         $user = $this->user;
 
-        if($user->getPokeball() > 0) {
+        if ($user->getPokeball() > 0) {
             $this->user->usePokeball();
-            $captureRate = $this->getOpponentFighter()->getCaptureRate();   
+            $captureRate = $this->getOpponentFighter()->getCaptureRate();
             $hp = $this->getOpponentFighter()->getHealthPoint();
             $result = 'failed';
 
-            if(rand(1,100) <= $captureRate * (115-$hp) / 100 ) {
+            if (rand(1, 100) <= $captureRate * (115 - $hp) / 100) {
                 $result = 'success';
                 $this->user->addPokemon($this->getOpponentFighter());
-            } 
-            
+            }
+
             $this->manager->flush();
 
             return $result;
@@ -134,66 +142,79 @@ class BattleManager extends AbstractBattleManager
         return $result;
     }
 
-    public function manageAttackOpponent() {
+    public function manageAttackOpponent(): int
+    {
         $battle = $this->getCurrentBattle();
         $battle->setTurn('opponent');
         $opponentFighter = $this->getOpponentFighter();
         $playerLevel = $this->getPlayerFighter()->getLevel();
-        $min = 5; $max = 20;
-        if($battle->getType() === 'tournament') {
-            $min = 10; $max = 25;
+        $min = 5;
+        $max = 20;
+
+        if ($battle->getType() === 'tournament') {
+            $min = 10;
+            $max = 25;
         }
-        $damage = intval(round(rand($min,$max) * (100 + $playerLevel) / 100));
+
+        $damage = (int) round(rand($min, $max) * (100 + $playerLevel) / 100);
         $opponentFighter->decreaseHealthPoint($damage);
         $this->manager->flush();
 
         return $damage;
     }
 
-    public function manageLeave() {
+    public function manageLeave(): bool
+    {
         $isSleep = $this->getOpponentFighter()->getIsSleep();
-        if($isSleep) { return true; }
+
+        if ($isSleep) {
+            return true;
+        }
 
         $hp = $this->getOpponentFighter()->getHealthPoint();
-        
-        if($hp > 70) {
-            return rand(1,100) < 30;
-        } 
-        elseif($hp >= 30) {
-            return rand(1,100) < 50;
-        } 
-        else {
-            return rand(1,100) < 70;
+
+        if ($hp > 70) {
+            return rand(1, 100) < 30;
+        } elseif ($hp >= 30) {
+            return rand(1, 100) < 50;
+        } else {
+            return rand(1, 100) < 70;
         }
     }
 
-    public function manageLevelUpForTournament() {
+    public function manageLevelUpForTournament(): array
+    {
         $pokemons = $this->getPlayerTeam()->getPokemons();
         $data = [];
-        foreach($pokemons as $pokemon) {
+
+        foreach ($pokemons as $pokemon) {
             $data[] = $this->manageLevelUpForAdventure($pokemon);
         }
+
         return $data;
     }
 
-    public function manageLevelUpForAdventure(Pokemon $pokemon = null) {
-        if(!$pokemon) {
+    public function manageLevelUpForAdventure(Pokemon $pokemon = null): array
+    {
+        if (null === $pokemon) {
             $pokemon = $this->getPlayerFighter();
         }
+
         $level = $pokemon->getLevel();
-        if($level == 100) {
-            return [ 
+
+        if ($level == 100) {
+            return [
                 'hasLeveledUp' => false,
                 'hasEvolved' => false
             ];
         }
 
         $name = $pokemon->getName();
-        $pokemon->increaseLevel($increasedLevel = rand(10,22));
+        $pokemon->increaseLevel($increasedLevel = rand(10, 22));
         $newPokemon = $this->pokeApiManager->checkNextEvolution($pokemon);
         $this->manager->flush();
 
-        if($newPokemon) {
+        if (null !== $newPokemon) {
             return [
                 'hasLeveledUp' => true,
                 'hasEvolved' => true,
@@ -214,113 +235,133 @@ class BattleManager extends AbstractBattleManager
         ];
     }
 
-    public function manageHealPlayerFighter()
+    public function manageHealPlayerFighter(): int
     {
-        if($this->getPlayerFighter()->getHealthPoint() === 100) {
+        if ($this->getPlayerFighter()->getHealthPoint() === 100) {
             return self::POKEMON_HP_FULL;
         }
 
-        if($this->getPlayerFighter()->getTrainer()->getHealingPotion() == 0) {
+        if ($this->getPlayerFighter()->getTrainer()?->getHealingPotion() == 0) {
             return self::NO_HP_POTION;
         }
 
         $pokemon = $this->getPlayerFighter();
         $healthPoint = $pokemon->getHealthPoint();
-        $pokemon->increaseHealthPoint(rand(50,70));
+        $pokemon->increaseHealthPoint(rand(50, 70));
         $healthPointRange = $pokemon->getHealthPoint() - $healthPoint;
-        $pokemon->getTrainer()->useHealingPotion();
+        $pokemon->getTrainer()?->useHealingPotion();
         $this->getPlayerTeam()->increaseHealCount();
         $this->manager->flush();
 
         return $healthPointRange;
     }
 
-    public function manageDamagePlayerFighter()
+    public function manageDamagePlayerFighter(): int
     {
         $battle = $this->getCurrentBattle();
         $battle->setTurn('player');
         $playerFighter = $this->getPlayerFighter();
         $playerLevel = $playerFighter->getLevel();
         $hp = $playerFighter->getHealthPoint();
-        $min = 5; $max = 20;
-        if($battle->getType() === 'tournament') {
-            $min = 10; $max = 25;
+        $min = 5;
+        $max = 20;
+
+        if ($battle->getType() === 'tournament') {
+            $min = 10;
+            $max = 25;
         }
-        $damage = intval(round(rand($min,$max) * (160 - $playerLevel) / 100));
+
+        $damage = (int) round(rand($min, $max) * (160 - $playerLevel) / 100);
         $playerFighter->decreaseHealthPoint($damage);
         $newHp = $playerFighter->getHealthPoint();
         $this->manager->flush();
 
-        return $hpLost = $hp - $newHp;
+        // returns lost HP
+        return $hp - $newHp;
     }
 
-    public function manageChangeFighterOfTeam(BattleTeam $battleTeam)
+    public function manageChangeFighterOfTeam(BattleTeam $battleTeam): bool
     {
         $isAllSleep = true;
 
         $pokemons = $battleTeam->getPokemons();
 
-        foreach($pokemons as $pokemon) {
-            if(!$pokemon->getIsSleep()) {
+        foreach ($pokemons as $pokemon) {
+            if (!$pokemon->getIsSleep()) {
                 $battleTeam->setCurrentFighter($pokemon);
                 $isAllSleep = false;
                 break;
             }
         }
+
         $this->getCurrentBattle()->setTurn('player');
         $this->manager->flush();
 
-        if($isAllSleep) {
+        if ($isAllSleep) {
             $battleTeam->setHasNoMoreFighter(true);
             $battleTeam->setCurrentFighter(null);
             $this->endBattle($battleTeam);
+
             return false;
         }
+
         return true;
     }
 
-    public function startBattle() {
+    public function startBattle(): void
+    {
         $this->getCurrentBattle()->setIsStart(true);
         $this->manager->flush();
     }
 
-    public function endBattle(BattleTeam $battleTeam) {
+    public function endBattle(BattleTeam $battleTeam): void
+    {
         $this->getCurrentBattle()->setIsEnd(true);
         $battle = $this->getCurrentBattle();
         // $battleTeam has lost
         $battleTeam->setIsVictorious(false);
-        if($battle->getPlayerTeam() === $battleTeam) {
+
+        if ($battle->getPlayerTeam() === $battleTeam) {
             $battle->getOpponentTeam()->setIsVictorious(true);
-        } elseif($battle->getOpponentTeam() === $battleTeam) {
+        } elseif ($battle->getOpponentTeam() === $battleTeam) {
             $battle->getPlayerTeam()->setIsVictorious(true);
         }
+
         $this->manager->flush();
     }
 
-    public function restorePlayerPokemons()
+    public function restorePlayerPokemons(): void
     {
         $pokemons = $this->getPlayerTeam()->getPokemons();
-        foreach($pokemons as $pokemon) {
+
+        foreach ($pokemons as $pokemon) {
             $pokemon->setHealthPoint(100);
             $pokemon->setIsSleep(false);
         }
+
         $this->manager->flush();
     }
 
-    public function clearLastBattleOfTrainer(User $user)
+    public function clearLastBattleOfTrainer(User $user): void
     {
-        if($battle = $this->manager->getRepository(Battle::class)->findOneByTrainer($user))
-        {
+        /** @var BattleRepository */
+        $repository = $this->manager->getRepository(Battle::class);
+        $battle = $repository->findOneByTrainer($user);
+
+        if (null !== $battle) {
             $playerTeam = $battle->getPlayerTeam();
             $playerPokemons = $playerTeam->getPokemons();
-            foreach($playerPokemons as $pokemon) {
+
+            foreach ($playerPokemons as $pokemon) {
                 $pokemon->setBattleTeam(null);
             }
 
             $opponentTeam = $battle->getOpponentTeam();
+            /** @var User */
             $opponent = $opponentTeam->getTrainer();
-            $opponentPokemons = $opponentTeam->getPokemons()->toArray();        
-            foreach($opponentPokemons as $oPokemon) {
+            $opponentPokemons = $opponentTeam->getPokemons()->toArray();
+
+            foreach ($opponentPokemons as $oPokemon) {
                 $oPokemon->setBattleTeam(null);
             }
 

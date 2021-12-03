@@ -2,41 +2,43 @@
 
 namespace App\Api\PokeApi;
 
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PokeApi
 {
-    private $client;
+    private HttpClientInterface $client;
 
-    public function __construct()
+    public function __construct(HttpClientInterface $client)
     {
-        $this->client = new Client();
+        $this->client = $client;
     }
 
-    public function fetch($endpoint)
+    /**
+     * @return mixed
+     */
+    public function fetch(string $endpoint)
     {
-        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/'.$endpoint);
-        $data = $response->getBody()->getContents();
-        
+        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/' . $endpoint);
+        $data = $response->getContent();
+
         return $data = json_decode($data, true);
     }
 
-    public function getPokemonsIdFromHabitat($habitatId)
+    /**
+     * @return int[]
+     */
+    public function getPokemonIdsFromHabitat(int $habitatId)
     {
-        $data = $this->fetch('pokemon-habitat/'.$habitatId);
+        $data = $this->fetch('pokemon-habitat/' . $habitatId);
         $pokemonsData = $data['pokemon_species'];
         $listId = [];
 
-        foreach($pokemonsData as $pokemonData) 
-        {
+        foreach ($pokemonsData as $pokemonData) {
             $id = $this->getIdFromUrl($pokemonData['url']);
-            
-            if($id < 152)
-            {
+
+            if ($id < 152) {
                 $listId[] = $id;
-            } 
-            else 
-            {
+            } else {
                 break;
             }
         }
@@ -44,24 +46,20 @@ class PokeApi
         return $listId;
     }
 
-    public function getIdFromUrl($url)
+    public function getIdFromUrl(string $url): int
     {
-        $url = rtrim($url,"/");
+        $url = rtrim($url, "/");
         $length = strlen($url);
         $id = "";
 
-        for($i = $length-1 ; $i > strlen('https://pokeapi.co/api/v2/') ; $i--)
-        {
-            if($url[$i] !== "/")
-            {
+        for ($i = $length - 1; $i > strlen('https://pokeapi.co/api/v2/'); $i--) {
+            if ($url[$i] !== "/") {
                 $id = $url[$i] . $id;
-            } 
-            else 
-            {
+            } else {
                 break;
             }
         }
 
-        return intval($id);
+        return (int) $id;
     }
 }

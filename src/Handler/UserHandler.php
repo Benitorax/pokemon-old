@@ -3,50 +3,52 @@
 namespace App\Handler;
 
 use App\Entity\User;
+use App\Manager\BattleManager;
 use App\Entity\RegisterUserDTO;
 use App\Api\PokeApi\PokeApiManager;
-use App\Manager\BattleManager;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PokemonExchangeRepository;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserHandler
 {
-    private $manager;
-    private $encoder;
-    private $pokeApiManager;
-    private $pokExRepository;
-    private $battleManager;
+    private EntityManagerInterface $manager;
+    private UserPasswordHasherInterface $passwordHasher;
+    private PokeApiManager $pokeApiManager;
+    private PokemonExchangeRepository $pokExRepository;
+    private BattleManager $battleManager;
 
-    public function __construct(ObjectManager $manager, UserPasswordEncoderInterface $encoder, 
-                                PokeApiManager $pokeApiManager, PokemonExchangeRepository $pokExRepository,
-                                BattleManager $battleManager)
-    {
+    public function __construct(
+        EntityManagerInterface $manager,
+        UserPasswordHasherInterface $passwordHasher,
+        PokeApiManager $pokeApiManager,
+        PokemonExchangeRepository $pokExRepository,
+        BattleManager $battleManager
+    ) {
         $this->manager = $manager;
-        $this->encoder = $encoder;
+        $this->passwordHasher = $passwordHasher;
         $this->pokeApiManager = $pokeApiManager;
         $this->pokExRepository = $pokExRepository;
         $this->battleManager = $battleManager;
     }
-    
-    public function handle($data) 
+
+    public function handle(RegisterUserDTO $data): User
     {
         $user = $this->createUserWithFirstPokemon($data);
-        
+
         $this->manager->persist($user);
         $this->manager->flush();
 
         return $user;
     }
 
-    public function createUserWithFirstPokemon($data) 
+    public function createUserWithFirstPokemon(RegisterUserDTO $data): User
     {
-        /** @var RegisterUserDTO $data */
         $pokemon = $this->pokeApiManager->getNewPokemon($data->getPokemonApiId());
 
         $user = new User();
         $user->setUsername($data->getUsername())
-            ->setPassword($this->encoder->encodePassword(
+            ->setPassword($this->passwordHasher->hashPassword(
                 $user,
                 $data->getPassword()
             ))
@@ -58,19 +60,21 @@ class UserHandler
         return $user;
     }
 
-    public function modifyPassword($user, $newPassword) {
-        $user->setPassword($this->encoder->encodePassword(
+    public function modifyPassword(User $user, string $newPassword): void
+    {
+        $user->setPassword($this->passwordHasher->hashPassword(
             $user,
             $newPassword
         ));
         $this->manager->flush();
     }
 
-    public function deleteUser($user) {
+    public function deleteUser(User $user): void
+    {
         $this->battleManager->clearLastBattleOfTrainer($user);
-
         $pokExs = $this->pokExRepository->findAllByTrainer($user);
-        foreach($pokExs as $pokEx) {
+
+        foreach ($pokExs as $pokEx) {
             $this->manager->remove($pokEx);
         }
 

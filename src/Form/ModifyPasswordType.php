@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\Length;
 
 class ModifyPasswordType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('password', PasswordType::class, [
@@ -32,7 +32,7 @@ class ModifyPasswordType extends AbstractType
                         'max' => 40,
                         'minMessage' => "Your username must be at least {{ limit }} characters long",
                         'maxMessage' => "Your usernamename cannot be longer than {{ limit }} characters"
-                   
+
                     ])
                 ]
             ])
@@ -42,7 +42,7 @@ class ModifyPasswordType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             // Configure your form options here

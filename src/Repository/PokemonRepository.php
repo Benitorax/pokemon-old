@@ -3,9 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Pokemon;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Pokemon|null find($id, $lockMode = null, $lockVersion = null)
@@ -49,6 +50,9 @@ class PokemonRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @return Pokemon[]
+     */
     public function findPokemonsByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
@@ -56,77 +60,90 @@ class PokemonRepository extends ServiceEntityRepository
             ->setParameter('val', $user)
             ->leftJoin('p.habitat', 'h')
             ->addSelect('h')
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function findPokemonsByTrainerQueryBuilder(UserInterface $user)
+    public function findPokemonsByTrainerQueryBuilder(UserInterface $user): QueryBuilder
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
-            ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->andWhere('p.trainer = :user')
+            ->setParameter('user', $user)
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
         ;
     }
 
+    /**
+     * @return Pokemon[]
+     */
     public function findReadyPokemonsByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
-            ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->setParameter('user', $user)
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function findReadyPokemonsByTrainerQueryBuilder(UserInterface $user)
+    public function findReadyPokemonsByTrainerQueryBuilder(UserInterface $user): QueryBuilder
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
-            ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->setParameter('user', $user)
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
         ;
     }
 
+    /**
+     * @return Pokemon[]
+     */
     public function findAllFullHPByTrainer(UserInterface $user)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
             ->andWhere('p.healthPoint = 100')
-            ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->setParameter('user', $user)
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function findAllFullHPByTrainerQueryBuilder(UserInterface $user)
+    public function findAllFullHPByTrainerQueryBuilder(UserInterface $user): QueryBuilder
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
             ->andWhere('p.healthPoint = 100')
             ->andWhere('p.battleTeam is NULL')
-            ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->setParameter('user', $user)
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
         ;
     }
 
-    public function findAllFullHPByTrainerNumber(UserInterface $user)
+    public function findAllFullHPByTrainerNumber(UserInterface $user): int
     {
         return $this->createQueryBuilder('p')
             ->select('count(p)')
-            ->andWhere('p.trainer = :val')
+            ->andWhere('p.trainer = :user')
             ->andWhere('p.isSleep = false')
             ->andWhere('p.healthPoint = 100')
-            ->setParameter('val', $user)
-            ->orderBy('p.name', 'ASC', 'p.level', 'DESC')
+            ->setParameter('user', $user)
+            ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.level', 'DESC')
             ->getQuery()
             ->getSingleScalarResult()
         ;

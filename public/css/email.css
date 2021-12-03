@@ -1,0 +1,70 @@
+.border-logo {
+    border-bottom: solid 4px rgb(53, 103, 176);
+    border-top: solid 4px rgb(53, 103, 176);
+    margin-bottom: 20px;
+}
+
+.hero {
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+
+.bg-primary {
+    background-color: #118AB2;
+}
+
+.table {
+    background-color: #f5f5f5;
+}
+
+.text-primary {
+    color: #5cb85c;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-status {
+    color:  #5cb85c;
+    font-weight: bolder;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.text-trainer {
+    color:  #118AB2;
+}
+
+.text-pokemon {
+    color: #7448ad;
+    font-weight: bolder;
+}
+
+.text-answer {
+    color:  #ff0000;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.text-white {
+    color: white;
+}
+
+.text-green {
+    color:  #5cb85c;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.blank_row
+{
+    height: 20px !important;
+}
+
+th {
+    padding-left: 10px;
+    vertical-align: middle;
+}

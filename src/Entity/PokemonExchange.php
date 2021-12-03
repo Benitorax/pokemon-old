@@ -2,98 +2,97 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
+use App\Entity\Pokemon;
+use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\EntityIdTrait;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PokemonExchangeRepository")
  */
 class PokemonExchange
 {
-    const STATUS_WAITING_FOR_RESPONSE = 'Waiting for response';
-    const STATUS_MODIFIED = 'Modified, waiting for response';
-    const USER_ACCEPT_CONTRACT = 'Accepted';
-    const USER_REFUSE_CONTRACT = 'Refused';
-    const USER_NO_ANSWER_CONTRACT = 'None';
+    use EntityIdTrait;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    public const STATUS_WAITING_FOR_RESPONSE = 'Waiting for response';
+    public const STATUS_MODIFIED = 'Modified, waiting for response';
+    public const USER_ACCEPT_CONTRACT = 'Accepted';
+    public const USER_REFUSE_CONTRACT = 'Refused';
+    public const USER_NO_ANSWER_CONTRACT = 'None';
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $trainer1;
+    private User $trainer1;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pokemon")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $pokemon1;
+    private Pokemon $pokemon1;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $answer1;
+    private string $answer1;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $trainer2;
+    private User $trainer2;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pokemon")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $pokemon2;
+    private Pokemon $pokemon2;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $answer2;
+    private string $answer2;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $status = self::STATUS_WAITING_FOR_RESPONSE;
+    private string $status = self::STATUS_WAITING_FOR_RESPONSE;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updatedAt;
+    private ?\DateTimeInterface $updatedAt = null;
 
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->uuid = Uuid::v4();
     }
 
-    public function getTrainer1(): ?User
+    public function getTrainer1(): User
     {
         return $this->trainer1;
     }
 
-    public function setTrainer1(?User $trainer1): self
+    public function setTrainer1(User $trainer1): self
     {
         $this->trainer1 = $trainer1;
 
         return $this;
     }
 
-    public function getPokemon1(): ?Pokemon
+    public function getPokemon1(): Pokemon
     {
         return $this->pokemon1;
     }
 
-    public function setPokemon1(?Pokemon $pokemon1): self
+    public function setPokemon1(Pokemon $pokemon1): self
     {
         $this->pokemon1 = $pokemon1;
 
@@ -112,24 +111,24 @@ class PokemonExchange
         return $this;
     }
 
-    public function getTrainer2(): ?User
+    public function getTrainer2(): User
     {
         return $this->trainer2;
     }
 
-    public function setTrainer2(?User $trainer2): self
+    public function setTrainer2(User $trainer2): self
     {
         $this->trainer2 = $trainer2;
 
         return $this;
     }
 
-    public function getPokemon2(): ?Pokemon
+    public function getPokemon2(): Pokemon
     {
         return $this->pokemon2;
     }
 
-    public function setPokemon2(?Pokemon $pokemon2): self
+    public function setPokemon2(Pokemon $pokemon2): self
     {
         $this->pokemon2 = $pokemon2;
 
@@ -160,7 +159,7 @@ class PokemonExchange
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -177,7 +176,7 @@ class PokemonExchange
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

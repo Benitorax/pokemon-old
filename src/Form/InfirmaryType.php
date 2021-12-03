@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use App\Repository\PokemonRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Security\Core\Security;
@@ -12,18 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class InfirmaryType extends AbstractType
 {
-    private $userPokemons;
-    
+    private array $userPokemons;
+
     public function __construct(Security $security, PokemonRepository $pokemonRepository)
     {
-        $this->userPokemons = $pokemonRepository->findPokemonsByTrainer($security->getUser());;
+        /** @var User */
+        $user = $security->getUser();
+        $this->userPokemons = $pokemonRepository->findPokemonsByTrainer($user);
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('restorePokemon', SubmitType::class, [
-                'label' => count($this->userPokemons) > 3 ? 'Pay 30 $' :'Restore for free',
+                'label' => count($this->userPokemons) > 3 ? 'Pay 30 $' : 'Restore for free',
                 'attr' => [
                     'class' => "btn btn-success"
                 ]
@@ -46,17 +49,18 @@ class InfirmaryType extends AbstractType
         ;
     }
 
-    public function getPokemonsChoice() 
+    public function getPokemonsChoice(): array
     {
         $pokemonsList = [];
-        foreach($this->userPokemons as $pokemon)
-        {
-            $pokemonsList[$pokemon->getName().' (level '.$pokemon->getLevel().')'] = $pokemon->getId();
+
+        foreach ($this->userPokemons as $pokemon) {
+            $pokemonsList[$pokemon->getName() . ' (level ' . $pokemon->getLevel() . ')'] = $pokemon->getId();
         }
+
         return $pokemonsList;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             // Configure your form options here
