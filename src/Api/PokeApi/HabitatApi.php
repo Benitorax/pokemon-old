@@ -34,9 +34,8 @@ class HabitatApi extends PokeApi
             return $habitat;
         }
 
-        $habitat = new Habitat();
-
-        return $habitat->setApiId($id)
+        return (new Habitat())
+            ->setApiId($id)
             ->setName($this->getHabitatName($id))
             ->setPokemonsId($this->getPokemonIdsFromHabitat($id));
     }

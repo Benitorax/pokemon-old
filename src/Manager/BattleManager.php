@@ -36,6 +36,7 @@ class BattleManager extends AbstractBattleManager
         $playerTeam->setTrainer($this->user);
 
         $habitat = $this->pokeApiManager->getRandomHabitat();
+        $this->persistAndFlush($habitat);
 
         $opponentTeam = $this->createTournamentOpponentTeam($habitat);
         $battle = $this->createBattle($playerTeam, $opponentTeam, $habitat, 'tournament');
@@ -74,12 +75,10 @@ class BattleManager extends AbstractBattleManager
         $opponent = $this->createAdventureOpponent();
         $opponent->addPokemon($pokemon);
 
-        $team = new BattleTeam();
-        $team->setTrainer($opponent)
-             ->addPokemon($pokemon)
-             ->setCurrentFighter($pokemon);
-
-        return $team;
+        return (new BattleTeam())
+            ->setTrainer($opponent)
+            ->addPokemon($pokemon)
+            ->setCurrentFighter($pokemon);
     }
 
     public function createTournamentOpponentTeam(Habitat $habitat): BattleTeam
